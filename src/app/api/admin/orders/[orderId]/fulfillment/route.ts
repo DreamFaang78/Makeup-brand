@@ -8,12 +8,12 @@ import { createClient } from '@supabase/supabase-js';
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     const body = await req.json();
     const { fulfillmentStatus, courierName, trackingId } = body;
-    const orderId = params.orderId;
+    const { orderId } = await params;
 
     if (!orderId || !fulfillmentStatus) {
       return NextResponse.json(
