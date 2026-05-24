@@ -1,0 +1,234 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// LANAN — Seed Data (Demo Products)
+// ─────────────────────────────────────────────────────────────────────────────
+
+import type { ProductCardData } from '@/types/product';
+
+export const DEMO_PRODUCTS: ProductCardData[] = [
+  {
+    id: '1',
+    name: 'Radiance Revival Serum',
+    slug: 'radiance-revival-serum',
+    tagline: 'Brightening & Glow-Boosting Daily Serum',
+    base_price: 1299,
+    sale_price: 999,
+    rating_avg: 4.8,
+    rating_count: 124,
+    is_bestseller: true,
+    skin_types: ['dry', 'combination', 'normal'],
+    skin_concerns: ['pigmentation', 'brightening', 'uneven-tone'],
+    images: [
+      {
+        id: 'img1',
+        url: '/Serum Bottle.jpeg',
+        alt_text: 'Radiance Revival Serum bottle',
+        sort_order: 0,
+        is_video: false,
+      },
+    ],
+    variants: [
+      { id: 'v1a', product_id: '1', name: '30ml', sku: 'RRS-30', price: 999, sale_price: null, inventory: 45, is_active: true, sort_order: 0 },
+      { id: 'v1b', product_id: '1', name: '50ml', sku: 'RRS-50', price: 1599, sale_price: null, inventory: 23, is_active: true, sort_order: 1 },
+    ],
+    category: { id: 'c1', name: 'Serums', slug: 'serums', description: '', image_url: '', sort_order: 0, is_active: true },
+  },
+  {
+    id: '2',
+    name: 'Velvet Hydra Moisturiser',
+    slug: 'velvet-hydra-moisturiser',
+    tagline: '72-Hour Hydration for Indian Climate',
+    base_price: 899,
+    sale_price: null,
+    rating_avg: 4.6,
+    rating_count: 89,
+    is_bestseller: true,
+    skin_types: ['dry', 'sensitive', 'normal'],
+    skin_concerns: ['hydration', 'sensitivity'],
+    images: [
+      {
+        id: 'img2',
+        url: '/Moisturiser Tube.jpeg',
+        alt_text: 'Velvet Hydra Moisturiser tube',
+        sort_order: 0,
+        is_video: false,
+      },
+    ],
+    variants: [
+      { id: 'v2a', product_id: '2', name: '50g', sku: 'VHM-50', price: 899, sale_price: null, inventory: 67, is_active: true, sort_order: 0 },
+    ],
+    category: { id: 'c2', name: 'Moisturisers', slug: 'moisturisers', description: '', image_url: '', sort_order: 1, is_active: true },
+  },
+  {
+    id: '3',
+    name: 'Petal Soft Cleansing Foam',
+    slug: 'petal-soft-cleansing-foam',
+    tagline: 'Gentle pH-Balanced Everyday Cleanser',
+    base_price: 699,
+    sale_price: 549,
+    rating_avg: 4.7,
+    rating_count: 203,
+    is_bestseller: false,
+    skin_types: ['oily', 'combination', 'sensitive'],
+    skin_concerns: ['acne', 'pores'],
+    images: [
+      {
+        id: 'img3',
+        url: '/website product cards..jpeg',
+        alt_text: 'Cleansing foam pump bottle',
+        sort_order: 0,
+        is_video: false,
+      },
+    ],
+    variants: [
+      { id: 'v3a', product_id: '3', name: '150ml', sku: 'PSC-150', price: 549, sale_price: null, inventory: 112, is_active: true, sort_order: 0 },
+    ],
+    category: { id: 'c3', name: 'Cleansers', slug: 'cleansers', description: '', image_url: '', sort_order: 2, is_active: true },
+  },
+  {
+    id: '4',
+    name: 'Golden Hour Eye Cream',
+    slug: 'golden-hour-eye-cream',
+    tagline: 'Brightens Dark Circles & Reduces Puffiness',
+    base_price: 1499,
+    sale_price: 1199,
+    rating_avg: 4.5,
+    rating_count: 67,
+    is_bestseller: false,
+    skin_types: ['all', 'sensitive'],
+    skin_concerns: ['dark-circles', 'anti-aging'],
+    images: [
+      {
+        id: 'img4',
+        url: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&auto=format&fit=crop',
+        alt_text: 'Eye cream in gold jar',
+        sort_order: 0,
+        is_video: false,
+      },
+    ],
+    variants: [
+      { id: 'v4a', product_id: '4', name: '15ml', sku: 'GHE-15', price: 1199, sale_price: null, inventory: 34, is_active: true, sort_order: 0 },
+    ],
+    category: { id: 'c4', name: 'Eye Care', slug: 'eye-care', description: '', image_url: '', sort_order: 3, is_active: true },
+  },
+  {
+    id: '5',
+    name: 'Saffron Glow Face Mask',
+    slug: 'saffron-glow-face-mask',
+    tagline: 'Luxury Indian Saffron Ritual Mask',
+    base_price: 1099,
+    sale_price: null,
+    rating_avg: 4.9,
+    rating_count: 58,
+    is_bestseller: true,
+    skin_types: ['dry', 'combination', 'normal'],
+    skin_concerns: ['brightening', 'pigmentation', 'hydration'],
+    images: [
+      {
+        id: 'img5',
+        url: '/Saffron Face Mask.jpeg',
+        alt_text: 'Saffron face mask clay jar',
+        sort_order: 0,
+        is_video: false,
+      },
+    ],
+    variants: [
+      { id: 'v5a', product_id: '5', name: '100g', sku: 'SGM-100', price: 1099, sale_price: null, inventory: 19, is_active: true, sort_order: 0 },
+    ],
+    category: { id: 'c5', name: 'Masks', slug: 'masks', description: '', image_url: '', sort_order: 4, is_active: true },
+  },
+  {
+    id: '6',
+    name: 'Rose Dew SPF 40 Sunscreen',
+    slug: 'rose-dew-spf40-sunscreen',
+    tagline: 'Lightweight Broad Spectrum Daily Protection',
+    base_price: 799,
+    sale_price: 649,
+    rating_avg: 4.7,
+    rating_count: 156,
+    is_bestseller: true,
+    skin_types: ['oily', 'combination', 'all'],
+    skin_concerns: ['anti-aging', 'pigmentation', 'brightening'],
+    images: [
+      {
+        id: 'img6',
+        url: '/Sunscreen.jpeg',
+        alt_text: 'SPF sunscreen tube',
+        sort_order: 0,
+        is_video: false,
+      },
+    ],
+    variants: [
+      { id: 'v6a', product_id: '6', name: '50ml', sku: 'RDS-50', price: 649, sale_price: null, inventory: 88, is_active: true, sort_order: 0 },
+    ],
+    category: { id: 'c6', name: 'Sunscreen', slug: 'sunscreen', description: '', image_url: '', sort_order: 5, is_active: true },
+  },
+  {
+    id: '7',
+    name: 'Niacinamide Clarity Toner',
+    slug: 'niacinamide-clarity-toner',
+    tagline: '10% Niacinamide for Refined, Clear Skin',
+    base_price: 849,
+    sale_price: null,
+    rating_avg: 4.6,
+    rating_count: 91,
+    is_bestseller: false,
+    skin_types: ['oily', 'combination'],
+    skin_concerns: ['acne', 'pores', 'uneven-tone'],
+    images: [
+      {
+        id: 'img7',
+        url: '/Product in Hand.jpeg',
+        alt_text: 'Toner in minimalist glass bottle',
+        sort_order: 0,
+        is_video: false,
+      },
+    ],
+    variants: [
+      { id: 'v7a', product_id: '7', name: '100ml', sku: 'NCT-100', price: 849, sale_price: null, inventory: 54, is_active: true, sort_order: 0 },
+    ],
+    category: { id: 'c7', name: 'Toners', slug: 'toners', description: '', image_url: '', sort_order: 6, is_active: true },
+  },
+  {
+    id: '8',
+    name: 'Midnight Repair Night Cream',
+    slug: 'midnight-repair-night-cream',
+    tagline: 'Intensive Overnight Skin Renewal Formula',
+    base_price: 1299,
+    sale_price: null,
+    rating_avg: 4.8,
+    rating_count: 73,
+    is_bestseller: false,
+    skin_types: ['dry', 'normal', 'combination'],
+    skin_concerns: ['anti-aging', 'hydration', 'brightening'],
+    images: [
+      {
+        id: 'img8',
+        url: '/Bathroom Shelf Mockup.jpeg',
+        alt_text: 'Night cream in dark glass jar',
+        sort_order: 0,
+        is_video: false,
+      },
+    ],
+    variants: [
+      { id: 'v8a', product_id: '8', name: '50g', sku: 'MRN-50', price: 1299, sale_price: null, inventory: 31, is_active: true, sort_order: 0 },
+    ],
+    category: { id: 'c2', name: 'Moisturisers', slug: 'moisturisers', description: '', image_url: '', sort_order: 1, is_active: true },
+  },
+];
+
+export const DEMO_CATEGORIES = [
+  { id: 'c1', name: 'Serums', slug: 'serums', image_url: '/Serum Bottle.jpeg', sort_order: 0, is_active: true, description: 'Concentrated formulas for targeted skin concerns' },
+  { id: 'c2', name: 'Moisturisers', slug: 'moisturisers', image_url: '/Moisturiser Tube.jpeg', sort_order: 1, is_active: true, description: 'Deep hydration for every skin type' },
+  { id: 'c3', name: 'Cleansers', slug: 'cleansers', image_url: '/website product cards..jpeg', sort_order: 2, is_active: true, description: 'Gentle daily cleansing rituals' },
+  { id: 'c6', name: 'Sunscreen', slug: 'sunscreen', image_url: '/Sunscreen.jpeg', sort_order: 3, is_active: true, description: 'Broad spectrum daily protection' },
+  { id: 'c5', name: 'Masks', slug: 'masks', image_url: '/Saffron Face Mask.jpeg', sort_order: 4, is_active: true, description: 'Weekly ritual treatments' },
+  { id: 'c4', name: 'Eye Care', slug: 'eye-care', image_url: '/Bathroom Shelf Mockup.jpeg', sort_order: 5, is_active: true, description: 'Targeted care for the delicate eye area' },
+];
+
+export const DEMO_REVIEWS = [
+  { id: 'r1', name: 'Priya Sharma', location: 'Mumbai', rating: 5, text: 'The Radiance Serum has completely transformed my skin in just 3 weeks. My dark spots have visibly faded and I get so many compliments now. Absolutely worth every rupee!', product: 'Radiance Revival Serum', verified: true, avatar: 'PS' },
+  { id: 'r2', name: 'Anjali Menon', location: 'Bangalore', rating: 5, text: 'I have sensitive skin and finding the right moisturiser was always a struggle. Velvet Hydra is the first product that doesn\'t break me out. Lightweight, non-greasy, and my skin feels so plump.', product: 'Velvet Hydra Moisturiser', verified: true, avatar: 'AM' },
+  { id: 'r3', name: 'Ritu Gupta', location: 'Delhi', rating: 5, text: 'LANAN feels so premium yet it\'s actually affordable compared to international brands. The Saffron Mask is my Sunday ritual now — skin feels like velvet after.', product: 'Saffron Glow Face Mask', verified: true, avatar: 'RG' },
+  { id: 'r4', name: 'Kavitha Nair', location: 'Hyderabad', rating: 4, text: 'The packaging is beautiful and the products actually deliver. My skin concern was pigmentation and the serum has helped a lot. Will repurchase!', product: 'Radiance Revival Serum', verified: true, avatar: 'KN' },
+  { id: 'r5', name: 'Deepa Joshi', location: 'Pune', rating: 5, text: 'Finally an Indian brand that doesn\'t compromise on quality. The sunscreen is my holy grail — no white cast, no breakouts. Highly recommend!', product: 'Rose Dew SPF 40 Sunscreen', verified: true, avatar: 'DJ' },
+];
