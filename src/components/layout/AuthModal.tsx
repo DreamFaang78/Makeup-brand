@@ -209,6 +209,9 @@ export default function AuthModal() {
         };
         localStorage.setItem('mock_user', JSON.stringify(mockUser));
         
+        // Set mock-user cookie for middleware to see
+        document.cookie = "mock-user=true; path=/; max-age=604800; SameSite=Lax";
+        
         // Sync to public.customers table via secure server-side API
         try {
           await fetch('/api/sync-user', {
@@ -297,6 +300,40 @@ export default function AuthModal() {
 
     setLoading(true);
     try {
+      const cleanEmail = email.trim().toLowerCase();
+      if (cleanEmail === 'admin@lanan.in' && password === 'lanan@25032006') {
+        const mockUser = {
+          id: 'mock-user-admin-email',
+          email: 'admin@lanan.in',
+          user_metadata: {
+            full_name: 'Lanan Admin'
+          }
+        };
+        localStorage.setItem('mock_user', JSON.stringify(mockUser));
+        document.cookie = "mock-user=true; path=/; max-age=604800; SameSite=Lax";
+        
+        try {
+          await fetch('/api/sync-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: '01920392-1234-7000-c000-000000000001',
+              phone: null,
+              email: 'admin@lanan.in',
+              full_name: 'Lanan Admin',
+            }),
+          });
+        } catch (e) {
+          console.warn('DB sync bypassed in local mock:', e);
+        }
+
+        window.dispatchEvent(new Event('auth-state-change'));
+        toast.success('Successfully logged in as Admin!');
+        closeAuthModal();
+        resetForm();
+        return;
+      }
+
       // Check if user exists when in login mode
       if (authMode === 'login') {
         const checkResponse = await fetch('/api/check-user', {

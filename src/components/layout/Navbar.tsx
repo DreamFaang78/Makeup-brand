@@ -56,8 +56,12 @@ export default function Navbar() {
         try {
           const mockUser = JSON.parse(mockUserStr);
           setUser(mockUser);
-          // For mock users, assume they're new/regular customers
-          setUserSegment('new');
+          // If the mock user is the admin, set segment to admin
+          if (mockUser.email === 'admin@lanan.in') {
+            setUserSegment('admin');
+          } else {
+            setUserSegment('new');
+          }
           return;
         } catch (e) {}
       }
@@ -70,11 +74,15 @@ export default function Navbar() {
         try {
           const { data } = await supabase
             .from('customers')
-            .select('segment')
+            .select('segment, email')
             .eq('id', session.user.id)
             .single();
           
-          setUserSegment(data?.segment || null);
+          if (data?.email === 'admin@lanan.in') {
+            setUserSegment('admin');
+          } else {
+            setUserSegment(data?.segment || null);
+          }
         } catch (e) {
           console.error('Failed to fetch user segment:', e);
         }
@@ -294,6 +302,7 @@ export default function Navbar() {
                         onClick={async () => {
                           setUserMenuOpen(false);
                           localStorage.removeItem('mock_user');
+                          document.cookie = "mock-user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                           await supabase.auth.signOut();
                           setUser(null);
                           window.dispatchEvent(new Event('auth-state-change'));
@@ -423,6 +432,7 @@ export default function Navbar() {
                         onClick={async () => {
                           closeMobileMenu();
                           localStorage.removeItem('mock_user');
+                          document.cookie = "mock-user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
                           await supabase.auth.signOut();
                           setUser(null);
                           window.dispatchEvent(new Event('auth-state-change'));

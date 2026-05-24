@@ -45,9 +45,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             // Allow access if we can't verify (might be first-time setup)
             setIsAuthorized(true);
           } else if (customer) {
-            // Only allow 'new' segment users to view orders page
-            // For other operations, check if they're in an admin list
-            if (customer.segment === 'new' || customer.segment === 'repeat') {
+            // Always authorize the primary admin email
+            if (customer.email === 'admin@lanan.in') {
+              setIsAuthorized(true);
+            } else if (customer.segment === 'new' || customer.segment === 'repeat') {
               // Redirect non-admin customers to their orders page
               router.push('/account/orders');
             } else {

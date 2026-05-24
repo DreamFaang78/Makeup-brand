@@ -5,12 +5,12 @@ export async function middleware(request: NextRequest) {
 
   // Protect admin routes
   if (pathname.startsWith('/admin')) {
-    // Get the session from cookies (set by Supabase)
-    const supabaseSession = request.cookies.get('sb-session');
+    // Check for any Supabase cookie starting with 'sb-'
+    const hasSupabaseSession = request.cookies.getAll().some(cookie => cookie.name.startsWith('sb-'));
     const mockUser = request.cookies.get('mock-user');
 
     // Check if user is logged in
-    if (!supabaseSession && !mockUser) {
+    if (!hasSupabaseSession && !mockUser) {
       // Redirect to home page with auth modal
       return NextResponse.redirect(new URL('/?auth=login', request.url));
     }
