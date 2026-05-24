@@ -31,6 +31,8 @@ interface Order {
   tracking_id: string | null;
   shipping_address: any;
   customer_id: string | null;
+  guest_phone: string | null;
+  guest_email: string | null;
   items: OrderItem[];
   customer?: {
     full_name: string;
