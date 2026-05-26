@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Package, ShoppingBag, Users, Tag, Megaphone,
@@ -32,8 +33,14 @@ export default function AdminSidebar() {
       {/* Brand */}
       <div className="p-5 border-b border-white/10">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center">
-            <span className="font-heading font-semibold text-obsidian text-sm">LN</span>
+          <div className="relative w-8 h-8">
+            <Image
+              src="/lanan logo.png"
+              alt="LANAN Logo"
+              fill
+              sizes="32px"
+              className="object-contain"
+            />
           </div>
           <div>
             <p className="font-heading text-lg tracking-widest text-gold">LANAN</p>

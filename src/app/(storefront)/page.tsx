@@ -35,7 +35,7 @@ function FadeUp({ children, delay = 0, className = '' }: { children: React.React
 
 /* ── Trust Ticker ── */
 const TRUST_ITEMS = [
-  '✦ Made in India',
+  '✦ 100% Cruelty-Free',
   '✦ Dermatologist Tested',
   '✦ No Harmful Chemicals',
   '✦ Cruelty Free',
@@ -44,7 +44,7 @@ const TRUST_ITEMS = [
   '✦ Free Shipping Above ₹599',
   '✦ Easy 7-Day Returns',
   '✦ Premium Ingredients',
-  '✦ Crafted for Indian Skin',
+  '✦ Crafted for Sensitive Skin',
 ];
 
 function TrustTicker() {
@@ -64,12 +64,42 @@ function TrustTicker() {
 
 /* ── INGREDIENTS DATA ── */
 const INGREDIENTS = [
-  { icon: <Droplets size={20} />, name: 'Hyaluronic Acid', benefit: 'Deep hydration & plumping' },
-  { icon: <Sparkles size={20} />, name: 'Niacinamide', benefit: 'Brightening & pore refinement' },
-  { icon: <Sun size={20} />, name: 'Saffron Extract', benefit: 'Radiance & even tone' },
-  { icon: <Leaf size={20} />, name: 'Aloe Vera', benefit: 'Soothing & calming' },
-  { icon: <FlaskConical size={20} />, name: 'Vitamin C', benefit: 'Antioxidant & glow boost' },
-  { icon: <Wind size={20} />, name: 'Peptides', benefit: 'Firming & anti-aging' },
+  { 
+    icon: <Droplets size={20} />, 
+    name: 'Hyaluronic Acid', 
+    benefit: 'Deep hydration & plumping',
+    details: 'A powerful humectant that draws moisture from the atmosphere, holding up to 1000x its weight in water to plump fine lines and restore a dewy, supple texture.'
+  },
+  { 
+    icon: <Sparkles size={20} />, 
+    name: 'Niacinamide', 
+    benefit: 'Brightening & pore refinement',
+    details: 'Vitamin B3 regulates sebum production, tightens enlarged pores, strengthens the skin barrier, and dramatically fades post-acne blemishes.'
+  },
+  { 
+    icon: <Sun size={20} />, 
+    name: 'Saffron Extract', 
+    benefit: 'Radiance & even tone',
+    details: 'A legendary antioxidant that fights free radicals, brightens stubborn hyperpigmentation, and imparts a natural, warm golden glow.'
+  },
+  { 
+    icon: <Leaf size={20} />, 
+    name: 'Aloe Vera', 
+    benefit: 'Soothing & calming',
+    details: 'Rich in vitamins and anti-inflammatory compounds, it instantly cools skin, reduces redness, and provides deep, weightless hydration.'
+  },
+  { 
+    icon: <FlaskConical size={20} />, 
+    name: 'Vitamin C', 
+    benefit: 'Antioxidant & glow boost',
+    details: 'Neutralizes environmental stressors, boosts natural collagen synthesis, and brightens dark spots for a visibly firmer, more even complexion.'
+  },
+  { 
+    icon: <Wind size={20} />, 
+    name: 'Peptides', 
+    benefit: 'Firming & anti-aging',
+    details: 'Amino acid chains that signal the skin to rebuild collagen and elastin fibers, increasing firmness and diminishing fine lines.'
+  },
 ];
 
 /* ── HERO STATS ── */
@@ -89,6 +119,39 @@ const SKIN_CONCERNS = [
   { label: 'Brightening', href: '/shop?concern=brightening', icon: '✦' },
   { label: 'Dark Circles', href: '/shop?concern=dark-circles', icon: '✦' },
 ];
+
+function IngredientCard({ ingredient, i }: { ingredient: any; i: number }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="flex flex-col p-5 rounded-card border border-beige hover:border-gold/40 hover:shadow-gold transition-all duration-300 bg-white hover:bg-ivory/50 cursor-pointer overflow-hidden min-h-[104px]"
+    >
+      <div className="flex gap-4 items-start">
+        <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold flex-shrink-0">
+          {ingredient.icon}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-body font-semibold text-sm text-obsidian mb-1">{ingredient.name}</h3>
+          <p className="text-xs font-body text-taupe leading-relaxed">{ingredient.benefit}</p>
+        </div>
+      </div>
+      
+      <motion.div
+        initial={false}
+        animate={{ height: hovered ? 'auto' : 0, opacity: hovered ? 1 : 0, marginTop: hovered ? 12 : 0 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="overflow-hidden"
+      >
+        <div className="pt-2.5 border-t border-beige/60 text-[11px] font-body text-taupe leading-relaxed">
+          {ingredient.details}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Homepage Component
@@ -546,15 +609,7 @@ export default function HomePage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {INGREDIENTS.map((ingredient, i) => (
                   <FadeUp key={ingredient.name} delay={i * 0.07}>
-                    <div className="group flex gap-4 items-start p-5 rounded-card border border-beige hover:border-gold/40 hover:shadow-gold transition-all duration-300 bg-white hover:bg-ivory/50">
-                      <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold flex-shrink-0 group-hover:bg-gold/20 transition-colors">
-                        {ingredient.icon}
-                      </div>
-                      <div>
-                        <h3 className="font-body font-semibold text-sm text-obsidian mb-1">{ingredient.name}</h3>
-                        <p className="text-xs font-body text-taupe leading-relaxed">{ingredient.benefit}</p>
-                      </div>
-                    </div>
+                    <IngredientCard ingredient={ingredient} i={i} />
                   </FadeUp>
                 ))}
               </div>

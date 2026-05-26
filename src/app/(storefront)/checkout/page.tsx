@@ -115,7 +115,7 @@ function OrderSummary() {
 ───────────────────────────────────────────────────────────────────────────── */
 export default function CheckoutPage() {
   const { step, setStep, contact, setContact, address, setAddress, deliveryMethod, setDeliveryMethod } = useCheckoutStore();
-  const { items, total, clearCart } = useCartStore();
+  const { items, total, subtotal, shippingCharge, gstAmount, couponDiscount, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<{ id: string; number: string } | null>(null);
 
@@ -166,15 +166,146 @@ export default function CheckoutPage() {
   };
 
   const handlePayment = async () => {
+    if (loading) return;
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
 
-    // Demo: simulate successful payment
-    const demoOrderId = `LAN${Date.now().toString().slice(-6)}`;
-    setConfirmedOrder({ id: demoOrderId, number: `LAN26${demoOrderId}` });
-    clearCart();
-    setStep('success');
-    setLoading(false);
+    try {
+      // ── Step 1: Create Razorpay order on the server ──
+      const orderRes = await fetch('/api/razorpay/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: Math.round(total * 100) }), // paise
+      });
+
+      if (!orderRes.ok) {
+        const err = await orderRes.json();
+        toast.error(err.error || 'Could not initiate payment. Please try again.');
+        setLoading(false);
+        return;
+      }
+
+      const { orderId, amount, currency } = await orderRes.json();
+
+      // ── Step 2: Load Razorpay checkout.js if not already present ──
+      if (!window.Razorpay) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error('Failed to load Razorpay SDK'));
+          document.head.appendChild(script);
+        });
+      }
+
+      // ── Step 3: Open Razorpay modal ──
+      const rzp = new window.Razorpay({
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
+        amount,
+        currency,
+        order_id: orderId,
+        name: 'LANAN Skincare',
+        description: `Order for ${contact.name || contact.phone}`,
+        image: '/lanan logo.png',
+        prefill: {
+          name: contact.name || '',
+          email: contact.email || '',
+          contact: contact.phone ? `+91${contact.phone}` : '',
+        },
+        notes: {
+          shipping_address: address ? `${address.line1}, ${address.city}, ${address.state} - ${address.pincode}` : '',
+        },
+        theme: { color: '#C9A96E' },
+
+        // ── Payment success handler ──
+        handler: async (response: {
+          razorpay_payment_id: string;
+          razorpay_order_id: string;
+          razorpay_signature: string;
+        }) => {
+          try {
+            // ── Step 4: Verify signature on server & create DB order ──
+            const verifyRes = await fetch('/api/razorpay/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                orderData: {
+                  phone: contact.phone,
+                  email: contact.email || null,
+                  full_name: contact.name || 'Lanan Customer',
+                  guest_phone: contact.phone,
+                  guest_email: contact.email || null,
+                  shipping_address: address,
+                  billing_address: address,
+                  subtotal,
+                  discount_amt: couponDiscount,
+                  shipping_charge: shippingCharge,
+                  gst_amount: gstAmount,
+                  total_amount: total,
+                  delivery_method: deliveryMethod,
+                  items: items.map((item) => ({
+                    product_id: item.product_id,
+                    variant_id: item.variant_id || null,
+                    product_name: item.product_name,
+                    variant_name: item.variant_name || null,
+                    quantity: item.quantity,
+                    unit_price: item.unit_price,
+                    total_price: item.unit_price * item.quantity,
+                    gst_rate: 18,
+                    image_url: item.image_url || null,
+                  })),
+                },
+              }),
+            });
+
+            const verifyData = await verifyRes.json();
+
+            if (!verifyRes.ok || !verifyData.verified) {
+              toast.error('Payment verification failed. Contact support with your payment ID: ' + response.razorpay_payment_id);
+              setLoading(false);
+              return;
+            }
+
+            // ── Step 5: Success ──
+            clearCart();
+            setConfirmedOrder({
+              id: verifyData.db_order_id || response.razorpay_order_id,
+              number: verifyData.order_number || `LAN${Date.now().toString().slice(-6)}`,
+            });
+            setStep('success');
+          } catch (err) {
+            console.error('Verify payment error:', err);
+            toast.error('Payment received but order confirmation failed. Please contact support.');
+          } finally {
+            setLoading(false);
+          }
+        },
+
+        // ── Modal dismissed ──
+        modal: {
+          ondismiss: () => {
+            toast('Payment cancelled. Your cart is saved.');
+            setLoading(false);
+          },
+        },
+      });
+
+      // Listen for payment failure inside the modal
+      rzp.on('payment.failed', (failResponse: any) => {
+        console.error('Razorpay payment failed:', failResponse.error);
+        toast.error(`Payment failed: ${failResponse.error?.description || 'Please try again.'}`);
+        setLoading(false);
+      });
+
+      rzp.open();
+
+    } catch (err: any) {
+      console.error('handlePayment error:', err);
+      toast.error(err.message || 'Something went wrong. Please try again.');
+      setLoading(false);
+    }
   };
 
   // ── Redirect if cart empty ──
@@ -250,9 +381,15 @@ export default function CheckoutPage() {
             <ArrowLeft size={15} />
             Back to Shop
           </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center">
-              <span className="font-heading font-semibold text-obsidian text-sm">LN</span>
+          <div className="flex items-center gap-2.5">
+            <div className="relative w-7 h-7">
+              <Image
+                src="/lanan logo.png"
+                alt="LANAN Logo"
+                fill
+                sizes="28px"
+                className="object-contain"
+              />
             </div>
             <span className="font-heading text-lg tracking-widest text-obsidian">LANAN</span>
           </div>

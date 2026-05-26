@@ -6,6 +6,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShoppingBag, Search, Heart, User, Menu, X, ChevronDown,
@@ -31,6 +32,7 @@ const NAV_LINKS = [
     ],
   },
   { label: 'Rituals', href: '/rituals' },
+  { label: 'Trends', href: '/trends' },
   { label: 'Ingredients', href: '/ingredients' },
   { label: 'About', href: '/about' },
 ];
@@ -38,6 +40,7 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [mobileShopOpen, setMobileShopOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   const supabase = createClient();
@@ -166,9 +169,16 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16 lg:h-20">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 flex-shrink-0" onClick={closeMobileMenu}>
-              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-gold flex items-center justify-center shadow-gold">
-                <span className="font-heading font-semibold text-obsidian text-lg lg:text-xl tracking-tight">LN</span>
+            <Link href="/" className="flex items-center gap-2.5 flex-shrink-0" onClick={closeMobileMenu}>
+              <div className="relative w-9 h-9 lg:w-11 lg:h-11">
+                <Image
+                  src="/lanan logo.png"
+                  alt="LANAN Logo"
+                  fill
+                  sizes="44px"
+                  className="object-contain"
+                  priority
+                />
               </div>
               <span
                 className={cn(
@@ -375,12 +385,84 @@ export default function Navbar() {
 
                 {/* Nav Items */}
                 <nav className="space-y-1">
-                  {NAV_LINKS.map((link, i) => (
+
+                  {/* ── Shop accordion ── */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0 }}
+                  >
+                    <button
+                      onClick={() => setMobileShopOpen((o) => !o)}
+                      className="w-full flex items-center justify-between py-3.5 px-4 rounded-xl font-body text-sm font-medium text-charcoal hover:text-gold hover:bg-ivory transition-all duration-200"
+                    >
+                      <span>Shop</span>
+                      <motion.span
+                        animate={{ rotate: mobileShopOpen ? 180 : 0 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        <ChevronDown size={15} className="text-taupe" />
+                      </motion.span>
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {mobileShopOpen && (
+                        <motion.div
+                          key="shop-panel"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                          className="overflow-hidden"
+                        >
+                          <div className="mx-1 mb-3 rounded-2xl border border-gold/20 bg-ivory overflow-hidden">
+                            {/* Panel header */}
+                            <div className="px-4 pt-3 pb-2 border-b border-beige/70 flex items-center justify-between">
+                              <span className="text-[10px] font-body font-semibold tracking-widest uppercase text-gold">All Categories</span>
+                              <Link
+                                href="/shop"
+                                onClick={closeMobileMenu}
+                                className="text-[10px] font-body text-taupe hover:text-gold underline underline-offset-2 transition-colors"
+                              >
+                                View all
+                              </Link>
+                            </div>
+
+                            {/* Category grid */}
+                            <div className="grid grid-cols-2 gap-px bg-beige/40">
+                              {[
+                                { label: 'All Products', href: '/shop', emoji: '✦' },
+                                { label: 'Serums', href: '/shop?category=serums', emoji: '💧' },
+                                { label: 'Moisturisers', href: '/shop?category=moisturisers', emoji: '🫧' },
+                                { label: 'Cleansers', href: '/shop?category=cleansers', emoji: '🌿' },
+                                { label: 'Sunscreen', href: '/shop?category=sunscreen', emoji: '☀️' },
+                                { label: 'Eye Care', href: '/shop?category=eye-care', emoji: '👁️' },
+                                { label: 'Masks', href: '/shop?category=masks', emoji: '✨' },
+                              ].map((cat) => (
+                                <Link
+                                  key={cat.href}
+                                  href={cat.href}
+                                  onClick={closeMobileMenu}
+                                  className="flex items-center gap-2.5 px-4 py-3 bg-white hover:bg-gold/5 hover:text-gold transition-all duration-150 group"
+                                >
+                                  <span className="text-base leading-none">{cat.emoji}</span>
+                                  <span className="text-xs font-body font-medium text-charcoal group-hover:text-gold transition-colors">{cat.label}</span>
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+
+                  {/* ── Other nav links ── */}
+                  {NAV_LINKS.filter((l) => !l.children).map((link, i) => (
                     <motion.div
                       key={link.label}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 }}
+                      transition={{ delay: (i + 1) * 0.05 }}
                     >
                       <Link
                         href={link.href}
@@ -389,20 +471,6 @@ export default function Navbar() {
                       >
                         {link.label}
                       </Link>
-                      {link.children && (
-                        <div className="ml-4 mt-1 mb-2 space-y-0.5">
-                          {link.children.slice(1).map((child) => (
-                            <Link
-                              key={child.href}
-                              href={child.href}
-                              onClick={closeMobileMenu}
-                              className="block py-2 px-4 text-xs font-body text-taupe hover:text-gold transition-colors"
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
                     </motion.div>
                   ))}
                 </nav>

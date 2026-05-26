@@ -42,17 +42,31 @@ export default function MyOrdersPage() {
         }
       }
 
-      setUser(session?.user || JSON.parse(localStorage.getItem('mock_user') || '{}'));
-      
+      const currentUser = session?.user || null;
+      setUser(currentUser || JSON.parse(localStorage.getItem('mock_user') || '{}'));
+
+      // Resolve a valid UUID for the customer_id filter
+      const mockUserId = localStorage.getItem('mock_user_id');
+      const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const customerId =
+        currentUser?.id ??
+        (mockUserId && UUID_REGEX.test(mockUserId) ? mockUserId : null);
+
       // Fetch user's orders
       try {
         setLoading(true);
         setError(null);
 
+        // If we don't have a valid UUID, skip the DB query and show empty list
+        if (!customerId) {
+          setOrders([]);
+          return;
+        }
+
         const { data, error: fetchError } = await supabase
           .from('orders')
           .select('id, order_number, created_at, total_amount, payment_status, fulfillment_status')
-          .eq('customer_id', session?.user?.id || localStorage.getItem('mock_user_id'))
+          .eq('customer_id', customerId)
           .order('created_at', { ascending: false });
 
         if (fetchError) {

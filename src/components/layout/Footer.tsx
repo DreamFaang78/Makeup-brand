@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { MapPin, Phone, Mail, Heart } from 'lucide-react';
 import { BRAND } from '@/lib/utils';
 
@@ -79,9 +80,15 @@ export default function Footer() {
           {/* Brand column */}
           <div className="lg:col-span-2">
             {/* Logo */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center">
-                <span className="font-heading font-semibold text-obsidian text-lg">LN</span>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="relative w-8 h-8">
+                <Image
+                  src="/lanan logo.png"
+                  alt="LANAN Logo"
+                  fill
+                  sizes="32px"
+                  className="object-contain"
+                />
               </div>
               <span className="font-heading text-2xl tracking-[0.15em] text-gold">LANAN</span>
             </div>
@@ -177,7 +184,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs font-body text-ivory/30 text-center sm:text-left">
-            © {new Date().getFullYear()} LANAN by {BRAND.fullName}. All rights reserved. Made in India 🇮🇳
+            © {new Date().getFullYear()} LANAN by {BRAND.fullName}. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             <span className="text-xs font-body text-ivory/30 mr-1">Accepted Payments:</span>

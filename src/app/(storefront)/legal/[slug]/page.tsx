@@ -1,10 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// LANAN — Legal Pages (Dynamic)
+// LANAN — Legal Pages (Dynamic Two-Column Layout)
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, BookOpen, Shield, HelpCircle, RefreshCw, FileText, CheckCircle } from 'lucide-react';
 import { ReactNode } from 'react';
 
 const LEGAL_CONTENT: Record<string, { title: string; lastUpdated: string; content: string }> = {
@@ -249,7 +249,7 @@ In such cases, you will be notified and a full refund will be issued.
 
 ## Contact
 
-**Email**: support@lanan.in  
+**Email**: support@support@lanan.in  
 **Phone**: +91 7630888521 (Mon–Sat, 10 AM – 6 PM IST)
     `,
   },
@@ -281,28 +281,39 @@ function renderMarkdown(content: string) {
     const line = lines[i];
 
     if (line.startsWith('## ')) {
-      elements.push(<h2 key={i} className="font-heading text-xl text-obsidian mt-8 mb-3">{line.slice(3)}</h2>);
+      elements.push(
+        <h2 key={i} className="font-heading text-2xl text-obsidian mt-10 mb-4 pb-2 border-b border-beige/40">
+          {line.slice(3)}
+        </h2>
+      );
     } else if (line.startsWith('**') && line.endsWith('**')) {
-      elements.push(<p key={i} className="font-body font-semibold text-obsidian text-sm mt-3">{line.slice(2, -2)}</p>);
+      elements.push(
+        <p key={i} className="font-body font-semibold text-obsidian text-sm mt-4">
+          {line.slice(2, -2)}
+        </p>
+      );
     } else if (line.startsWith('- ')) {
-      elements.push(<li key={i} className="font-body text-sm text-charcoal ml-4 list-disc">{line.slice(2)}</li>);
+      elements.push(
+        <li key={i} className="font-body text-sm text-charcoal ml-5 list-disc mb-1.5 leading-relaxed">
+          {line.slice(2)}
+        </li>
+      );
     } else if (line.startsWith('| ') && line.includes('|')) {
-      // Simple table row
       const cells = line.split('|').filter(Boolean).map((c) => c.trim());
       if (cells[0] !== '---' && !cells[0].startsWith('-')) {
         elements.push(
-          <div key={i} className="flex border-b border-beige">
+          <div key={i} className="flex border-b border-beige/40 py-2.5 px-2 hover:bg-ivory/30 transition-colors">
             {cells.map((cell, j) => (
-              <div key={j} className="flex-1 px-3 py-2 text-xs font-body text-charcoal">{cell}</div>
+              <div key={j} className="flex-1 px-3 text-xs font-body font-medium text-charcoal">{cell}</div>
             ))}
           </div>
         );
       }
     } else if (line.trim() === '') {
-      elements.push(<div key={i} className="h-2" />);
+      elements.push(<div key={i} className="h-4" />);
     } else if (line.trim()) {
       elements.push(
-        <p key={i} className="font-body text-sm text-charcoal leading-relaxed">
+        <p key={i} className="font-body text-sm text-charcoal leading-relaxed mb-4">
           {line.split(/(\*\*.*?\*\*)/).map((part, j) => {
             if (part.startsWith('**') && part.endsWith('**')) {
               return <strong key={j} className="font-semibold text-obsidian">{part.slice(2, -2)}</strong>;
@@ -317,12 +328,21 @@ function renderMarkdown(content: string) {
   return elements;
 }
 
+const SIDEBAR_ITEMS = [
+  { label: 'Terms & Conditions', slug: 'terms-and-conditions', icon: <FileText size={14} /> },
+  { label: 'Privacy Policy', slug: 'privacy-policy', icon: <Shield size={14} /> },
+  { label: 'Shipping Policy', slug: 'shipping-policy', icon: <BookOpen size={14} /> },
+  { label: 'Return & Refund Policy', slug: 'return-refund-policy', icon: <RefreshCw size={14} /> },
+  { label: 'Cancellation Policy', slug: 'cancellation-policy', icon: <HelpCircle size={14} /> },
+];
+
 export default function LegalPage({ params }: Props) {
-  const page = LEGAL_CONTENT[params.slug];
+  const activeSlug = params.slug;
+  const page = LEGAL_CONTENT[activeSlug];
 
   if (!page) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-ivory">
         <div className="text-center">
           <p className="font-heading text-2xl text-obsidian mb-2">Page not found</p>
           <Link href="/" className="btn-gold mt-4">Go Home</Link>
@@ -333,34 +353,79 @@ export default function LegalPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="bg-gradient-hero border-b border-beige py-12">
-        <div className="container-lanan">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-body text-taupe hover:text-gold transition-colors mb-5">
+      {/* Dynamic Header */}
+      <div className="bg-gradient-hero border-b border-beige/60 py-16 lg:py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-pattern-luxury opacity-20" />
+        <div className="container-lanan relative z-10">
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-body text-taupe hover:text-gold transition-colors mb-4">
             <ArrowLeft size={13} /> Back to LANAN
           </Link>
-          <h1 className="font-heading text-3xl lg:text-4xl text-obsidian font-light">{page.title}</h1>
+          <h1 className="font-heading text-4xl lg:text-5xl text-obsidian font-light leading-tight">{page.title}</h1>
           <p className="font-body text-xs text-taupe mt-2">Last updated: {page.lastUpdated}</p>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="container-lanan py-12">
-        <div className="max-w-3xl mx-auto">
-          <div className="prose-lanan space-y-2">
-            {renderMarkdown(page.content)}
-          </div>
+      {/* Main Two-Column Layout */}
+      <div className="container-lanan py-16 lg:py-20">
+        <div className="grid lg:grid-cols-[260px_1fr] gap-12 items-start max-w-6xl mx-auto">
+          
+          {/* Left Column: Navigation Sidebar */}
+          <aside className="lg:sticky lg:top-28 space-y-4">
+            <h3 className="font-body font-semibold text-xs text-taupe uppercase tracking-widest px-3">
+              Legal Documents
+            </h3>
+            <div className="flex flex-col gap-1 bg-ivory/40 p-2.5 rounded-card border border-beige/60">
+              {SIDEBAR_ITEMS.map((item) => {
+                const active = item.slug === activeSlug;
+                return (
+                  <Link
+                    key={item.slug}
+                    href={`/legal/${item.slug}`}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-body transition-all duration-200 ${
+                      active
+                        ? 'bg-gold/20 text-gold font-semibold border-l-2 border-gold pl-2.5'
+                        : 'text-taupe hover:text-obsidian hover:bg-ivory'
+                    }`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </aside>
 
-          {/* Footer info */}
-          <div className="mt-12 p-6 bg-ivory rounded-card border border-beige">
-            <h3 className="font-body font-semibold text-sm text-obsidian mb-2">Legal Entity</h3>
-            <p className="font-body text-xs text-taupe leading-relaxed">
-              Ma Tara Neelsarashwati (Brand: LANAN)<br />
-              Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki<br />
-              Kanpur, Uttar Pradesh - 208020, India<br />
-              Phone: +91 7630888521 | Email: hello@lanan.in
-            </p>
-          </div>
+          {/* Right Column: Content Body */}
+          <main className="bg-white rounded-card border border-beige/40 p-6 md:p-10 shadow-sm">
+            {/* Quick Summary Callout box for Terms Page */}
+            {activeSlug === 'terms-and-conditions' && (
+              <div className="mb-8 p-4 rounded-xl border border-gold/20 bg-gold/5 flex gap-3.5 items-start">
+                <CheckCircle size={18} className="text-gold mt-0.5 flex-shrink-0" />
+                <div className="text-xs font-body text-taupe leading-relaxed">
+                  <strong className="text-obsidian block mb-1">Quick Terms Overview</strong>
+                  By browsing lanan.in, you agree to follow our policies. All products are for personal, skincare use. Payments are securely processed via Razorpay. Results may vary by skin type.
+                </div>
+              </div>
+            )}
+
+            <div className="prose-lanan max-w-none">
+              {renderMarkdown(page.content)}
+            </div>
+
+            {/* Entity Footer Block */}
+            <div className="mt-14 p-6 bg-ivory rounded-card border border-beige/50">
+              <h4 className="font-body font-semibold text-xs text-obsidian uppercase tracking-wider mb-3">
+                Legal Registered Entity
+              </h4>
+              <p className="font-body text-xs text-taupe leading-relaxed">
+                Ma Tara Neelsarashwati (Brand: LANAN)<br />
+                Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki<br />
+                Kanpur, Uttar Pradesh - 208020, India<br />
+                Phone: +91 7630888521 | Email: hello@lanan.in
+              </p>
+            </div>
+          </main>
+
         </div>
       </div>
     </div>
