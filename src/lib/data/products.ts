@@ -214,6 +214,32 @@ export const DEMO_PRODUCTS: ProductCardData[] = [
     ],
     category: { id: 'c2', name: 'Moisturisers', slug: 'moisturisers', description: '', image_url: '', sort_order: 1, is_active: true },
   },
+  {
+    id: '9',
+    name: 'Mini Glow Lip Balm',
+    slug: 'mini-glow-lip-balm',
+    tagline: 'Pocket-Sized Nourishing Lip Care — Try Me!',
+    base_price: 49,
+    sale_price: 11,
+    rating_avg: 4.9,
+    rating_count: 312,
+    is_bestseller: true,
+    skin_types: ['all', 'sensitive', 'dry'],
+    skin_concerns: ['hydration', 'brightening'],
+    images: [
+      {
+        id: 'img9',
+        url: '/Serum Bottle.jpeg',
+        alt_text: 'Mini Glow Lip Balm in pink tin',
+        sort_order: 0,
+        is_video: false,
+      },
+    ],
+    variants: [
+      { id: 'v9a', product_id: '9', name: '3g (Trial)', sku: 'MGL-3', price: 11, sale_price: null, inventory: 500, is_active: true, sort_order: 0 },
+    ],
+    category: { id: 'c8', name: 'Lip Care', slug: 'lip-care', description: 'Nourishing lip treatments', image_url: '', sort_order: 7, is_active: true },
+  },
 ];
 
 export const DEMO_CATEGORIES = [
