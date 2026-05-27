@@ -136,13 +136,17 @@ export async function POST(request: NextRequest) {
     });
 
     const promptText = `
-You are a professional dermatologist AI specialized in Indian skin analysis. 
-Analyze these ${images.length} face photos showing different angles (Front, Forehead, Left Cheek, Right Cheek).
+You are an expert dermatologist AI specializing in custom Indian skin analysis.
+You are given ${images.length} close-up photos of a user's face (Front, Forehead, Left Cheek, Right Cheek).
+
+Analyze the photos with high precision. Avoid generic statements. Focus on:
+- Specific visual cues: look for shine, localized oiliness, dry flakes, redness, blemishes, acne spots, pigmentation spots, uneven skin tone, or dark circles under the eyes.
+- The user's specific skin shade, tone variations, and visible details in the forehead, cheeks, and nose zones.
 
 Determine:
 1. Overall skin type (exactly one of: Dry, Oily, Combination, Normal, Sensitive, Dry & Sensitive, Oily & Acne-Prone)
-2. Top 3 skin concerns with 0-100% severity scores
-3. A personalized skincare routine explanation
+2. Top 3 skin concerns with 0-100% severity scores based directly on visible indicators.
+3. A personalized skincare routine explanation tailored to these findings.
 4. 3-4 recommended product slugs from this catalog ONLY:
    - 'radiance-revival-serum' → targets: pigmentation, brightening, uneven tone, dullness
    - 'velvet-hydra-moisturiser' → targets: dry skin, hydration, sensitivity, barrier repair
@@ -152,6 +156,11 @@ Determine:
    - 'rose-dew-spf40-sunscreen' → targets: daily UV protection, all skin types
    - 'niacinamide-clarity-toner' → targets: oily skin, enlarged pores, acne, sebum control
    - 'midnight-repair-night-cream' → targets: anti-aging, intensive dry skin, overnight repair
+
+Instructions for descriptions:
+- 'skinTypeDescription': Write 3 detailed sentences explaining the specific visual indicators observed in the photos that led to this skin type classification (e.g. "I notice mild shine and active pores around the nose and T-zone in the forehead photo, while the cheek photos show balanced skin...").
+- 'details' for concerns: Write 2 sentences detailing the exact locations and appearance of the concern in the uploaded photos (e.g. "Mild hyperpigmentation is visible as darker patches on the upper cheekbones and forehead", or "A few active inflammatory red spots are present on the left jawline area").
+- 'routineExplanation': Explain in 3 detailed sentences exactly how the recommended products will treat these observed skin features.
 
 Respond with ONLY valid JSON matching the specified schema. Do not use unescaped double quotes inside description string values.
 `;
