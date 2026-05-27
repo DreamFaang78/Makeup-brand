@@ -9,7 +9,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ShoppingBag, Search, Heart, User, Menu, X, ChevronDown,
+  ShoppingBag, Search, Heart, User, Menu, X, ChevronDown, Sparkles,
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useUIStore } from '@/store/uiStore';
@@ -245,6 +245,17 @@ export default function Navbar() {
 
             {/* Right Actions */}
             <div className="flex items-center gap-2 lg:gap-3">
+
+              {/* AI Skin Scan CTA — desktop only */}
+              <Link
+                href="/skin-analysis"
+                className="hidden lg:inline-flex items-center gap-1.5 bg-gold/10 hover:bg-gold text-gold hover:text-obsidian border border-gold/30 hover:border-gold rounded-pill px-3.5 py-1.5 text-xs font-body font-semibold transition-all duration-200 group"
+                id="navbar-ai-scan-btn"
+              >
+                <Sparkles size={12} className="animate-pulse" />
+                AI Skin Scan
+              </Link>
+
               {/* Search */}
               <button
                 className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-beige/60 transition-colors text-charcoal hover:text-gold"
@@ -530,8 +541,17 @@ export default function Navbar() {
                 </div>
 
                 {/* CTA */}
-                <div className="mt-8">
-                  <Link href="/shop" onClick={closeMobileMenu} className="btn-gold w-full justify-center">
+                <div className="mt-8 space-y-3">
+                  <Link
+                    href="/skin-analysis"
+                    onClick={closeMobileMenu}
+                    className="btn-gold w-full justify-center"
+                    id="mobile-ai-scan-btn"
+                  >
+                    <Sparkles size={15} className="animate-pulse" />
+                    Free AI Skin Analysis
+                  </Link>
+                  <Link href="/shop" onClick={closeMobileMenu} className="btn-outline-gold w-full justify-center">
                     Shop Now
                   </Link>
                 </div>

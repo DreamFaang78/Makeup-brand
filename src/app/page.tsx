@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
 import {
   ArrowRight, Star, ShieldCheck, Leaf, Truck, Sparkles,
-  Droplets, FlaskConical, Sun, Wind, Heart, ChevronLeft, ChevronRight,
+  Droplets, FlaskConical, Sun, Wind, Heart, ChevronLeft, ChevronRight, Camera,
 } from 'lucide-react';
 import ProductCard from '@/components/products/ProductCard';
 import { DEMO_PRODUCTS, DEMO_REVIEWS } from '@/lib/data/products';
@@ -425,6 +425,187 @@ export default function HomePage() {
               <ArrowRight size={15} />
             </Link>
           </FadeUp>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          AI SKIN ANALYSIS FEATURE SECTION
+      ════════════════════════════════════════════════════════════ */}
+      <section className="py-section bg-obsidian relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-5"
+            style={{ background: 'radial-gradient(circle, #C9A96E 0%, transparent 65%)' }} />
+        </div>
+
+        <div className="container-lanan relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+            {/* Left — copy */}
+            <FadeUp>
+              <div className="inline-flex items-center gap-2 bg-gold/10 border border-gold/25 rounded-pill px-4 py-1.5 mb-6">
+                <Sparkles size={12} className="text-gold animate-pulse" />
+                <span className="text-gold text-xs font-body font-medium tracking-widest uppercase">
+                  Powered by Google Gemini AI
+                </span>
+              </div>
+
+              <h2 className="font-heading font-light text-ivory leading-tight mb-5">
+                Discover Your{' '}
+                <em className="italic text-gold">True Skin</em>{' '}
+                Profile — Free
+              </h2>
+
+              <p className="font-body text-ivory/65 text-sm leading-relaxed mb-8 max-w-md">
+                Not sure what your skin type is? Upload 4 close-up selfies and our AI — powered by 
+                Google Gemini Vision — analyzes your skin in under 30 seconds. Get a full report 
+                on your skin type, concerns, and a personalized product routine.
+              </p>
+
+              {/* Feature checklist */}
+              <div className="space-y-3 mb-8">
+                {[
+                  { icon: '🔬', text: 'Detects skin type — Dry, Oily, Combination, Sensitive' },
+                  { icon: '📊', text: 'Scores pigmentation, pores, hydration & acne severity' },
+                  { icon: '💊', text: 'Recommends your perfect LANAN routine' },
+                  { icon: '🔒', text: 'Photos processed in real-time — never stored' },
+                ].map(f => (
+                  <div key={f.text} className="flex items-center gap-3">
+                    <span className="text-lg leading-none">{f.icon}</span>
+                    <span className="text-sm font-body text-ivory/70">{f.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  href="/skin-analysis"
+                  className="btn-gold text-sm px-8 py-4"
+                  id="homepage-ai-scan-btn"
+                >
+                  <Sparkles size={15} />
+                  Start Free Skin Analysis
+                  <ArrowRight size={15} />
+                </Link>
+                <Link href="/shop" className="btn-outline-gold border-ivory/25 text-ivory hover:bg-ivory/10 text-sm px-8 py-4">
+                  Browse All Products
+                </Link>
+              </div>
+            </FadeUp>
+
+            {/* Right — animated scan UI mockup */}
+            <FadeUp delay={0.2}>
+              <div className="relative">
+                {/* Phone frame mockup */}
+                <div className="relative bg-white/5 border border-white/10 rounded-[2.5rem] p-3 max-w-xs mx-auto">
+                  <div className="bg-gradient-to-br from-obsidian to-charcoal rounded-[2rem] overflow-hidden">
+
+                    {/* Top bar */}
+                    <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+                      <div className="flex items-center gap-2">
+                        <Sparkles size={14} className="text-gold animate-pulse" />
+                        <span className="text-xs font-body font-semibold text-ivory">LANAN AI Scan</span>
+                      </div>
+                      <span className="text-[9px] font-mono text-gold bg-gold/10 px-2 py-0.5 rounded-full">LIVE</span>
+                    </div>
+
+                    {/* 2x2 photo grid */}
+                    <div className="grid grid-cols-2 gap-2 p-4">
+                      {[
+                        { label: 'Front Profile', img: '/Hero Banner Model.jpeg', done: true },
+                        { label: 'Forehead Zone', img: '/Product in Hand.jpeg', done: true },
+                        { label: 'Left Cheek', img: null, done: false },
+                        { label: 'Right Cheek', img: null, done: false },
+                      ].map((slot, i) => (
+                        <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-white/5 border border-white/10 flex flex-col items-center justify-center">
+                          {slot.img ? (
+                            <>
+                              <Image src={slot.img} alt={slot.label} fill className="object-cover opacity-70" />
+                              <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-[8px]">✓</span>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center mb-1">
+                                <Camera size={14} className="text-white/40" />
+                              </div>
+                              <span className="text-[8px] font-body text-white/30">{slot.label}</span>
+                            </>
+                          )}
+                          <div className="absolute bottom-1.5 left-0 right-0 flex justify-center">
+                            <span className="bg-obsidian/80 text-ivory/70 text-[7px] font-body px-2 py-0.5 rounded-full">{slot.label}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="px-4 pb-3">
+                      <div className="flex justify-between text-[8px] font-body text-white/40 mb-1.5">
+                        <span>Upload Progress</span>
+                        <span className="text-gold">2 of 4</span>
+                      </div>
+                      <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-gold to-amber-300 rounded-full"
+                          initial={{ width: '0%' }}
+                          animate={{ width: '50%' }}
+                          transition={{ duration: 1.5, delay: 0.8, ease: 'easeOut' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Result preview */}
+                    <div className="mx-4 mb-4 bg-gold/10 border border-gold/20 rounded-xl p-3">
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <ShieldCheck size={10} className="text-gold" />
+                        <span className="text-[8px] font-body font-semibold text-gold uppercase tracking-wider">Sample Result</span>
+                      </div>
+                      <p className="text-[9px] font-body text-ivory/70 mb-2">Skin Type: <span className="text-gold font-semibold">Combination</span></p>
+                      {[
+                        { name: 'Pigmentation', pct: 65 },
+                        { name: 'Hydration', pct: 38 },
+                      ].map(c => (
+                        <div key={c.name} className="mb-1.5">
+                          <div className="flex justify-between text-[7px] font-body text-white/50 mb-0.5">
+                            <span>{c.name}</span><span className="text-gold">{c.pct}%</span>
+                          </div>
+                          <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                            <motion.div
+                              className="h-full bg-gradient-to-r from-gold to-amber-300 rounded-full"
+                              initial={{ width: 0 }}
+                              animate={{ width: `${c.pct}%` }}
+                              transition={{ duration: 1.2, delay: 1.2 + c.pct * 0.005 }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating badge */}
+                <motion.div
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute -top-4 -right-4 bg-white rounded-card p-3 shadow-luxury"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-gold/15 flex items-center justify-center text-gold">
+                      <Sparkles size={13} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-body font-semibold text-obsidian">100% Free</p>
+                      <p className="text-[9px] font-body text-taupe">No signup needed</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </FadeUp>
+          </div>
         </div>
       </section>
 

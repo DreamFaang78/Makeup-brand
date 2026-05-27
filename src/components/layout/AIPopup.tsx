@@ -1,16 +1,17 @@
 'use client';
 // ─────────────────────────────────────────────────────────────────────────────
-// LANAN — Interactive AI Skin Scanner Modal & Popup
-// Supports uploading 4 profile angles, real-time API call & product matching
+// LANAN — AI Skin Scanner Floating Popup
+// Teaser banner → redirects to /skin-analysis for the full experience
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  X, Sparkles, AlertCircle, Check, Camera, Plus, Trash2, 
-  Loader2, ArrowRight, ShieldCheck, Heart, Award
+  X, Sparkles, AlertCircle, Camera, Trash2, 
+  Loader2, ArrowRight, ShieldCheck, Award
 } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
 import { useCartStore } from '@/store/cartStore';
@@ -38,21 +39,22 @@ export default function AIPopup() {
   const { popupVisible, showPopup, hidePopup } = useUIStore();
   const { addItem } = useCartStore();
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const router = useRouter();
 
   useEffect(() => {
-    // Show popup after 4 seconds delay
+    // Show popup after 5 seconds delay
     const showTimer = setTimeout(() => {
       setVisible(true);
       showPopup('ai-skin-scanner');
       
-      // Auto-hide popup after another 10 seconds to keep clean UI
+      // Auto-hide popup after 12 seconds
       const hideTimer = setTimeout(() => {
         setVisible(false);
         hidePopup();
-      }, 10000);
+      }, 12000);
       
       return () => clearTimeout(hideTimer);
-    }, 4000);
+    }, 5000);
 
     return () => clearTimeout(showTimer);
   }, [showPopup, hidePopup]);
@@ -61,6 +63,13 @@ export default function AIPopup() {
     e.stopPropagation();
     setVisible(false);
     hidePopup();
+  };
+
+  // Banner click → go to the full /skin-analysis page
+  const goToSkinAnalysis = () => {
+    setVisible(false);
+    hidePopup();
+    router.push('/skin-analysis');
   };
 
   const startScanWizard = () => {
@@ -168,7 +177,7 @@ export default function AIPopup() {
 
   return (
     <>
-      {/* ── Sticky Floating Popup Banner ── */}
+      {/* ── Sticky Floating Popup Banner ── clicks → /skin-analysis ── */}
       <AnimatePresence>
         {visible && popupVisible && (
           <motion.div
@@ -177,31 +186,35 @@ export default function AIPopup() {
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
             className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-auto mx-auto sm:mx-0 z-40 w-[calc(100%-2rem)] sm:w-[380px] max-w-sm sm:max-w-none bg-white border border-beige/60 shadow-luxury rounded-card overflow-hidden flex group cursor-pointer"
-            onClick={startScanWizard}
+            onClick={goToSkinAnalysis}
           >
             {/* Left side: Model photo with scanning SVG overlay */}
             <div className="w-28 sm:w-32 relative bg-beige/30 flex-shrink-0 overflow-hidden">
               <Image
                 src="/Hero Banner Model.jpeg"
-                alt="AI Skin Scanner Model"
+                alt="AI Skin Scanner"
                 fill
                 sizes="128px"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-obsidian/20 group-hover:bg-obsidian/10 transition-colors" />
-              
-              {/* Scan SVG Element overlay */}
+              {/* Scan line animation */}
+              <motion.div
+                className="absolute inset-x-0 h-0.5 bg-gold/70 shadow-[0_0_8px_#C9A96E]"
+                animate={{ top: ['8%', '92%', '8%'] }}
+                transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              {/* Face outline SVG */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <svg viewBox="0 0 100 100" className="w-16 h-16 text-gold/80" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M20 30 C20 30, 25 15, 50 15 C75 15, 80 30, 80 30 C80 30, 85 45, 80 65 C75 85, 50 90, 50 90 C50 90, 25 85, 20 65 C15 45, 20 30, 20 30 Z" className="stroke-gold animate-pulse" />
-                  <path d="M35 45 Q50 35 65 45" className="stroke-gold/70" />
-                  <path d="M40 65 Q50 72 60 65" className="stroke-gold/70" />
-                  <line x1="15" y1="50" x2="85" y2="50" stroke="#C9A96E" strokeWidth="1.5" className="animate-[bounce_3s_infinite_ease-in-out]" />
+                <svg viewBox="0 0 100 100" className="w-16 h-16" fill="none" stroke="#C9A96E" strokeWidth="1.5" opacity="0.7">
+                  <path d="M20 30 C20 30, 25 15, 50 15 C75 15, 80 30, 80 30 C80 30, 85 45, 80 65 C75 85, 50 90, 50 90 C50 90, 25 85, 20 65 C15 45, 20 30, 20 30 Z" />
+                  <path d="M35 45 Q50 35 65 45" />
+                  <path d="M40 65 Q50 72 60 65" />
                 </svg>
               </div>
             </div>
 
-            {/* Right side: Text details */}
+            {/* Right side: Text */}
             <div className="flex-1 p-4 pr-7 flex flex-col justify-center">
               {/* Close Button */}
               <button
@@ -213,18 +226,19 @@ export default function AIPopup() {
               </button>
 
               <div className="inline-flex items-center gap-1 bg-gold/10 border border-gold/20 rounded-pill px-2.5 py-0.5 w-fit mb-2">
-                <Sparkles size={9} className="text-gold" />
+                <Sparkles size={9} className="text-gold animate-pulse" />
                 <span className="text-gold text-[8px] font-body font-semibold tracking-wider uppercase">Free AI Analysis</span>
               </div>
               <h3 className="font-heading text-base text-obsidian leading-tight mb-1.5 font-medium">
-                Know your skin Type free with AI
+                Know Your Skin Type — Free
               </h3>
               <p className="text-[10px] font-body text-taupe leading-relaxed mb-3">
-                Scan your profile to discover custom skincare rituals instantly.
+                AI scan in 30 seconds. Personalized routine included.
               </p>
-              <button className="btn-gold text-[10px] py-1.5 px-4 w-fit shadow-sm font-medium">
-                Analyze Skin Now
-              </button>
+              <div className="btn-gold text-[10px] py-1.5 px-4 w-fit shadow-sm font-medium inline-flex items-center gap-1.5">
+                Start Analysis
+                <ArrowRight size={10} />
+              </div>
             </div>
           </motion.div>
         )}
@@ -345,6 +359,7 @@ export default function AIPopup() {
                             <input
                               type="file"
                               accept="image/*"
+                              capture="user"
                               ref={(el) => { fileInputRefs.current[angle.key] = el; }}
                               onChange={(e) => handleFileChange(angle.key, e)}
                               className="hidden"
