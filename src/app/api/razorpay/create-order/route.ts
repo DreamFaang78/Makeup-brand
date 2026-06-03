@@ -23,9 +23,16 @@ export async function POST(req: NextRequest) {
     const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
 
-    if (!keyId || !keySecret) {
-      console.error('Razorpay credentials missing');
-      return NextResponse.json({ error: 'Payment configuration error' }, { status: 500 });
+    const isMockMode = !keyId || !keySecret || keyId.includes('placeholder') || keySecret.includes('placeholder');
+
+    if (isMockMode) {
+      console.warn('Razorpay credentials missing or placeholder. Running in Mock Payment Mode.');
+      return NextResponse.json({
+        orderId: `order_mock_${Date.now()}`,
+        amount,
+        currency,
+        isMock: true
+      });
     }
 
     // Create Razorpay order via REST API (avoids Node SDK issues in Edge)

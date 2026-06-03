@@ -184,7 +184,87 @@ export default function CheckoutPage() {
         return;
       }
 
-      const { orderId, amount, currency } = await orderRes.json();
+      const { orderId, amount, currency, isMock } = await orderRes.json();
+
+      const handlePaymentSuccess = async (response: {
+        razorpay_payment_id: string;
+        razorpay_order_id: string;
+        razorpay_signature: string;
+      }) => {
+        try {
+          // ── Step 4: Verify signature on server & create DB order ──
+          const verifyRes = await fetch('/api/razorpay/verify-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              orderData: {
+                phone: contact.phone,
+                email: contact.email || null,
+                full_name: contact.name || 'Lanan Customer',
+                guest_phone: contact.phone,
+                guest_email: contact.email || null,
+                shipping_address: address,
+                billing_address: address,
+                subtotal,
+                discount_amt: couponDiscount,
+                shipping_charge: shippingCharge,
+                gst_amount: gstAmount,
+                total_amount: total,
+                delivery_method: deliveryMethod,
+                items: items.map((item) => ({
+                  product_id: item.product_id,
+                  variant_id: item.variant_id || null,
+                  product_name: item.product_name,
+                  variant_name: item.variant_name || null,
+                  quantity: item.quantity,
+                  unit_price: item.unit_price,
+                  total_price: item.unit_price * item.quantity,
+                  gst_rate: 18,
+                  image_url: item.image_url || null,
+                })),
+              },
+            }),
+          });
+
+          const verifyData = await verifyRes.json();
+
+          if (!verifyRes.ok || !verifyData.verified) {
+            toast.error('Payment verification failed. Contact support with your payment ID: ' + response.razorpay_payment_id);
+            setLoading(false);
+            return;
+          }
+
+          // ── Step 5: Success ──
+          clearCart();
+          setConfirmedOrder({
+            id: verifyData.db_order_id || response.razorpay_order_id,
+            number: verifyData.order_number || `LAN${Date.now().toString().slice(-6)}`,
+          });
+          setStep('success');
+        } catch (err) {
+          console.error('Verify payment error:', err);
+          toast.error('Payment received but order confirmation failed. Please contact support.');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      if (isMock || orderId.startsWith('order_mock_')) {
+        toast.info('Simulating payment (Development Mock Mode)...');
+        setLoading(true);
+        // Simulate network latency
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        
+        await handlePaymentSuccess({
+          razorpay_payment_id: 'pay_mock_' + Math.random().toString(36).slice(2, 9),
+          razorpay_order_id: orderId,
+          razorpay_signature: 'sig_mock_' + Math.random().toString(36).slice(2, 9),
+        });
+        return;
+      }
 
       // ── Step 2: Load Razorpay checkout.js if not already present ──
       if (!window.Razorpay) {
@@ -215,73 +295,7 @@ export default function CheckoutPage() {
           shipping_address: address ? `${address.line1}, ${address.city}, ${address.state} - ${address.pincode}` : '',
         },
         theme: { color: '#C9A96E' },
-
-        // ── Payment success handler ──
-        handler: async (response: {
-          razorpay_payment_id: string;
-          razorpay_order_id: string;
-          razorpay_signature: string;
-        }) => {
-          try {
-            // ── Step 4: Verify signature on server & create DB order ──
-            const verifyRes = await fetch('/api/razorpay/verify-payment', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-                orderData: {
-                  phone: contact.phone,
-                  email: contact.email || null,
-                  full_name: contact.name || 'Lanan Customer',
-                  guest_phone: contact.phone,
-                  guest_email: contact.email || null,
-                  shipping_address: address,
-                  billing_address: address,
-                  subtotal,
-                  discount_amt: couponDiscount,
-                  shipping_charge: shippingCharge,
-                  gst_amount: gstAmount,
-                  total_amount: total,
-                  delivery_method: deliveryMethod,
-                  items: items.map((item) => ({
-                    product_id: item.product_id,
-                    variant_id: item.variant_id || null,
-                    product_name: item.product_name,
-                    variant_name: item.variant_name || null,
-                    quantity: item.quantity,
-                    unit_price: item.unit_price,
-                    total_price: item.unit_price * item.quantity,
-                    gst_rate: 18,
-                    image_url: item.image_url || null,
-                  })),
-                },
-              }),
-            });
-
-            const verifyData = await verifyRes.json();
-
-            if (!verifyRes.ok || !verifyData.verified) {
-              toast.error('Payment verification failed. Contact support with your payment ID: ' + response.razorpay_payment_id);
-              setLoading(false);
-              return;
-            }
-
-            // ── Step 5: Success ──
-            clearCart();
-            setConfirmedOrder({
-              id: verifyData.db_order_id || response.razorpay_order_id,
-              number: verifyData.order_number || `LAN${Date.now().toString().slice(-6)}`,
-            });
-            setStep('success');
-          } catch (err) {
-            console.error('Verify payment error:', err);
-            toast.error('Payment received but order confirmation failed. Please contact support.');
-          } finally {
-            setLoading(false);
-          }
-        },
+        handler: handlePaymentSuccess,
 
         // ── Modal dismissed ──
         modal: {

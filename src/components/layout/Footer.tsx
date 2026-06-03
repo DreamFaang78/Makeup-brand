@@ -36,6 +36,34 @@ function SvgYoutube() {
   );
 }
 
+function SvgLinkedin() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
+function SvgTwitter() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+      <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+    </svg>
+  );
+}
+
+function SvgMail() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <polyline points="22,6 12,13 2,6" />
+    </svg>
+  );
+}
+
 // ── Footer link config ───────────────────────────────────────────────────────
 const FOOTER_LINKS = {
   Shop: [
@@ -65,7 +93,10 @@ const FOOTER_LINKS = {
 const SOCIAL = [
   { href: BRAND.socialLinks.instagram, label: 'Instagram', Icon: SvgInstagram },
   { href: BRAND.socialLinks.facebook, label: 'Facebook', Icon: SvgFacebook },
+  { href: BRAND.socialLinks.twitter, label: 'Twitter (X)', Icon: SvgTwitter },
+  { href: BRAND.socialLinks.linkedin, label: 'LinkedIn', Icon: SvgLinkedin },
   { href: BRAND.socialLinks.youtube, label: 'YouTube', Icon: SvgYoutube },
+  { href: BRAND.socialLinks.marketingEmail, label: 'Email Marketing', Icon: SvgMail },
 ];
 
 // ── Component ────────────────────────────────────────────────────────────────
