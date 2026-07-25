@@ -161,8 +161,8 @@ export default function Navbar() {
             // Laptop floating premium style
             'lg:max-w-7xl lg:mx-auto lg:mt-3 lg:rounded-xl2 lg:border',
             scrolled
-              ? 'bg-white/95 backdrop-blur-xl border-beige/40 lg:border-gold/30 shadow-luxury-lg'
-              : 'bg-transparent border-transparent lg:bg-white/40 lg:backdrop-blur-md lg:border-gold/15'
+              ? 'bg-obsidian/85 backdrop-blur-xl border-gold/25 shadow-luxury-lg'
+              : 'bg-obsidian/30 backdrop-blur-md border-gold/15 lg:bg-obsidian/45 lg:backdrop-blur-lg lg:border-gold/20'
           )}
         >
         <div className="container-lanan">
@@ -181,10 +181,7 @@ export default function Navbar() {
                 />
               </div>
               <span
-                className={cn(
-                  'font-heading font-medium tracking-[0.15em] text-xl lg:text-2xl transition-colors duration-300',
-                  scrolled ? 'text-obsidian' : 'text-obsidian'
-                )}
+                className="font-heading font-semibold tracking-[0.15em] text-xl lg:text-2xl text-gold transition-colors duration-300 hover:text-gold-light"
               >
                 LANAN
               </span>
@@ -196,7 +193,7 @@ export default function Navbar() {
                 link.children ? (
                   <div key={link.label} className="relative">
                     <button
-                      className="nav-link flex items-center gap-1"
+                      className="flex items-center gap-1 text-sm font-body font-medium text-ivory/85 hover:text-gold transition-colors duration-200 relative py-1.5 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-gold hover:after:w-full after:transition-all after:duration-300 cursor-pointer"
                       onMouseEnter={() => setActiveDropdown(link.label)}
                       onMouseLeave={() => setActiveDropdown(null)}
                       aria-expanded={activeDropdown === link.label}
@@ -218,7 +215,7 @@ export default function Navbar() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 8 }}
                           transition={{ duration: 0.2 }}
-                          className="absolute top-full left-0 mt-2 w-52 bg-white rounded-xl2 shadow-luxury border border-beige/60 py-2 z-50"
+                          className="absolute top-full left-0 mt-2 w-52 bg-obsidian/95 backdrop-blur-xl rounded-xl2 shadow-luxury border border-gold/25 py-2 z-50"
                           onMouseEnter={() => setActiveDropdown(link.label)}
                           onMouseLeave={() => setActiveDropdown(null)}
                         >
@@ -226,7 +223,7 @@ export default function Navbar() {
                             <Link
                               key={child.href}
                               href={child.href}
-                              className="block px-4 py-2.5 text-sm font-body text-charcoal hover:text-gold hover:bg-ivory transition-colors duration-150"
+                              className="block px-4 py-2.5 text-sm font-body text-ivory/80 hover:text-gold hover:bg-white/5 transition-colors duration-150"
                             >
                               {child.label}
                             </Link>
@@ -236,7 +233,11 @@ export default function Navbar() {
                     </AnimatePresence>
                   </div>
                 ) : (
-                  <Link key={link.label} href={link.href} className="nav-link">
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="text-sm font-body font-medium text-ivory/85 hover:text-gold transition-colors duration-200 relative py-1.5 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-gold hover:after:w-full after:transition-all after:duration-300"
+                  >
                     {link.label}
                   </Link>
                 )
@@ -258,7 +259,7 @@ export default function Navbar() {
 
               {/* Search */}
               <button
-                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-beige/60 transition-colors text-charcoal hover:text-gold"
+                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold"
                 aria-label="Search products"
               >
                 <Search size={18} />
@@ -267,7 +268,7 @@ export default function Navbar() {
               {/* Wishlist (desktop) */}
               <Link
                 href="/account/wishlist"
-                className="hidden lg:flex w-9 h-9 items-center justify-center rounded-full hover:bg-beige/60 transition-colors text-charcoal hover:text-gold"
+                className="hidden lg:flex w-9 h-9 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold"
                 aria-label="Wishlist"
               >
                 <Heart size={18} />
@@ -288,7 +289,7 @@ export default function Navbar() {
                 ) : (
                   <button
                     onClick={() => openAuthModal('login')}
-                    className="hidden lg:flex w-9 h-9 items-center justify-center rounded-full hover:bg-beige/60 transition-colors text-charcoal hover:text-gold"
+                    className="hidden lg:flex w-9 h-9 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold"
                     aria-label="My account"
                   >
                     <User size={18} />
@@ -302,11 +303,11 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 8 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-52 bg-white rounded-xl2 shadow-luxury border border-beige/60 py-2 z-50"
+                      className="absolute right-0 mt-2 w-52 bg-obsidian/95 backdrop-blur-xl rounded-xl2 shadow-luxury border border-gold/25 py-2 z-50"
                     >
-                      <div className="px-4 py-2 border-b border-beige/40">
-                        <p className="text-xs text-taupe font-body">Signed in as</p>
-                        <p className="text-xs font-semibold font-body text-obsidian truncate mt-0.5">
+                      <div className="px-4 py-2 border-b border-gold/15">
+                        <p className="text-xs text-ivory/50 font-body">Signed in as</p>
+                        <p className="text-xs font-semibold font-body text-ivory truncate mt-0.5">
                           {user.user_metadata?.full_name || user.email || user.phone || 'Lanan Customer'}
                         </p>
                       </div>
@@ -314,7 +315,7 @@ export default function Navbar() {
                       <Link
                         href={userSegment === 'new' || userSegment === 'repeat' ? '/account/orders' : '/admin/dashboard'}
                         onClick={() => setUserMenuOpen(false)}
-                        className="block px-4 py-2 text-xs font-body text-charcoal hover:text-gold hover:bg-ivory transition-colors"
+                        className="block px-4 py-2 text-xs font-body text-ivory/80 hover:text-gold hover:bg-white/5 transition-colors"
                       >
                         {userSegment === 'new' || userSegment === 'repeat' ? 'My Orders' : 'Dashboard'}
                       </Link>
@@ -329,7 +330,7 @@ export default function Navbar() {
                           window.dispatchEvent(new Event('auth-state-change'));
                           toast.success('Signed out successfully!');
                         }}
-                        className="w-full text-left block px-4 py-2 text-xs font-body text-error-red hover:bg-error-red/5 transition-colors border-t border-beige/40 mt-1 cursor-pointer"
+                        className="w-full text-left block px-4 py-2 text-xs font-body text-error-red hover:bg-error-red/10 transition-colors border-t border-gold/15 mt-1 cursor-pointer"
                       >
                         Sign Out
                       </button>
@@ -341,13 +342,13 @@ export default function Navbar() {
               {/* Cart */}
               <button
                 onClick={toggleCart}
-                className="relative flex items-center gap-2 h-9 px-3 rounded-pill bg-obsidian text-ivory hover:bg-charcoal transition-colors duration-200"
+                className="relative flex items-center gap-2 h-9 px-4 rounded-pill bg-gold text-obsidian hover:bg-gold-light transition-colors duration-200"
                 aria-label={`Cart with ${itemCount} items`}
               >
                 <ShoppingBag size={15} />
-                <span className="text-xs font-body font-medium">{itemCount}</span>
+                <span className="text-xs font-body font-semibold">{itemCount}</span>
                 {itemCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-gold rounded-full flex items-center justify-center text-[9px] font-bold text-obsidian">
+                  <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-obsidian rounded-full flex items-center justify-center text-[9px] font-bold text-gold border border-gold/20">
                     {itemCount > 9 ? '9+' : itemCount}
                   </span>
                 )}
@@ -356,7 +357,7 @@ export default function Navbar() {
               {/* Mobile Menu Toggle */}
               <button
                 onClick={toggleMobileMenu}
-                className="lg:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-beige/60 transition-colors"
+                className="lg:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold"
                 aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               >
                 {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
@@ -375,7 +376,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-obsidian/30 z-30 lg:hidden"
+              className="fixed inset-0 bg-obsidian/50 z-30 lg:hidden"
               onClick={closeMobileMenu}
             />
             <motion.div
@@ -383,13 +384,13 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed top-0 right-0 bottom-0 w-80 bg-white z-40 lg:hidden shadow-luxury-lg overflow-y-auto"
+              className="fixed top-0 right-0 bottom-0 w-80 bg-obsidian border-l border-gold/20 z-40 lg:hidden shadow-luxury-lg overflow-y-auto"
             >
               <div className="p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
-                  <span className="font-heading text-xl tracking-widest text-obsidian">LANAN</span>
-                  <button onClick={closeMobileMenu} className="w-8 h-8 flex items-center justify-center rounded-full bg-beige hover:bg-beige-dark transition-colors">
+                  <span className="font-heading text-xl tracking-widest text-gold font-semibold">LANAN</span>
+                  <button onClick={closeMobileMenu} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-ivory hover:bg-white/20 transition-colors">
                     <X size={16} />
                   </button>
                 </div>
@@ -405,14 +406,14 @@ export default function Navbar() {
                   >
                     <button
                       onClick={() => setMobileShopOpen((o) => !o)}
-                      className="w-full flex items-center justify-between py-3.5 px-4 rounded-xl font-body text-sm font-medium text-charcoal hover:text-gold hover:bg-ivory transition-all duration-200"
+                      className="w-full flex items-center justify-between py-3.5 px-4 rounded-xl font-body text-sm font-medium text-ivory/90 hover:text-gold hover:bg-white/5 transition-all duration-200"
                     >
                       <span>Shop</span>
                       <motion.span
                         animate={{ rotate: mobileShopOpen ? 180 : 0 }}
                         transition={{ duration: 0.25 }}
                       >
-                        <ChevronDown size={15} className="text-taupe" />
+                        <ChevronDown size={15} className="text-gold/60" />
                       </motion.span>
                     </button>
 
@@ -426,21 +427,21 @@ export default function Navbar() {
                           transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                           className="overflow-hidden"
                         >
-                          <div className="mx-1 mb-3 rounded-2xl border border-gold/20 bg-ivory overflow-hidden">
+                          <div className="mx-1 mb-3 rounded-2xl border border-gold/15 bg-charcoal/50 overflow-hidden">
                             {/* Panel header */}
-                            <div className="px-4 pt-3 pb-2 border-b border-beige/70 flex items-center justify-between">
+                            <div className="px-4 pt-3 pb-2 border-b border-gold/15 flex items-center justify-between">
                               <span className="text-[10px] font-body font-semibold tracking-widest uppercase text-gold">All Categories</span>
                               <Link
                                 href="/shop"
                                 onClick={closeMobileMenu}
-                                className="text-[10px] font-body text-taupe hover:text-gold underline underline-offset-2 transition-colors"
+                                className="text-[10px] font-body text-ivory/55 hover:text-gold underline underline-offset-2 transition-colors"
                               >
                                 View all
                               </Link>
                             </div>
 
                             {/* Category grid */}
-                            <div className="grid grid-cols-2 gap-px bg-beige/40">
+                            <div className="grid grid-cols-2 gap-px bg-gold/10">
                               {[
                                 { label: 'All Products', href: '/shop', emoji: '✦' },
                                 { label: 'Serums', href: '/shop?category=serums', emoji: '💧' },
@@ -454,10 +455,10 @@ export default function Navbar() {
                                   key={cat.href}
                                   href={cat.href}
                                   onClick={closeMobileMenu}
-                                  className="flex items-center gap-2.5 px-4 py-3 bg-white hover:bg-gold/5 hover:text-gold transition-all duration-150 group"
+                                  className="flex items-center gap-2.5 px-4 py-3 bg-obsidian hover:bg-gold/5 hover:text-gold transition-all duration-150 group"
                                 >
                                   <span className="text-base leading-none">{cat.emoji}</span>
-                                  <span className="text-xs font-body font-medium text-charcoal group-hover:text-gold transition-colors">{cat.label}</span>
+                                  <span className="text-xs font-body font-medium text-ivory/80 group-hover:text-gold transition-colors">{cat.label}</span>
                                 </Link>
                               ))}
                             </div>
@@ -478,7 +479,7 @@ export default function Navbar() {
                       <Link
                         href={link.href}
                         onClick={closeMobileMenu}
-                        className="block py-3.5 px-4 rounded-xl font-body text-sm font-medium text-charcoal hover:text-gold hover:bg-ivory transition-all duration-200"
+                        className="block py-3.5 px-4 rounded-xl font-body text-sm font-medium text-ivory/90 hover:text-gold hover:bg-white/5 transition-all duration-200"
                       >
                         {link.label}
                       </Link>
@@ -487,22 +488,22 @@ export default function Navbar() {
                 </nav>
 
                 {/* Divider */}
-                <div className="border-t border-beige my-6" />
+                <div className="border-t border-gold/15 my-6" />
 
                 {/* Account */}
                 <div className="space-y-2">
                   {user ? (
                     <>
-                      <div className="px-4 py-2.5 bg-ivory rounded-xl border border-beige/40">
-                        <p className="text-[10px] text-taupe font-body">Signed in as</p>
-                        <p className="text-xs font-semibold font-body text-obsidian truncate mt-0.5">
+                      <div className="px-4 py-2.5 bg-charcoal/40 rounded-xl border border-gold/15">
+                        <p className="text-[10px] text-gold/60 font-body">Signed in as</p>
+                        <p className="text-xs font-semibold font-body text-ivory truncate mt-0.5">
                           {user.user_metadata?.full_name || user.email || user.phone || 'Lanan Customer'}
                         </p>
                       </div>
                       <Link
                         href={userSegment === 'new' || userSegment === 'repeat' ? '/account/orders' : '/admin/dashboard'}
                         onClick={closeMobileMenu}
-                        className="flex items-center gap-3 py-3 px-4 rounded-xl text-sm font-body text-charcoal hover:bg-ivory hover:text-gold transition-all"
+                        className="flex items-center gap-3 py-3 px-4 rounded-xl text-sm font-body text-ivory/80 hover:bg-white/5 hover:text-gold transition-all"
                       >
                         <User size={16} />
                         {userSegment === 'new' || userSegment === 'repeat' ? 'My Orders' : 'Dashboard'}
@@ -517,7 +518,7 @@ export default function Navbar() {
                           window.dispatchEvent(new Event('auth-state-change'));
                           toast.success('Signed out successfully!');
                         }}
-                        className="w-full flex items-center gap-3 py-3 px-4 rounded-xl text-sm font-body text-error-red hover:bg-error-red/5 transition-all text-left cursor-pointer"
+                        className="w-full flex items-center gap-3 py-3 px-4 rounded-xl text-sm font-body text-error-red hover:bg-error-red/10 transition-all text-left cursor-pointer"
                       >
                         <User size={16} className="text-error-red opacity-80" />
                         Sign Out
@@ -526,14 +527,14 @@ export default function Navbar() {
                   ) : (
                     <button
                       onClick={() => { openAuthModal('login'); closeMobileMenu(); }}
-                      className="w-full flex items-center gap-3 py-3 px-4 rounded-xl text-sm font-body text-charcoal hover:bg-ivory hover:text-gold transition-all"
+                      className="w-full flex items-center gap-3 py-3 px-4 rounded-xl text-sm font-body text-ivory/80 hover:bg-white/5 hover:text-gold transition-all"
                     >
                       <User size={16} />
                       My Account
                     </button>
                   )}
                   <Link href="/account/wishlist" onClick={closeMobileMenu}
-                    className="flex items-center gap-3 py-3 px-4 rounded-xl text-sm font-body text-charcoal hover:bg-ivory hover:text-gold transition-all"
+                    className="flex items-center gap-3 py-3 px-4 rounded-xl text-sm font-body text-ivory/80 hover:bg-white/5 hover:text-gold transition-all"
                   >
                     <Heart size={16} />
                     Wishlist
