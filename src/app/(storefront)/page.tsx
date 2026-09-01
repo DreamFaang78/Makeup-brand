@@ -184,7 +184,7 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[80vh]">
 
             {/* Text Content */}
-            <div className="text-center lg:text-left">
+            <div className="text-center flex flex-col items-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -206,6 +206,7 @@ export default function HomePage() {
                 className="font-heading font-light text-obsidian mb-5 leading-[1.05]"
               >
                 Luxury Skincare,{' '}
+                <br />
                 <em className="italic text-taupe">Crafted for</em>
                 <br />
                 <span className="text-gradient-gold">Your Everyday</span>
@@ -217,7 +218,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="font-body text-taupe text-base lg:text-lg leading-relaxed mb-8 max-w-md mx-auto lg:mx-0"
+                className="font-body text-taupe text-base lg:text-lg leading-relaxed mb-8 max-w-md mx-auto"
               >
                 Discover premium skincare essentials designed to make your daily routine feel
                 calm, confident, and radiant. Gentle formulas for modern Indian skin.
@@ -228,14 +229,14 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start"
+                className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-md mb-8"
               >
-                <Link href="/shop" className="btn-gold text-sm px-8 py-4">
-                  Shop LANAN
-                  <ArrowRight size={16} />
+                <Link href="/shop" className="btn-gold text-base px-10 py-5 shadow-[0_0_24px_rgba(201,169,110,0.45)] hover:shadow-[0_0_36px_rgba(201,169,110,0.65)] transition-all duration-300 transform hover:scale-105 active:scale-98 inline-flex items-center justify-center gap-2 font-semibold">
+                  Shop LANAN Collection
+                  <ArrowRight size={18} />
                 </Link>
-                <Link href="/rituals" className="btn-outline-gold text-sm px-8 py-4">
-                  Explore Our Ritual
+                <Link href="/rituals" className="btn-outline-gold text-base px-10 py-5 transition-all duration-300 transform hover:scale-105 active:scale-98 inline-flex items-center justify-center">
+                  Explore Our Rituals
                 </Link>
               </motion.div>
 
@@ -244,7 +245,7 @@ export default function HomePage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.5 }}
-                className="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start"
+                className="flex flex-wrap gap-4 justify-center"
               >
                 {[
                   { icon: <ShieldCheck size={14} />, text: 'Secure Payments' },
@@ -259,68 +260,115 @@ export default function HomePage() {
               </motion.div>
             </div>
 
-            {/* Hero Visual */}
+            {/* Hero Visual — Multi-layered Luxury Showcase Podium */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.92 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.9, delay: 0.15 }}
-              className="relative hidden lg:block"
+              transition={{ duration: 1.1, ease: [0.34, 1.56, 0.64, 1] }}
+              className="relative hidden lg:flex items-center justify-center h-full min-h-[500px]"
             >
-              <div className="relative w-full aspect-square max-w-[500px] mx-auto">
-                {/* Decorative circles */}
-                <div className="absolute inset-8 rounded-full border border-gold/20 animate-spin-slow" />
-                <div className="absolute inset-16 rounded-full border border-gold/10" />
+              {/* Outer Golden Halos */}
+              <div className="absolute w-[480px] h-[480px] rounded-full border border-gold/15 animate-spin-slow pointer-events-none" />
+              <div className="absolute w-[400px] h-[400px] rounded-full border border-gold/10 pointer-events-none" />
+              <div className="absolute w-[520px] h-[520px] rounded-full bg-radial from-gold/5 to-transparent blur-3xl pointer-events-none" />
 
-                {/* Main image container */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-80 h-80 rounded-full overflow-hidden shadow-glow-gold bg-gradient-to-br from-beige to-ivory">
+              {/* Centered Luxury Pedestal / Stage */}
+              <div className="relative w-full max-w-[420px] aspect-square flex items-center justify-center">
+                <div className="absolute bottom-6 w-[280px] h-[32px] bg-gradient-to-r from-gold/30 via-gold/50 to-gold/30 rounded-full blur-[10px] opacity-60 animate-pulse" />
+                <div className="absolute bottom-8 w-[240px] h-[16px] bg-obsidian/30 rounded-full blur-[6px] opacity-80" />
+
+                {/* Main Floating Platform */}
+                <motion.div
+                  animate={{ y: [0, -12, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <div className="w-[320px] h-[320px] rounded-full bg-gradient-to-b from-beige/45 to-beige-dark/25 border border-gold/20 shadow-luxury flex items-center justify-center overflow-hidden relative group">
+                    {/* Radial light shine */}
+                    <div className="absolute inset-0 bg-radial-luxury opacity-40 group-hover:opacity-65 transition-opacity duration-500" />
+                    
+                    {/* Embedded ambient video snippet for movement */}
                     <video
                       src="/Product Hero.mp4"
                       autoPlay
                       loop
                       muted
                       playsInline
-                      className="w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30 grayscale contrast-125"
                     />
-                  </div>
-                </div>
 
-                {/* Floating product card */}
+                    {/* Premium Gold Frame Inner Container */}
+                    <div className="absolute inset-3 rounded-full border border-gold/15" />
+                  </div>
+                </motion.div>
+
+                {/* Showcase Item 1: Floating Velvet Hydra Serum */}
                 <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute top-4 -right-4 bg-white rounded-card p-3 shadow-luxury"
+                  animate={{ y: [-6, -22, -6] }}
+                  transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute top-6 left-12 w-[160px] h-[220px] rounded-card border-2 border-gold/30 bg-white/90 backdrop-blur-md p-2.5 shadow-luxury-lg cursor-pointer hover:border-gold hover:scale-105 transition-all duration-300"
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg overflow-hidden">
-                      <Image src="/Serum Bottle.jpeg" alt="Product" width={32} height={32} className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-body font-semibold text-obsidian">Velvet Hydra</p>
-                      <p className="text-[10px] font-mono text-gold">₹899</p>
+                  <div className="relative w-full h-full rounded-card overflow-hidden">
+                    <Image
+                      src="/Serum Bottle.jpeg"
+                      alt="Velvet Hydra Serum"
+                      fill
+                      sizes="160px"
+                      className="object-cover"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-obsidian/45 to-transparent flex flex-col justify-end p-2">
+                      <p className="text-[10px] font-body font-bold text-white tracking-wide uppercase">Velvet Hydra</p>
+                      <p className="text-[9px] font-mono text-gold-light mt-0.5">Hydrating Glow</p>
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Floating review */}
+                {/* Showcase Item 2: Saffron Glow Mask */}
                 <motion.div
-                  animate={{ y: [0, 10, 0] }}
-                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                  className="absolute bottom-8 -left-6 bg-white rounded-card p-3 shadow-luxury"
+                  animate={{ y: [12, -4, 12] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+                  className="absolute bottom-10 right-8 w-[140px] h-[170px] rounded-card border border-beige-dark/40 bg-white/95 backdrop-blur-md p-2 shadow-luxury cursor-pointer hover:border-gold hover:scale-105 transition-all duration-300"
                 >
-                  <div className="flex items-center gap-1 mb-1">
-                    {[...Array(5)].map((_, i) => <Star key={i} size={9} className="text-gold fill-gold" />)}
+                  <div className="relative w-full h-full rounded-card overflow-hidden">
+                    <Image
+                      src="/Saffron Face Mask.jpeg"
+                      alt="Saffron Glow Mask"
+                      fill
+                      sizes="140px"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 to-transparent flex flex-col justify-end p-2">
+                      <p className="text-[9px] font-body font-bold text-white tracking-wide">Saffron Glow</p>
+                      <p className="text-[8px] font-mono text-gold-light mt-0.5">Radiance Revival</p>
+                    </div>
                   </div>
-                  <p className="text-[10px] font-body text-obsidian font-medium">"Skin is glowing!"</p>
-                  <p className="text-[9px] text-taupe">Priya S., Mumbai</p>
                 </motion.div>
 
-                {/* LANAN brand mark in center */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-20 h-20 rounded-full bg-gradient-gold flex items-center justify-center shadow-glow-gold opacity-0">
-                    <span className="font-heading font-bold text-2xl text-obsidian">LN</span>
-                  </div>
-                </div>
+                {/* Luxury Floating Interactive Badges */}
+                {/* Badge 1: Active Botanicals */}
+                <motion.div
+                  animate={{ y: [-2, 6, -2], rotate: [0, 5, 0] }}
+                  transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute -top-4 right-16 bg-obsidian text-gold border border-gold/30 px-3 py-1.5 rounded-pill shadow-luxury text-[9px] font-body font-semibold tracking-wider uppercase flex items-center gap-1"
+                >
+                  <Leaf size={10} className="text-gold" />
+                  Active Botanicals
+                </motion.div>
+
+                {/* Badge 2: Premium Indian Care */}
+                <motion.div
+                  animate={{ y: [6, -4, 6], rotate: [0, -4, 0] }}
+                  transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+                  className="absolute bottom-16 -left-6 bg-white text-taupe border border-beige shadow-luxury px-3 py-1.5 rounded-pill text-[9px] font-body font-semibold tracking-wider uppercase flex items-center gap-1"
+                >
+                  <Sparkles size={10} className="text-gold" />
+                  Luxury Ritual
+                </motion.div>
+
+                {/* Floating Gold Sparkle Particles */}
+                <div className="absolute top-1/2 left-4 w-1.5 h-1.5 bg-gold rounded-full animate-ping" />
+                <div className="absolute bottom-1/4 right-4 w-2 h-2 bg-gold-light rounded-full blur-[1px] animate-pulse" />
               </div>
             </motion.div>
           </div>

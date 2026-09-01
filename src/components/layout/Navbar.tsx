@@ -161,27 +161,27 @@ export default function Navbar() {
             // Laptop floating premium style
             'lg:max-w-7xl lg:mx-auto lg:mt-3 lg:rounded-xl2 lg:border',
             scrolled
-              ? 'bg-obsidian border-gold/25 shadow-luxury-lg'
-              : 'bg-obsidian border-gold/15 lg:border-gold/20'
+              ? 'bg-obsidian border-gold/30 shadow-luxury-lg'
+              : 'bg-obsidian border-gold/20 lg:border-gold/25'
           )}
         >
         <div className="container-lanan">
-          <div className="flex items-center justify-between h-16 lg:h-20">
+          <div className="flex items-center justify-between h-20 lg:h-24">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 flex-shrink-0" onClick={closeMobileMenu}>
-              <div className="relative w-9 h-9 lg:w-11 lg:h-11">
+            <Link href="/" className="flex items-center gap-3.5 flex-shrink-0" onClick={closeMobileMenu}>
+              <div className="relative w-12 h-12 lg:w-15 lg:h-15 filter drop-shadow-[0_0_12px_rgba(201,169,110,0.65)]">
                 <Image
                   src="/lanan logo.png"
                   alt="LANAN Logo"
                   fill
-                  sizes="44px"
+                  sizes="60px"
                   className="object-contain"
                   priority
                 />
               </div>
               <span
-                className="font-heading font-semibold tracking-[0.15em] text-xl lg:text-2xl text-gold transition-colors duration-300 hover:text-gold-light"
+                className="font-heading font-bold tracking-[0.25em] text-2xl lg:text-3xl bg-gradient-to-r from-gold-light via-gold to-gold-dark bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(201,169,110,0.45)] transition-all duration-300 hover:brightness-110"
               >
                 LANAN
               </span>
