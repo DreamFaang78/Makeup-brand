@@ -169,70 +169,85 @@ export default function AIPopup() {
 
   return (
     <>
-      {/* ── Sticky Floating Popup Banner ── clicks → /skin-analysis ── */}
+      {/* ── Central AI Skin Scanner Popup ── */}
       <AnimatePresence>
         {visible && popupVisible && (
-          <motion.div
-            initial={{ opacity: 0, y: 100, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.95 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-            className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-auto mx-auto sm:mx-0 z-40 w-[calc(100%-2rem)] sm:w-[380px] max-w-sm sm:max-w-none bg-white border border-beige/60 shadow-luxury rounded-card overflow-hidden flex group cursor-pointer"
-            onClick={startScanWizard}
-          >
-            {/* Left side: Model photo with scanning SVG overlay */}
-            <div className="w-28 sm:w-32 relative bg-beige/30 flex-shrink-0 overflow-hidden">
-              <Image
-                src="/Hero Banner Model.jpeg"
-                alt="AI Skin Scanner"
-                fill
-                sizes="128px"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-obsidian/20 group-hover:bg-obsidian/10 transition-colors" />
-              {/* Scan line animation */}
-              <motion.div
-                className="absolute inset-x-0 h-0.5 bg-gold/70 shadow-[0_0_8px_#C9A96E]"
-                animate={{ top: ['8%', '92%', '8%'] }}
-                transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
-              />
-              {/* Face outline SVG */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <svg viewBox="0 0 100 100" className="w-16 h-16" fill="none" stroke="#C9A96E" strokeWidth="1.5" opacity="0.7">
-                  <path d="M20 30 C20 30, 25 15, 50 15 C75 15, 80 30, 80 30 C80 30, 85 45, 80 65 C75 85, 50 90, 50 90 C50 90, 25 85, 20 65 C15 45, 20 30, 20 30 Z" />
-                  <path d="M35 45 Q50 35 65 45" />
-                  <path d="M40 65 Q50 72 60 65" />
-                </svg>
-              </div>
-            </div>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Dark Shaded Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-obsidian/60 backdrop-blur-xs"
+              onClick={handleClosePopup}
+            />
 
-            {/* Right side: Text */}
-            <div className="flex-1 p-4 pr-7 flex flex-col justify-center">
-              {/* Close Button */}
-              <button
-                onClick={handleClosePopup}
-                className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-beige/40 text-taupe hover:text-obsidian transition-all"
-                aria-label="Close banner"
-              >
-                <X size={14} />
-              </button>
+            {/* Centered Modal Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-white border border-beige/60 shadow-luxury rounded-card overflow-hidden flex flex-col sm:flex-row group cursor-pointer z-10"
+              onClick={startScanWizard}
+            >
+              {/* Left side: Model photo with scanning SVG overlay */}
+              <div className="w-full sm:w-44 h-48 sm:h-auto relative bg-beige/30 flex-shrink-0 overflow-hidden">
+                <Image
+                  src="/Hero Banner Model.jpeg"
+                  alt="AI Skin Scanner"
+                  fill
+                  sizes="(max-width: 640px) 100vw, 176px"
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-obsidian/20 group-hover:bg-obsidian/10 transition-colors" />
+                {/* Scan line animation */}
+                <motion.div
+                  className="absolute inset-x-0 h-0.5 bg-gold/70 shadow-[0_0_8px_#C9A96E]"
+                  animate={{ top: ['8%', '92%', '8%'] }}
+                  transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+                />
+                {/* Face outline SVG */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <svg viewBox="0 0 100 100" className="w-20 h-20" fill="none" stroke="#C9A96E" strokeWidth="1.5" opacity="0.7">
+                    <path d="M20 30 C20 30, 25 15, 50 15 C75 15, 80 30, 80 30 C80 30, 85 45, 80 65 C75 85, 50 90, 50 90 C50 90, 25 85, 20 65 C15 45, 20 30, 20 30 Z" />
+                    <path d="M35 45 Q50 35 65 45" />
+                    <path d="M40 65 Q50 72 60 65" />
+                  </svg>
+                </div>
+              </div>
 
-              <div className="inline-flex items-center gap-1 bg-gold/10 border border-gold/20 rounded-pill px-2.5 py-0.5 w-fit mb-2">
-                <Sparkles size={9} className="text-gold animate-pulse" />
-                <span className="text-gold text-[8px] font-body font-semibold tracking-wider uppercase">Free AI Analysis</span>
+              {/* Right side: Text & CTA */}
+              <div className="flex-1 p-6 sm:p-8 pr-8 flex flex-col justify-center relative">
+                {/* Close Button */}
+                <button
+                  onClick={handleClosePopup}
+                  className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-beige/40 text-taupe hover:text-obsidian transition-all z-20"
+                  aria-label="Close banner"
+                >
+                  <X size={16} />
+                </button>
+
+                <div className="inline-flex items-center gap-1.5 bg-gold/10 border border-gold/20 rounded-pill px-3 py-1 w-fit mb-3">
+                  <Sparkles size={11} className="text-gold animate-pulse" />
+                  <span className="text-gold text-[9px] font-body font-semibold tracking-wider uppercase">Free AI Analysis</span>
+                </div>
+                
+                <h3 className="font-heading text-xl sm:text-2xl text-obsidian leading-tight mb-2 font-medium">
+                  Know Your Skin Type — Free
+                </h3>
+                
+                <p className="text-xs font-body text-taupe leading-relaxed mb-5">
+                  Analyze your skin barrier, hydration, and sebum levels in 30 seconds. Get a tailored, dermatologist-grade routine instantly.
+                </p>
+                
+                <div className="btn-gold text-xs py-2.5 px-6 w-fit shadow-md font-medium inline-flex items-center gap-2 group-hover:scale-105 transition-transform">
+                  Start Analysis
+                  <ArrowRight size={12} />
+                </div>
               </div>
-              <h3 className="font-heading text-base text-obsidian leading-tight mb-1.5 font-medium">
-                Know Your Skin Type — Free
-              </h3>
-              <p className="text-[10px] font-body text-taupe leading-relaxed mb-3">
-                AI scan in 30 seconds. Personalized routine included.
-              </p>
-              <div className="btn-gold text-[10px] py-1.5 px-4 w-fit shadow-sm font-medium inline-flex items-center gap-1.5">
-                Start Analysis
-                <ArrowRight size={10} />
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
