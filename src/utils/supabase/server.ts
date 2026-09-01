@@ -4,9 +4,15 @@ import { cookies } from 'next/headers';
 export async function createClient() {
   const cookieStore = await cookies();
 
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  const resolvedUrl = url?.startsWith('http') ? url : 'https://placeholder-project.supabase.co';
+  const resolvedAnonKey = anonKey && anonKey !== 'your_supabase_anon_key' ? anonKey : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy';
+
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    resolvedUrl,
+    resolvedAnonKey,
     {
       cookies: {
         getAll() {

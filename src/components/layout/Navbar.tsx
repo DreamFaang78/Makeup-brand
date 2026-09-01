@@ -161,8 +161,8 @@ export default function Navbar() {
             // Laptop floating premium style
             'lg:max-w-7xl lg:mx-auto lg:mt-3 lg:rounded-xl2 lg:border',
             scrolled
-              ? 'bg-obsidian/85 backdrop-blur-xl border-gold/25 shadow-luxury-lg'
-              : 'bg-obsidian/30 backdrop-blur-md border-gold/15 lg:bg-obsidian/45 lg:backdrop-blur-lg lg:border-gold/20'
+              ? 'bg-obsidian border-gold/25 shadow-luxury-lg'
+              : 'bg-obsidian border-gold/15 lg:border-gold/20'
           )}
         >
         <div className="container-lanan">

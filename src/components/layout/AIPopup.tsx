@@ -46,14 +46,6 @@ export default function AIPopup() {
     const showTimer = setTimeout(() => {
       setVisible(true);
       showPopup('ai-skin-scanner');
-      
-      // Auto-hide popup after 12 seconds
-      const hideTimer = setTimeout(() => {
-        setVisible(false);
-        hidePopup();
-      }, 12000);
-      
-      return () => clearTimeout(hideTimer);
     }, 5000);
 
     return () => clearTimeout(showTimer);
@@ -186,7 +178,7 @@ export default function AIPopup() {
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
             className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-auto mx-auto sm:mx-0 z-40 w-[calc(100%-2rem)] sm:w-[380px] max-w-sm sm:max-w-none bg-white border border-beige/60 shadow-luxury rounded-card overflow-hidden flex group cursor-pointer"
-            onClick={goToSkinAnalysis}
+            onClick={startScanWizard}
           >
             {/* Left side: Model photo with scanning SVG overlay */}
             <div className="w-28 sm:w-32 relative bg-beige/30 flex-shrink-0 overflow-hidden">
