@@ -83,7 +83,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               },
               sameAs: [
                 'https://instagram.com/lanan.in',
-                'https://facebook.com/lanan.in',
+                'https://www.facebook.com/people/Lanan-Skin-Care/61593584686254/',
+                'https://www.facebook.com/share/193HQx1gQa/',
               ],
             }),
           }}
