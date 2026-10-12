@@ -76,7 +76,16 @@ function OrderSummary() {
               {item.variant_name && <p className="text-[10px] text-taupe">{item.variant_name}</p>}
               <p className="text-xs font-mono text-taupe">× {item.quantity}</p>
             </div>
-            <p className="text-xs font-mono font-medium text-obsidian flex-shrink-0">{formatPrice(item.unit_price * item.quantity)}</p>
+            <div className="text-right flex flex-col items-end flex-shrink-0">
+              {item.base_price && item.base_price > item.unit_price && (
+                <span className="font-mono text-[10px] text-taupe/70 line-through">
+                  {formatPrice(item.base_price * item.quantity)}
+                </span>
+              )}
+              <span className="text-xs font-mono font-semibold text-obsidian">
+                {formatPrice(item.unit_price * item.quantity)}
+              </span>
+            </div>
           </div>
         ))}
       </div>
@@ -97,6 +106,20 @@ function OrderSummary() {
         <div className="flex justify-between text-xs font-body text-taupe">
           <span>GST (incl.)</span><span className="font-mono">{formatPrice(gstAmount)}</span>
         </div>
+        {(() => {
+          const productSavings = items.reduce(
+            (acc, i) => acc + (i.base_price && i.base_price > i.unit_price ? (i.base_price - i.unit_price) * i.quantity : 0),
+            0
+          );
+          const totalSavings = productSavings + (couponDiscount || 0);
+          if (totalSavings <= 0) return null;
+          return (
+            <div className="flex justify-between items-center text-xs font-body py-1.5 px-2 rounded-lg bg-[#5B1924]/10 border border-[#5B1924]/20 text-[#5B1924]">
+              <span className="font-semibold">Total Savings</span>
+              <span className="font-mono font-bold">-{formatPrice(totalSavings)}</span>
+            </div>
+          );
+        })()}
         <div className="flex justify-between text-sm font-semibold font-body text-obsidian pt-2 border-t border-beige">
           <span>Total</span><span className="font-mono">{formatPrice(total)}</span>
         </div>

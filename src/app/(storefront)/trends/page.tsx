@@ -15,6 +15,7 @@ import {
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 import { formatPrice } from '@/lib/utils';
+import { PriceTag } from '@/components/products/PriceTag';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
 
@@ -97,6 +98,7 @@ export default function TrendsPage() {
       product_slug: product.slug,
       variant_name: primaryVariant?.name || null,
       unit_price: primaryVariant?.price ?? product.sale_price ?? product.base_price,
+      base_price: primaryVariant?.price ?? product.base_price,
       quantity: 1,
       image_url: product.images[0]?.url || '',
     });
@@ -194,7 +196,13 @@ export default function TrendsPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="text-[11px] font-body font-semibold text-obsidian truncate">{prod.name}</h4>
-                          <span className="text-[10px] font-mono text-gold block">₹{prod.sale_price ?? prod.base_price}</span>
+                          <div className="mt-0.5">
+                            <PriceTag
+                              basePrice={prod.base_price}
+                              salePrice={prod.sale_price}
+                              size="sm"
+                            />
+                          </div>
                         </div>
                         <button
                           onClick={() => handleAddToCart(prod)}
@@ -291,7 +299,13 @@ export default function TrendsPage() {
                       <div>
                         <h4 className="text-xs font-body font-semibold text-obsidian">{matchedPlannerProduct.name}</h4>
                         <p className="text-[10px] font-body text-taupe leading-none mt-0.5">{matchedPlannerProduct.tagline}</p>
-                        <span className="text-xs font-mono text-gold font-semibold block mt-1">₹{matchedPlannerProduct.sale_price ?? matchedPlannerProduct.base_price}</span>
+                        <div className="mt-1">
+                          <PriceTag
+                            basePrice={matchedPlannerProduct.base_price}
+                            salePrice={matchedPlannerProduct.sale_price}
+                            size="sm"
+                          />
+                        </div>
                       </div>
                     </div>
 

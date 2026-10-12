@@ -17,6 +17,7 @@ import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 import { formatPrice, discountPercent, cn } from '@/lib/utils';
 import ProductCard from '@/components/products/ProductCard';
+import PriceTag from '@/components/products/PriceTag';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
 
@@ -117,6 +118,7 @@ export default function ProductDetailPage() {
       variant_name: selectedVariant?.name ?? null,
       image_url: product.images[0]?.url ?? '',
       unit_price: displayPrice,
+      base_price: originalPrice,
       quantity: qty,
     });
     toast.success(`${product.name} added to cart!`);
@@ -245,15 +247,14 @@ export default function ProductDetailPage() {
               <span className="text-xs font-body text-taupe">({product.rating_count} reviews)</span>
             </div>
 
-            {/* Price */}
-            <div className="flex items-end gap-3">
-              <span className="font-mono text-2xl font-semibold text-obsidian">{formatPrice(displayPrice)}</span>
-              {hasSale && (
-                <>
-                  <span className="font-mono text-base text-taupe line-through">{formatPrice(originalPrice)}</span>
-                  <span className="badge-sale">Save {discount}%</span>
-                </>
-              )}
+            {/* Price with Original -> Sale -> SAVE % loop animation */}
+            <div className="py-1">
+              <PriceTag
+                basePrice={originalPrice}
+                salePrice={hasSale ? displayPrice : null}
+                size="xl"
+                animate={true}
+              />
             </div>
 
             {/* Variants */}

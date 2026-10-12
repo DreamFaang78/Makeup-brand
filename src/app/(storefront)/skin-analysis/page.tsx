@@ -16,6 +16,7 @@ import {
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 import { formatPrice } from '@/lib/utils';
+import { PriceTag } from '@/components/products/PriceTag';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
 
@@ -243,6 +244,7 @@ export default function SkinAnalysisPage() {
       product_slug: product.slug,
       variant_name: v?.name || null,
       unit_price: v?.price ?? product.sale_price ?? product.base_price,
+      base_price: v?.price ?? product.base_price,
       quantity: 1,
       image_url: product.images[0]?.url || '',
     });
@@ -808,16 +810,11 @@ export default function SkinAnalysisPage() {
                                 <span className="text-[9px] font-body text-taupe ml-1">({prod.rating_count})</span>
                               </div>
                               <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-1.5">
-                                  <span className="text-xs font-mono font-bold text-obsidian">
-                                    {formatPrice(prod.sale_price ?? prod.base_price)}
-                                  </span>
-                                  {prod.sale_price && (
-                                    <span className="text-[9px] font-mono text-taupe line-through">
-                                      {formatPrice(prod.base_price)}
-                                    </span>
-                                  )}
-                                </div>
+                                <PriceTag
+                                  basePrice={prod.base_price}
+                                  salePrice={prod.sale_price}
+                                  size="sm"
+                                />
                                 <button
                                   onClick={() => handleAddToCart(prod)}
                                   className="flex items-center gap-1 bg-obsidian text-ivory text-[9px] font-body font-semibold px-2.5 py-1.5 rounded-pill hover:bg-gold hover:text-obsidian transition-colors"

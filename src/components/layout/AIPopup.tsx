@@ -16,6 +16,7 @@ import {
 import { useUIStore } from '@/store/uiStore';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
+import { PriceTag } from '@/components/products/PriceTag';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
 
@@ -156,6 +157,7 @@ export default function AIPopup() {
       product_slug: product.slug,
       variant_name: primaryVariant?.name || null,
       unit_price: primaryVariant?.price ?? product.sale_price ?? product.base_price,
+      base_price: primaryVariant?.price ?? product.base_price,
       quantity: 1,
       image_url: product.images[0]?.url || '',
     });
@@ -551,9 +553,11 @@ export default function AIPopup() {
                                   <p className="text-[10px] font-body text-taupe line-clamp-1 mt-0.5">{prod.tagline}</p>
                                 </div>
                                 <div className="flex justify-between items-center mt-2">
-                                  <span className="font-mono text-xs font-semibold text-obsidian">
-                                    ₹{prod.sale_price ?? prod.base_price}
-                                  </span>
+                                  <PriceTag
+                                    basePrice={prod.base_price}
+                                    salePrice={prod.sale_price}
+                                    size="sm"
+                                  />
                                   <button
                                     onClick={() => handleAddToCart(prod)}
                                     className="btn-gold text-[9px] py-1 px-3"

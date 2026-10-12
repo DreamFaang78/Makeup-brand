@@ -329,7 +329,11 @@ export default function HomePage() {
                     </div>
                     <div>
                       <p className="text-[10px] font-body font-semibold text-obsidian">Velvet Hydra</p>
-                      <p className="text-[10px] font-mono text-gold">₹899</p>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[9px] font-mono text-taupe/70 line-through">₹1,099</span>
+                        <span className="text-[10px] font-mono font-bold text-obsidian lanan-sale-price-glow">₹899</span>
+                        <span className="text-[8px] font-body font-bold px-1 rounded-full bg-[#5B1924] text-[#F7F1EA] border border-[#C9A96E]/40 lanan-sale-badge-pulse">SAVE 18%</span>
+                      </div>
                     </div>
                   </div>
                 </motion.div>

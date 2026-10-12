@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, Star, Eye } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { formatPrice, discountPercent, cn } from '@/lib/utils';
+import PriceTag from '@/components/products/PriceTag';
 import type { ProductCardData } from '@/types/product';
 import { toast } from 'sonner';
 
@@ -28,7 +29,7 @@ export default function ProductCard({ product, index = 0 }: Props) {
   const activeVariant = product.variants.find((v) => v.is_active) ?? product.variants[0];
   const displayPrice = activeVariant?.sale_price ?? activeVariant?.price ?? product.sale_price ?? product.base_price;
   const originalPrice = activeVariant?.price ?? product.base_price;
-  const hasSale = displayPrice < originalPrice;
+  const hasSale = Boolean(displayPrice && originalPrice && displayPrice < originalPrice);
   const discount = hasSale ? discountPercent(originalPrice, displayPrice) : 0;
   const isOutOfStock = activeVariant ? activeVariant.inventory <= 0 : false;
   const isLowStock = activeVariant ? activeVariant.inventory <= 5 && activeVariant.inventory > 0 : false;
@@ -46,6 +47,7 @@ export default function ProductCard({ product, index = 0 }: Props) {
       variant_name: activeVariant?.name ?? null,
       image_url: image?.url ?? '',
       unit_price: displayPrice,
+      base_price: originalPrice,
       quantity: 1,
     });
     toast.success(`${product.name} added to cart`);
@@ -88,7 +90,7 @@ export default function ProductCard({ product, index = 0 }: Props) {
                 <span className="badge-gold">Bestseller</span>
               )}
               {hasSale && !isOutOfStock && (
-                <span className="badge-sale">{discount}% OFF</span>
+                <span className="badge-sale lanan-sale-badge-pulse">SAVE {discount}%</span>
               )}
               {isOutOfStock && (
                 <span className="badge-oos">Out of Stock</span>
@@ -175,16 +177,14 @@ export default function ProductCard({ product, index = 0 }: Props) {
               </div>
             )}
 
-            {/* Price */}
-            <div className="flex items-center gap-2">
-              <span className="font-mono font-semibold text-sm text-obsidian">
-                {formatPrice(displayPrice)}
-              </span>
-              {hasSale && (
-                <span className="font-mono text-xs text-taupe line-through">
-                  {formatPrice(originalPrice)}
-                </span>
-              )}
+            {/* Price with Original -> Sale -> SAVE % loop animation */}
+            <div className="mt-1">
+              <PriceTag
+                basePrice={originalPrice}
+                salePrice={hasSale ? displayPrice : null}
+                size="md"
+                animate={true}
+              />
             </div>
 
             {/* Variants hint */}

@@ -18,6 +18,7 @@ import Footer from '@/components/layout/Footer';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 import { formatPrice, cn } from '@/lib/utils';
+import { PriceTag } from '@/components/products/PriceTag';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
 
@@ -229,6 +230,7 @@ export default function RitualsPage() {
       product_slug: product.slug,
       variant_name: primaryVariant?.name || null,
       unit_price: primaryVariant?.price ?? product.sale_price ?? product.base_price,
+      base_price: primaryVariant?.price ?? product.base_price,
       quantity: 1,
       image_url: product.images[0]?.url || '',
     });
@@ -312,6 +314,7 @@ export default function RitualsPage() {
         product_slug: product.slug,
         variant_name: primaryVariant?.name || null,
         unit_price: primaryVariant?.price ?? product.sale_price ?? product.base_price,
+        base_price: primaryVariant?.price ?? product.base_price,
         quantity: 1,
         image_url: product.images[0]?.url || '',
       });
@@ -495,9 +498,13 @@ export default function RitualsPage() {
                                 <h4 className="text-xs font-body font-bold text-obsidian leading-snug">
                                   {matchedProduct.name}
                                 </h4>
-                                <span className="text-[10px] font-mono text-gold font-medium mt-0.5 block">
-                                  {formatPrice(matchedProduct.sale_price ?? matchedProduct.base_price)}
-                                </span>
+                                <div className="mt-1">
+                                  <PriceTag
+                                    basePrice={matchedProduct.base_price}
+                                    salePrice={matchedProduct.sale_price}
+                                    size="sm"
+                                  />
+                                </div>
                               </div>
                             </div>
 
@@ -638,9 +645,13 @@ export default function RitualsPage() {
                           <div>
                             <h4 className="text-xs font-body font-bold text-obsidian">{prod.name}</h4>
                             <p className="text-[10px] font-body text-taupe leading-none mt-0.5">{prod.tagline}</p>
-                            <span className="text-[10px] font-mono text-gold mt-1 block">
-                              {formatPrice(prod.sale_price ?? prod.base_price)}
-                            </span>
+                            <div className="mt-1">
+                              <PriceTag
+                                basePrice={prod.base_price}
+                                salePrice={prod.sale_price}
+                                size="sm"
+                              />
+                            </div>
                           </div>
                         </div>
 

@@ -301,8 +301,10 @@
   }
   .badge-sale {
     display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 9999px;
-    font-size: 0.625rem; font-family: var(--font-body); font-weight: 600;
-    text-transform: uppercase; background: #C0392B; color: white;
+    font-size: 0.625rem; font-family: var(--font-body); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    background: #5B1924; color: #F7F1EA; border: 1px solid rgba(201, 169, 110, 0.4);
+    box-shadow: 0 1px 4px rgba(91, 25, 36, 0.25);
   }
   .badge-new {
     display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 9999px;
@@ -313,6 +315,69 @@
     display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 9999px;
     font-size: 0.625rem; font-family: var(--font-body); font-weight: 600;
     text-transform: uppercase; background: rgba(45, 45, 45, 0.2); color: #2D2D2D;
+  }
+
+  /* ── Continuous Loop Pricing Animation (1.2s active, 2.0s rest) ── */
+  @keyframes lananPricePulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(201, 169, 110, 0);
+    }
+    18% {
+      transform: scale(1.04);
+      box-shadow: 0 0 12px 2px rgba(201, 169, 110, 0.4);
+    }
+    37.5% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(201, 169, 110, 0);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(201, 169, 110, 0);
+    }
+  }
+
+  @keyframes lananPriceGlow {
+    0% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 0 rgba(201, 169, 110, 0));
+    }
+    18% {
+      transform: scale(1.035);
+      filter: drop-shadow(0 0 6px rgba(201, 169, 110, 0.45));
+    }
+    37.5% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 0 rgba(201, 169, 110, 0));
+    }
+    100% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 0 rgba(201, 169, 110, 0));
+    }
+  }
+
+  .lanan-sale-badge-pulse {
+    display: inline-flex;
+    animation: lananPricePulse 3.2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    transform-origin: center;
+    will-change: transform, box-shadow;
+  }
+
+  .lanan-sale-price-glow {
+    display: inline-block;
+    animation: lananPriceGlow 3.2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    transform-origin: left center;
+    will-change: transform, filter;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lanan-sale-badge-pulse,
+    .lanan-sale-price-glow {
+      animation: none !important;
+      transform: none !important;
+      filter: none !important;
+      box-shadow: none !important;
+    }
   }
 
   /* Navigation */

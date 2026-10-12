@@ -83,6 +83,7 @@ export interface CartItem {
   variant_name: string | null;
   image_url: string;
   unit_price: number;
+  base_price?: number;
   quantity: number;
 }
 

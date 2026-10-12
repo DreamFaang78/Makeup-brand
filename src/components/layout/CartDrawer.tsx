@@ -184,9 +184,23 @@ export default function CartDrawer() {
                             </button>
                           </div>
                           {/* Price */}
-                          <span className="font-mono text-sm font-medium text-obsidian">
-                            {formatPrice(item.unit_price * item.quantity)}
-                          </span>
+                          <div className="text-right flex flex-col items-end">
+                            {item.base_price && item.base_price > item.unit_price && (
+                              <span className="font-mono text-[11px] text-taupe/70 line-through">
+                                {formatPrice(item.base_price * item.quantity)}
+                              </span>
+                            )}
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-mono text-sm font-semibold text-obsidian">
+                                {formatPrice(item.unit_price * item.quantity)}
+                              </span>
+                              {item.base_price && item.base_price > item.unit_price && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-body font-bold uppercase tracking-wider bg-[#5B1924] text-[#F7F1EA] border border-[#C9A96E]/30">
+                                  SAVE {Math.round(((item.base_price - item.unit_price) / item.base_price) * 100)}%
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -271,6 +285,20 @@ export default function CartDrawer() {
                     <span>GST (included)</span>
                     <span className="font-mono">{formatPrice(gstAmount)}</span>
                   </div>
+                  {(() => {
+                    const productSavings = items.reduce(
+                      (acc, i) => acc + (i.base_price && i.base_price > i.unit_price ? (i.base_price - i.unit_price) * i.quantity : 0),
+                      0
+                    );
+                    const totalSavings = productSavings + (couponDiscount || 0);
+                    if (totalSavings <= 0) return null;
+                    return (
+                      <div className="flex justify-between items-center text-xs font-body py-1.5 px-2.5 rounded-lg bg-[#5B1924]/10 border border-[#5B1924]/20 text-[#5B1924]">
+                        <span className="font-semibold">You Save On This Order</span>
+                        <span className="font-mono font-bold">{formatPrice(totalSavings)}</span>
+                      </div>
+                    );
+                  })()}
                   <div className="flex justify-between text-sm font-body font-semibold text-obsidian pt-2 border-t border-beige">
                     <span>Total</span>
                     <span className="font-mono">{formatPrice(total)}</span>
