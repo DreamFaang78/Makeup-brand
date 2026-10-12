@@ -68,39 +68,46 @@ export default function ShopPage() {
     let products = [...allProducts];
 
     if (selectedCategory !== 'All') {
-      products = products.filter((p) =>
-        p.category?.name.toLowerCase() === selectedCategory.toLowerCase()
-      );
+      products = products.filter((p) => {
+        const catName = typeof p.category === 'string' ? p.category : p.category?.name || '';
+        return catName.trim().toLowerCase() === selectedCategory.trim().toLowerCase();
+      });
     }
 
     if (selectedTypes.length > 0) {
-      products = products.filter((p) =>
-        selectedTypes.some((t) => p.skin_types.includes(t) || p.skin_types.includes('all' as SkinType))
-      );
+      products = products.filter((p) => {
+        const types = Array.isArray(p.skin_types) ? p.skin_types : [];
+        return selectedTypes.some((t) => types.includes(t) || types.includes('all' as SkinType));
+      });
     }
 
     if (selectedConcerns.length > 0) {
-      products = products.filter((p) =>
-        selectedConcerns.some((c) => p.skin_concerns.includes(c))
-      );
+      products = products.filter((p) => {
+        const concerns = Array.isArray(p.skin_concerns) ? p.skin_concerns : [];
+        return selectedConcerns.some((c) => concerns.includes(c));
+      });
     }
 
-    products = products.filter((p) => (p.sale_price ?? p.base_price) <= priceMax);
+    products = products.filter((p) => {
+      const price = Number(p.sale_price !== null && p.sale_price !== undefined ? p.sale_price : (p.base_price ?? 0));
+      return price <= priceMax;
+    });
 
     switch (sortBy) {
       case 'bestselling': products.sort((a, b) => (b.is_bestseller ? 1 : 0) - (a.is_bestseller ? 1 : 0)); break;
-      case 'price-asc': products.sort((a, b) => (a.sale_price ?? a.base_price) - (b.sale_price ?? b.base_price)); break;
-      case 'price-desc': products.sort((a, b) => (b.sale_price ?? b.base_price) - (a.sale_price ?? a.base_price)); break;
-      case 'rating': products.sort((a, b) => b.rating_avg - a.rating_avg); break;
+      case 'price-asc': products.sort((a, b) => (Number(a.sale_price ?? a.base_price)) - (Number(b.sale_price ?? b.base_price))); break;
+      case 'price-desc': products.sort((a, b) => (Number(b.sale_price ?? b.base_price)) - (Number(a.sale_price ?? a.base_price))); break;
+      case 'rating': products.sort((a, b) => Number(b.rating_avg || 5) - Number(a.rating_avg || 5)); break;
       default: break;
     }
 
     return products;
-  }, [selectedCategory, selectedTypes, selectedConcerns, sortBy, priceMax]);
+  }, [allProducts, selectedCategory, selectedTypes, selectedConcerns, sortBy, priceMax]);
 
-  const activeFilterCount = selectedTypes.length + selectedConcerns.length + (priceMax < 2000 ? 1 : 0);
+  const activeFilterCount = selectedTypes.length + selectedConcerns.length + (priceMax < 2000 ? 1 : 0) + (selectedCategory !== 'All' ? 1 : 0);
 
   const clearFilters = () => {
+    setSelectedCategory('All');
     setSelectedTypes([]);
     setSelectedConcerns([]);
     setPriceMax(2000);
