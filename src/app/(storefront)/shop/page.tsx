@@ -4,13 +4,13 @@
 // Full featured with filters, sort, grid
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import ProductCard from '@/components/products/ProductCard';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 import { cn } from '@/lib/utils';
-import type { SortOption, SkinType, SkinConcern } from '@/types/product';
+import type { SortOption, SkinType, SkinConcern, ProductCardData } from '@/types/product';
 
 const CATEGORIES = ['All', 'Serums', 'Moisturisers', 'Cleansers', 'Sunscreen', 'Eye Care', 'Masks', 'Toners'];
 const SKIN_TYPES: SkinType[] = ['oily', 'dry', 'combination', 'sensitive', 'normal'];
@@ -24,12 +24,24 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ];
 
 export default function ShopPage() {
+  const [allProducts, setAllProducts] = useState<ProductCardData[]>(DEMO_PRODUCTS);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedTypes, setSelectedTypes] = useState<SkinType[]>([]);
   const [selectedConcerns, setSelectedConcerns] = useState<SkinConcern[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>('bestselling');
   const [priceMax, setPriceMax] = useState(2000);
   const [filtersOpen, setFiltersOpen] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+          setAllProducts(data.products);
+        }
+      })
+      .catch(err => console.error('Error fetching live products:', err));
+  }, []);
 
   const toggleType = (t: SkinType) =>
     setSelectedTypes((prev) => prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]);
@@ -38,7 +50,7 @@ export default function ShopPage() {
     setSelectedConcerns((prev) => prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]);
 
   const filteredProducts = useMemo(() => {
-    let products = [...DEMO_PRODUCTS];
+    let products = [...allProducts];
 
     if (selectedCategory !== 'All') {
       products = products.filter((p) =>
