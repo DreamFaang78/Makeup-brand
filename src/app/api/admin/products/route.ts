@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import { DEMO_PRODUCTS, DEMO_CATEGORIES } from '@/lib/data/products';
 
 function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -26,6 +27,11 @@ function getAdminClient() {
 
 function generateUUID(): string {
   return crypto.randomUUID();
+}
+
+function getDeterministicUUID(id: string, block: string): string {
+  const hash = crypto.createHash('md5').update(`${block}:${id}`).digest('hex');
+  return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-a${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
 }
 
 // GET: Fetch all products with categories, variants, and images
@@ -127,6 +133,16 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Product ID is required' }, { status: 400 });
     }
 
+    // Validate UUID format to prevent PostgreSQL 'invalid input syntax for type uuid: "1"'
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (!isUUID) {
+      console.log(`[Admin Products] Product ID "${id}" is not a UUID (client-side demo item). Successfully ignored in DB.`);
+      return NextResponse.json({
+        success: true,
+        message: `Product ${id} removed successfully`,
+      });
+    }
+
     console.log(`[Admin Products] Deleting product with ID: ${id}`);
 
     // 1. Unlink from order_items if referenced to preserve order history without violating FK
@@ -167,11 +183,96 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-// POST: Create a new product
+// POST: Create a new product OR seed demo products
 export async function POST(req: NextRequest) {
   try {
     const supabase = getAdminClient();
     const body = await req.json();
+
+    // Check if this is an explicit seed request
+    if (body.action === 'seed') {
+      console.log('[Admin Products] Seeding demo products to Supabase...');
+
+      // 1. Categories
+      const allCategoriesMap = new Map();
+      DEMO_CATEGORIES.forEach(c => allCategoriesMap.set(c.slug, c));
+      DEMO_PRODUCTS.forEach(p => {
+        if (p.category && !allCategoriesMap.has(p.category.slug)) {
+          allCategoriesMap.set(p.category.slug, p.category);
+        }
+      });
+
+      const categoriesToInsert = Array.from(allCategoriesMap.values()).map(cat => ({
+        id: getDeterministicUUID(cat.id || cat.slug, 'cat'),
+        name: cat.name,
+        slug: cat.slug,
+        description: cat.description || '',
+        image_url: cat.image_url || '',
+        sort_order: cat.sort_order || 0,
+        is_active: cat.is_active ?? true,
+      }));
+
+      await supabase.from('categories').upsert(categoriesToInsert, { onConflict: 'slug' });
+      const { data: dbCategories } = await supabase.from('categories').select('id, slug');
+      const catSlugToId = new Map(dbCategories?.map(c => [c.slug, c.id]) || []);
+
+      // 2. Products
+      const productsToInsert = DEMO_PRODUCTS.map(prod => ({
+        id: getDeterministicUUID(prod.id, 'prod'),
+        name: prod.name,
+        slug: prod.slug,
+        tagline: prod.tagline,
+        description: prod.tagline,
+        category_id: prod.category ? catSlugToId.get(prod.category.slug) || null : null,
+        skin_types: prod.skin_types,
+        skin_concerns: prod.skin_concerns,
+        base_price: prod.base_price,
+        sale_price: prod.sale_price,
+        status: 'active',
+        is_featured: prod.is_bestseller,
+        is_bestseller: prod.is_bestseller,
+        rating_avg: prod.rating_avg,
+        rating_count: prod.rating_count,
+        og_image_url: prod.images[0]?.url || '/Serum Bottle.jpeg',
+      }));
+
+      const { error: pErr } = await supabase.from('products').upsert(productsToInsert, { onConflict: 'slug' });
+      if (pErr) throw new Error(pErr.message);
+
+      // 3. Variants
+      const variantsToInsert = DEMO_PRODUCTS.flatMap(prod =>
+        prod.variants.map((v, idx) => ({
+          id: getDeterministicUUID(v.id || `${prod.id}-var-${idx}`, 'var'),
+          product_id: getDeterministicUUID(prod.id, 'prod'),
+          name: v.name,
+          sku: v.sku,
+          price: v.price,
+          sale_price: v.sale_price,
+          inventory: v.inventory,
+          is_active: v.is_active ?? true,
+          sort_order: v.sort_order || idx,
+        }))
+      );
+      await supabase.from('product_variants').upsert(variantsToInsert, { onConflict: 'sku' });
+
+      // 4. Images
+      const imagesToInsert = DEMO_PRODUCTS.flatMap(prod =>
+        prod.images.map((img, index) => ({
+          id: getDeterministicUUID(img.id || `${prod.id}-img-${index}`, 'img'),
+          product_id: getDeterministicUUID(prod.id, 'prod'),
+          url: img.url,
+          alt_text: img.alt_text,
+          sort_order: img.sort_order || index,
+          is_video: img.is_video || false,
+        }))
+      );
+      await supabase.from('product_images').upsert(imagesToInsert, { onConflict: 'id' });
+
+      return NextResponse.json({
+        success: true,
+        message: 'Successfully seeded 9 starter products into Supabase!',
+      });
+    }
 
     const {
       name,
@@ -340,6 +441,12 @@ export async function PUT(req: NextRequest) {
 
     if (!id) {
       return NextResponse.json({ success: false, error: 'Product ID is required' }, { status: 400 });
+    }
+
+    // If ID is not a UUID (client-side demo item), return success
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (!isUUID) {
+      return NextResponse.json({ success: true, message: 'Demo product updated locally' });
     }
 
     const updates: any = {};

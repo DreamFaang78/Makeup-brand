@@ -4,15 +4,17 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Package, Search, Plus, Edit2, Trash2, X, AlertTriangle, Check, Filter,
-  RefreshCw, Loader2, UploadCloud, ImagePlus, Star, Link as LinkIcon, Sparkles
+  RefreshCw, Loader2, UploadCloud, ImagePlus, Star, Link as LinkIcon, Sparkles,
+  Database
 } from 'lucide-react';
-import { DEMO_PRODUCTS, DEMO_CATEGORIES } from '@/lib/data/products';
+import { DEMO_CATEGORIES } from '@/lib/data/products';
 import { formatPrice } from '@/lib/utils';
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState<any[]>(DEMO_PRODUCTS);
+  const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [notice, setNotice] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -56,16 +58,16 @@ export default function AdminProductsPage() {
       const res = await fetch('/api/admin/products');
       const data = await res.json();
 
-      if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+      if (data.success && Array.isArray(data.products)) {
+        // Accurately reflect whatever is in Supabase (even if empty!)
         setProducts(data.products);
-      } else if (data.success && Array.isArray(data.products) && data.products.length === 0) {
-        // If DB is empty, use demo products as preview fallback
-        setProducts(DEMO_PRODUCTS);
       } else {
-        console.warn('API returned fallback:', data.error);
+        console.warn('API returned error:', data.error);
+        setNotice({ type: 'error', message: data.error || 'Failed to fetch products' });
       }
     } catch (err: any) {
       console.error('Failed to fetch products from Supabase:', err);
+      setNotice({ type: 'error', message: 'Could not connect to database.' });
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -75,6 +77,33 @@ export default function AdminProductsPage() {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  // Seed / Reset Starter Catalog
+  const handleSeedCatalog = async () => {
+    if (!confirm('Populate the 9 starter skincare products into your Supabase database?')) return;
+    setIsSeeding(true);
+
+    try {
+      const res = await fetch('/api/admin/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'seed' }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to seed database');
+      }
+
+      setNotice({ type: 'success', message: '9 starter products seeded into Supabase!' });
+      await fetchProducts();
+    } catch (err: any) {
+      console.error('Seeding error:', err);
+      setNotice({ type: 'error', message: err.message || 'Seeding failed' });
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   // Extract unique category names from loaded products + demo categories
   const categoriesList = useMemo(() => {
@@ -161,7 +190,7 @@ export default function AdminProductsPage() {
       }
 
       setFormImages(prev => {
-        // If prev only had the single default demo image on new product, replace it
+        // If prev only had the single default placeholder on new product, replace it
         const cleanPrev =
           prev.length === 1 && prev[0] === '/Serum Bottle.jpeg' && !editingProduct
             ? []
@@ -325,6 +354,18 @@ export default function AdminProductsPage() {
       return;
     }
 
+    // Check if UUID
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (!isUUID) {
+      // Non-UUID mock product: immediately remove from view
+      setProducts(prev => prev.filter(p => p.id !== id));
+      setNotice({
+        type: 'success',
+        message: `"${name}" removed from view.`,
+      });
+      return;
+    }
+
     setDeletingId(id);
 
     try {
@@ -456,6 +497,17 @@ export default function AdminProductsPage() {
             <RefreshCw size={13} className={isRefreshing ? 'animate-spin text-gold' : ''} />
             <span className="hidden md:inline text-[11px] font-medium">Sync DB</span>
           </button>
+
+          {products.length === 0 && (
+            <button
+              onClick={handleSeedCatalog}
+              disabled={isSeeding}
+              className="px-3 py-2 border border-gold/40 text-gold hover:bg-gold/10 rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50"
+            >
+              {isSeeding ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} />}
+              <span>Seed Demo Data</span>
+            </button>
+          )}
 
           <button
             onClick={handleOpenAddModal}
@@ -650,11 +702,37 @@ export default function AdminProductsPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Empty State when 0 products in Supabase */}
         {!isLoading && filteredProducts.length === 0 && (
-          <div className="text-center py-12 px-4 text-taupe">
-            <Package size={32} className="mx-auto mb-2 opacity-40 text-taupe" />
-            <p className="text-sm font-semibold text-obsidian">No products found</p>
-            <p className="text-xs">Try adjusting your filters, search query, or add a new product.</p>
+          <div className="text-center py-16 px-4 max-w-md mx-auto">
+            <div className="w-12 h-12 rounded-full bg-gold/10 text-gold flex items-center justify-center mx-auto mb-3">
+              <Package size={24} />
+            </div>
+            <h3 className="font-heading text-base text-obsidian font-semibold">
+              {products.length === 0 ? 'Catalog is Empty (0 Products)' : 'No matching products found'}
+            </h3>
+            <p className="text-xs text-taupe mt-1 mb-5 font-body">
+              {products.length === 0
+                ? 'All products have been deleted from your Supabase database. You can add a new skincare product or restore the starter demo catalog.'
+                : 'Try clearing your search query or category filters.'}
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button onClick={handleOpenAddModal} className="btn-gold text-xs py-2 px-4 flex items-center gap-1.5">
+                <Plus size={14} /> Add Product
+              </button>
+              {products.length === 0 && (
+                <button
+                  onClick={handleSeedCatalog}
+                  disabled={isSeeding}
+                  className="px-4 py-2 border border-gold/40 text-gold hover:bg-gold/10 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  {isSeeding ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} />}
+                  Restore Demo Catalog
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
