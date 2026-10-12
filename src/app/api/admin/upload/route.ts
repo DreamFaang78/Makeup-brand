@@ -8,6 +8,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const maxDuration = 60;
+
 function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -81,7 +85,13 @@ export async function POST(req: NextRequest) {
         const uniqueId = crypto.randomUUID().slice(0, 8);
         const filePath = `${Date.now()}-${uniqueId}-${cleanBaseName}.${ext}`;
 
-        const contentType = file.type || `image/${ext === 'jpg' ? 'jpeg' : ext}`;
+        let contentType = file.type || '';
+        if (!contentType || contentType === 'application/octet-stream') {
+          if (ext === 'png') contentType = 'image/png';
+          else if (ext === 'webp') contentType = 'image/webp';
+          else if (ext === 'gif') contentType = 'image/gif';
+          else contentType = 'image/jpeg';
+        }
 
         const { data, error: uploadError } = await supabase.storage
           .from(BUCKET_NAME)

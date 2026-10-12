@@ -36,6 +36,7 @@ export default function AdminProductsPage() {
   // Multi-image upload state
   const [formImages, setFormImages] = useState<string[]>(['/Serum Bottle.jpeg']);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [customUrlInput, setCustomUrlInput] = useState('');
@@ -168,45 +169,140 @@ export default function AdminProductsPage() {
     setIsModalOpen(true);
   };
 
-  // Upload multiple files in one go
+  // Client-side image compression to bypass Vercel 4.5MB serverless payload limit
+  const compressImage = async (file: File, maxDim = 1920, quality = 0.85): Promise<File> => {
+    if (!file.type.startsWith('image/') || file.type === 'image/svg+xml' || file.type === 'image/gif') {
+      return file;
+    }
+
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new (window as any).Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(file);
+            return;
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+          const outputType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+          canvas.toBlob(
+            (blob) => {
+              if (!blob || blob.size >= file.size) {
+                resolve(file);
+              } else {
+                const compressedFile = new File([blob], file.name, {
+                  type: outputType,
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              }
+            },
+            outputType,
+            quality
+          );
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Upload multiple files sequentially with automatic client-side compression
   const handleFilesSelected = async (files: FileList | File[]) => {
     if (!files || files.length === 0) return;
     setIsUploading(true);
 
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i]);
-    }
+    const fileArray = Array.from(files);
+    const uploadedUrls: string[] = [];
+    const errors: string[] = [];
 
     try {
-      const res = await fetch('/api/admin/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
+      for (let i = 0; i < fileArray.length; i++) {
+        const file = fileArray[i];
+        setUploadProgress(`Optimizing & uploading ${i + 1} of ${fileArray.length}...`);
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to upload photos');
+        // Compress large camera/mobile images to ~300KB
+        const optimizedFile = await compressImage(file);
+
+        const formData = new FormData();
+        formData.append('file', optimizedFile);
+
+        const res = await fetch('/api/admin/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          let errMsg = `Upload failed (${res.status})`;
+          try {
+            const json = JSON.parse(text);
+            errMsg = json.error || errMsg;
+          } catch {
+            if (res.status === 413) {
+              errMsg = 'Image file too large for server limit.';
+            } else if (text && text.length < 80) {
+              errMsg = text;
+            }
+          }
+          errors.push(`${file.name}: ${errMsg}`);
+          continue;
+        }
+
+        const data = await res.json();
+        if (data.success && Array.isArray(data.urls) && data.urls.length > 0) {
+          uploadedUrls.push(...data.urls);
+        } else if (data.error) {
+          errors.push(`${file.name}: ${data.error}`);
+        }
       }
 
-      setFormImages(prev => {
-        // If prev only had the single default placeholder on new product, replace it
-        const cleanPrev =
-          prev.length === 1 && prev[0] === '/Serum Bottle.jpeg' && !editingProduct
-            ? []
-            : prev;
-        return [...cleanPrev, ...data.urls];
-      });
+      if (uploadedUrls.length > 0) {
+        setFormImages((prev) => {
+          const cleanPrev =
+            prev.length === 1 && prev[0] === '/Serum Bottle.jpeg' && !editingProduct
+              ? []
+              : prev;
+          return [...cleanPrev, ...uploadedUrls];
+        });
 
-      setNotice({
-        type: 'success',
-        message: `Uploaded ${data.count} photo${data.count > 1 ? 's' : ''} in one go to Supabase!`,
-      });
+        setNotice({
+          type: 'success',
+          message: `Successfully uploaded ${uploadedUrls.length} photo${uploadedUrls.length > 1 ? 's' : ''} to Supabase Storage!`,
+        });
+      }
+
+      if (errors.length > 0) {
+        setNotice({
+          type: 'error',
+          message: `Some photos had issues: ${errors.join(', ')}`,
+        });
+      }
     } catch (err: any) {
-      console.error('Error uploading photos:', err);
+      console.error('Error during photo upload:', err);
       setNotice({ type: 'error', message: err.message || 'Failed to upload photos' });
     } finally {
       setIsUploading(false);
+      setUploadProgress('');
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
@@ -926,8 +1022,10 @@ export default function AdminProductsPage() {
                     {isUploading ? (
                       <div className="flex flex-col items-center py-2 gap-2 text-obsidian">
                         <Loader2 size={24} className="animate-spin text-gold" />
-                        <span className="text-xs font-semibold">Uploading photos to Supabase Storage...</span>
-                        <span className="text-[10px] text-taupe">Saving high-resolution product media</span>
+                        <span className="text-xs font-semibold">
+                          {uploadProgress || 'Uploading photos to Supabase Storage...'}
+                        </span>
+                        <span className="text-[10px] text-taupe">Auto-optimizing & storing high-resolution product media</span>
                       </div>
                     ) : (
                       <>
