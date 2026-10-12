@@ -1,12 +1,15 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // LANAN — Public Products API
 // GET /api/products
-// Returns active products from Supabase
+// Returns live active products directly from Supabase
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { DEMO_PRODUCTS } from '@/lib/data/products';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 export async function GET() {
   try {
@@ -14,7 +17,7 @@ export async function GET() {
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!url || !anonKey) {
-      return NextResponse.json({ success: true, products: DEMO_PRODUCTS });
+      return NextResponse.json({ success: true, products: [] });
     }
 
     const supabase = createClient(url, anonKey);
@@ -30,11 +33,12 @@ export async function GET() {
       .neq('status', 'draft')
       .order('created_at', { ascending: false });
 
-    if (error || !rawProducts || rawProducts.length === 0) {
-      return NextResponse.json({ success: true, products: DEMO_PRODUCTS });
+    if (error) {
+      console.error('Error querying Supabase products:', error);
+      return NextResponse.json({ success: false, error: error.message, products: [] });
     }
 
-    const products = rawProducts.map((p: any) => {
+    const products = (rawProducts || []).map((p: any) => {
       const sortedVariants = (p.variants || []).sort(
         (a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0)
       );
@@ -86,6 +90,6 @@ export async function GET() {
     return NextResponse.json({ success: true, products });
   } catch (err: any) {
     console.error('Public products API error:', err);
-    return NextResponse.json({ success: true, products: DEMO_PRODUCTS });
+    return NextResponse.json({ success: false, error: err.message, products: [] });
   }
 }

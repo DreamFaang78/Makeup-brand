@@ -24,7 +24,8 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ];
 
 export default function ShopPage() {
-  const [allProducts, setAllProducts] = useState<ProductCardData[]>(DEMO_PRODUCTS);
+  const [allProducts, setAllProducts] = useState<ProductCardData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedTypes, setSelectedTypes] = useState<SkinType[]>([]);
   const [selectedConcerns, setSelectedConcerns] = useState<SkinConcern[]>([]);
@@ -33,14 +34,28 @@ export default function ShopPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     fetch('/api/products')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.success && Array.isArray(data.products)) {
           setAllProducts(data.products);
+        } else {
+          setAllProducts([]);
         }
       })
-      .catch(err => console.error('Error fetching live products:', err));
+      .catch((err) => {
+        console.error('Error fetching live products:', err);
+        if (isMounted) setAllProducts([]);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const toggleType = (t: SkinType) =>
@@ -243,15 +258,30 @@ export default function ShopPage() {
           {/* ── Products Grid ── */}
           <div className="flex-1">
             <AnimatePresence mode="wait">
-              {filteredProducts.length === 0 ? (
+              {isLoading ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-5">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="card-luxury p-3 md:p-4 bg-white animate-pulse space-y-3">
+                      <div className="aspect-square bg-beige/40 rounded-card" />
+                      <div className="h-3 w-16 bg-beige/50 rounded" />
+                      <div className="h-4 w-3/4 bg-beige/60 rounded" />
+                      <div className="h-3 w-1/3 bg-beige/40 rounded" />
+                    </div>
+                  ))}
+                </div>
+              ) : filteredProducts.length === 0 ? (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="text-center py-20"
                 >
                   <p className="font-heading text-2xl text-taupe mb-2">No products found</p>
-                  <p className="text-sm font-body text-taupe/70 mb-6">Try adjusting your filters</p>
-                  <button onClick={clearFilters} className="btn-gold">Clear Filters</button>
+                  <p className="text-sm font-body text-taupe/70 mb-6">
+                    {allProducts.length === 0 ? 'No products currently in the catalog.' : 'Try adjusting your filters.'}
+                  </p>
+                  {allProducts.length > 0 && (
+                    <button onClick={clearFilters} className="btn-gold">Clear Filters</button>
+                  )}
                 </motion.div>
               ) : (
                 <motion.div

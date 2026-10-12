@@ -4,20 +4,21 @@
 // Full PDP with gallery, variants, tabs, add to cart, reviews
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, ShoppingBag, Zap, ShieldCheck, RefreshCw, Package,
-  MapPin, ChevronDown, Heart, Share2, Minus, Plus, Check
+  MapPin, ChevronDown, Heart, Share2, Minus, Plus, Check, ArrowLeft,
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 import { formatPrice, discountPercent, cn } from '@/lib/utils';
 import ProductCard from '@/components/products/ProductCard';
 import { toast } from 'sonner';
+import type { ProductCardData } from '@/types/product';
 
 type TabKey = 'description' | 'ingredients' | 'how-to-use' | 'reviews';
 
@@ -32,10 +33,39 @@ export default function ProductDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
 
-  const product = DEMO_PRODUCTS.find((p) => p.slug === slug) ?? DEMO_PRODUCTS[0];
-  const allProducts = DEMO_PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4);
+  const [product, setProduct] = useState<ProductCardData | null>(null);
+  const [allProducts, setAllProducts] = useState<ProductCardData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
 
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        const catalog: ProductCardData[] = data.success && Array.isArray(data.products) && data.products.length > 0
+          ? data.products
+          : DEMO_PRODUCTS;
+
+        const found = catalog.find((p) => p.slug === slug || p.id === slug) ?? null;
+        setProduct(found);
+        if (found) {
+          setSelectedVariant(found.variants?.[0] ?? null);
+          setAllProducts(catalog.filter((p) => p.id !== found.id).slice(0, 4));
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching product detail:', err);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<TabKey>('description');
@@ -44,6 +74,30 @@ export default function ProductDetailPage() {
   const [wishlisted, setWishlisted] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
   const { addItem } = useCartStore();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-ivory flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <RefreshCw className="animate-spin text-gold mx-auto" size={32} />
+          <p className="font-heading text-lg text-obsidian font-light">Loading Formulation...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-[70vh] bg-ivory flex flex-col items-center justify-center text-center p-6">
+        <p className="font-heading text-3xl text-obsidian font-light mb-3">Product Not Found</p>
+        <p className="text-sm font-body text-taupe mb-6 max-w-sm">The formulation you are looking for may have been removed or is no longer available.</p>
+        <Link href="/shop" className="btn-gold flex items-center gap-2">
+          <ArrowLeft size={16} />
+          Back to Collection
+        </Link>
+      </div>
+    );
+  }
 
   const displayPrice = selectedVariant?.sale_price ?? selectedVariant?.price ?? product.sale_price ?? product.base_price;
   const originalPrice = selectedVariant?.price ?? product.base_price;

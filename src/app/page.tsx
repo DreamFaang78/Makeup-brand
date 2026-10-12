@@ -4,7 +4,7 @@
 // Hero, Trust Ticker, Bestsellers, Brand Story, Ingredients, Reviews, Newsletter
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
@@ -15,6 +15,7 @@ import {
 import ProductCard from '@/components/products/ProductCard';
 import { DEMO_PRODUCTS, DEMO_REVIEWS } from '@/lib/data/products';
 import { formatPrice, cn } from '@/lib/utils';
+import type { ProductCardData } from '@/types/product';
 
 /* ── Animation helpers ── */
 function FadeUp({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -158,7 +159,38 @@ function IngredientCard({ ingredient, i }: { ingredient: any; i: number }) {
 ───────────────────────────────────────────────────────────────────────────── */
 export default function HomePage() {
   const [reviewIndex, setReviewIndex] = useState(0);
-  const bestsellers = DEMO_PRODUCTS.filter((p) => p.is_bestseller);
+  const [products, setProducts] = useState<ProductCardData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.success && Array.isArray(data.products)) {
+          setProducts(data.products);
+        } else {
+          setProducts([]);
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching homepage products:', err);
+        if (isMounted) setProducts([]);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const bestsellers = useMemo(() => {
+    const featured = products.filter((p) => p.is_bestseller);
+    return featured.length > 0 ? featured : products.slice(0, 4);
+  }, [products]);
 
   const prevReview = () => setReviewIndex((i) => (i === 0 ? DEMO_REVIEWS.length - 1 : i - 1));
   const nextReview = () => setReviewIndex((i) => (i === DEMO_REVIEWS.length - 1 ? 0 : i + 1));
@@ -413,11 +445,30 @@ export default function HomePage() {
             </p>
           </FadeUp>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
-            {bestsellers.map((product, i) => (
-              <ProductCard key={product.id} product={product} index={i} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="card-luxury p-3 md:p-4 bg-white/70 animate-pulse space-y-3">
+                  <div className="aspect-square bg-beige/40 rounded-card" />
+                  <div className="h-3 w-16 bg-beige/50 rounded" />
+                  <div className="h-4 w-3/4 bg-beige/60 rounded" />
+                  <div className="h-3 w-1/3 bg-beige/40 rounded" />
+                </div>
+              ))}
+            </div>
+          ) : bestsellers.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+              {bestsellers.map((product, i) => (
+                <ProductCard key={product.id} product={product} index={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 px-4 rounded-2xl bg-white/60 border border-beige/60 max-w-md mx-auto">
+              <Sparkles className="mx-auto text-gold/60 mb-3" size={28} />
+              <p className="font-heading text-lg text-obsidian font-light">New Formulations Coming Soon</p>
+              <p className="text-xs font-body text-taupe mt-1">Our curated rituals are being updated. Check back shortly.</p>
+            </div>
+          )}
 
           <FadeUp className="text-center mt-10">
             <Link href="/shop" className="btn-outline-gold">
@@ -741,11 +792,30 @@ export default function HomePage() {
             <div className="divider-gold mt-3" />
           </FadeUp>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
-            {DEMO_PRODUCTS.map((product, i) => (
-              <ProductCard key={product.id} product={product} index={i} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="card-luxury p-3 md:p-4 bg-white/70 animate-pulse space-y-3">
+                  <div className="aspect-square bg-beige/40 rounded-card" />
+                  <div className="h-3 w-16 bg-beige/50 rounded" />
+                  <div className="h-4 w-3/4 bg-beige/60 rounded" />
+                  <div className="h-3 w-1/3 bg-beige/40 rounded" />
+                </div>
+              ))}
+            </div>
+          ) : products.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+              {products.map((product, i) => (
+                <ProductCard key={product.id} product={product} index={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 px-4 rounded-2xl bg-white/60 border border-beige/60 max-w-md mx-auto">
+              <Sparkles className="mx-auto text-gold/60 mb-3" size={28} />
+              <p className="font-heading text-lg text-obsidian font-light">Collection Updating</p>
+              <p className="text-xs font-body text-taupe mt-1">Discover our full range once items are published.</p>
+            </div>
+          )}
 
           <FadeUp className="text-center mt-10">
             <Link href="/shop" className="btn-gold">
