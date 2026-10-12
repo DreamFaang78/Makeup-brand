@@ -49,18 +49,28 @@ export async function GET(req: NextRequest) {
     const ordersWithCustomers = await Promise.all((data || []).map(async (order) => {
       let customer = null;
       if (order.customer_id) {
-        const { data: custData } = await supabase
-          .from('customers')
-          .select('full_name, phone, email')
-          .eq('id', order.customer_id)
-          .single();
-        customer = custData;
+        try {
+          const { data: custData } = await supabase
+            .from('customers')
+            .select('full_name, phone, email')
+            .eq('id', order.customer_id)
+            .single();
+          customer = custData;
+        } catch {
+          // Ignore missing customers table
+        }
       }
+
+      const customerObj = customer || (order.customer_name ? {
+        full_name: order.customer_name,
+        email: order.customer_email,
+        phone: order.customer_phone,
+      } : undefined);
       
       return {
         ...order,
         items: order.order_items || [],
-        customer: customer || undefined,
+        customer: customerObj,
       };
     }));
 

@@ -115,8 +115,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Create order record
-    const { data: order, error: orderError } = await supabase
+    // Create order record (Attempt 1: Relational Schema)
+    let order: any = null;
+    const { data: relOrder, error: orderError } = await supabase
       .from('orders')
       .insert({
         order_number,
@@ -141,14 +142,45 @@ export async function POST(req: NextRequest) {
       .select('id')
       .single();
 
-    if (orderError) {
-      console.error('Order creation error:', orderError.message);
-      return NextResponse.json({ error: 'Failed to create order', verified: true }, { status: 500 });
+    if (!orderError && relOrder) {
+      order = relOrder;
+    } else {
+      console.warn('[Verify Payment] Relational order insert failed, attempting flat schema insert:', orderError?.message);
+
+      // Attempt 2: Flat Orders Schema
+      const custName = orderData.shipping_address?.full_name || orderData.full_name || 'Valued Customer';
+      const custEmail = orderData.shipping_address?.email || orderData.guest_email || orderData.email || 'customer@example.com';
+      const custPhone = orderData.shipping_address?.phone || orderData.guest_phone || orderData.phone || '0000000000';
+
+      const { data: flatOrder, error: flatOrderError } = await supabase
+        .from('orders')
+        .insert({
+          total_amount: orderData.total_amount || 0,
+          status: 'Confirmed',
+          payment_method: 'razorpay',
+          payment_status: 'payment_captured',
+          razorpay_order_id,
+          razorpay_payment_id,
+          shipping_address: orderData.shipping_address || {},
+          billing_address: orderData.billing_address || null,
+          customer_name: custName,
+          customer_email: custEmail,
+          customer_phone: custPhone,
+        })
+        .select('id')
+        .single();
+
+      if (flatOrderError) {
+        console.error('Order creation error (both schemas failed):', flatOrderError.message);
+        return NextResponse.json({ error: 'Failed to create order', verified: true }, { status: 500 });
+      }
+      order = flatOrder;
     }
 
     // Create order items
     if (orderData.items && order) {
-      const orderItems = orderData.items.map((item: any) => ({
+      // Attempt 1: Relational order_items
+      const relOrderItems = orderData.items.map((item: any) => ({
         order_id: order.id,
         product_id: item.product_id || null,
         variant_id: item.variant_id || null,
@@ -163,10 +195,25 @@ export async function POST(req: NextRequest) {
 
       const { error: itemsError } = await supabase
         .from('order_items')
-        .insert(orderItems);
+        .insert(relOrderItems);
 
       if (itemsError) {
-        console.error('Order items creation error:', itemsError.message);
+        console.warn('[Verify Payment] Relational order_items failed, attempting flat schema insert:', itemsError.message);
+        // Attempt 2: Flat order_items
+        const flatOrderItems = orderData.items.map((item: any) => ({
+          order_id: order.id,
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price_at_purchase: item.unit_price || item.price || 0,
+        }));
+
+        const { error: flatItemsErr } = await supabase
+          .from('order_items')
+          .insert(flatOrderItems);
+
+        if (flatItemsErr) {
+          console.error('Flat order items creation error:', flatItemsErr.message);
+        }
       }
     }
 

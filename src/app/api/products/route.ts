@@ -22,7 +22,9 @@ export async function GET() {
 
     const supabase = createClient(url, anonKey);
 
-    const { data: rawProducts, error } = await supabase
+    // 1. Try relational query first
+    let rawProducts: any[] = [];
+    const richRes = await supabase
       .from('products')
       .select(`
         *,
@@ -30,60 +32,100 @@ export async function GET() {
         variants:product_variants(*),
         images:product_images(*)
       `)
-      .neq('status', 'draft')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Error querying Supabase products:', error);
-      return NextResponse.json({ success: false, error: error.message, products: [] });
+    if (!richRes.error && Array.isArray(richRes.data)) {
+      rawProducts = richRes.data;
+    } else {
+      // 2. Fallback to flat select * for simpler schema (id, name, slug, description, price, image_url, category, stock, is_active)
+      const flatRes = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (flatRes.error) {
+        console.error('Error querying Supabase products:', flatRes.error);
+        return NextResponse.json({ success: false, error: flatRes.error.message, products: [] });
+      }
+      rawProducts = flatRes.data || [];
     }
 
-    const products = (rawProducts || []).map((p: any) => {
-      const sortedVariants = (p.variants || []).sort(
-        (a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0)
-      );
-      const sortedImages = (p.images || []).sort(
-        (a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0)
-      );
+    // Filter out inactive or draft products
+    const activeProducts = rawProducts.filter((p: any) => {
+      if (p.is_active === false) return false;
+      if (p.status === 'draft') return false;
+      return true;
+    });
+
+    const products = activeProducts.map((p: any) => {
+      // Handle prices (supports base_price or price)
+      const basePrice = Number(p.base_price ?? p.price ?? 0);
+      const salePrice = p.sale_price !== null && p.sale_price !== undefined ? Number(p.sale_price) : null;
+
+      // Handle images (supports product_images relation, image_url, og_image_url)
+      let images = [];
+      if (Array.isArray(p.images) && p.images.length > 0) {
+        images = p.images.sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+      } else if (p.image_url) {
+        images = [{ id: `img-${p.id}`, url: p.image_url, alt_text: p.name, sort_order: 0, is_video: false }];
+      } else if (p.og_image_url) {
+        images = [{ id: `img-${p.id}`, url: p.og_image_url, alt_text: p.name, sort_order: 0, is_video: false }];
+      } else {
+        images = [{ id: `img-${p.id}`, url: '/Serum Bottle.jpeg', alt_text: p.name, sort_order: 0, is_video: false }];
+      }
+
+      // Handle variants & inventory (supports product_variants or stock column)
+      let variants = [];
+      if (Array.isArray(p.variants) && p.variants.length > 0) {
+        variants = p.variants.sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+      } else {
+        variants = [{
+          id: `v-${p.id}`,
+          product_id: p.id,
+          name: 'Standard',
+          sku: p.sku || `SKU-${String(p.id).slice(0, 8)}`,
+          price: salePrice || basePrice,
+          sale_price: null,
+          inventory: Number(p.stock ?? 50),
+          is_active: p.is_active !== false,
+          sort_order: 0,
+        }];
+      }
+
+      // Handle category (supports categories object or text string)
+      let categoryObj = null;
+      if (p.category && typeof p.category === 'object' && p.category.name) {
+        categoryObj = p.category;
+      } else if (typeof p.category === 'string' && p.category.trim()) {
+        const catName = p.category.trim();
+        categoryObj = {
+          id: `cat-${catName.toLowerCase().replace(/\s+/g, '-')}`,
+          name: catName,
+          slug: catName.toLowerCase().replace(/\s+/g, '-'),
+          description: '',
+          image_url: '',
+          sort_order: 0,
+          is_active: true,
+        };
+      }
 
       return {
         id: p.id,
         name: p.name,
         slug: p.slug,
-        tagline: p.tagline || '',
+        tagline: p.tagline || p.description || '',
         description: p.description || '',
-        base_price: Number(p.base_price),
-        sale_price: p.sale_price !== null ? Number(p.sale_price) : null,
+        base_price: basePrice,
+        sale_price: salePrice,
         rating_avg: Number(p.rating_avg || 5.0),
         rating_count: Number(p.rating_count || 0),
-        status: p.status || 'active',
+        status: p.status || (p.is_active === false ? 'draft' : 'active'),
         is_bestseller: Boolean(p.is_bestseller),
         skin_types: p.skin_types || ['all'],
         skin_concerns: p.skin_concerns || [],
-        category: p.category || null,
-        variants: sortedVariants.length > 0 ? sortedVariants : [
-          {
-            id: `v-${p.id}`,
-            product_id: p.id,
-            name: 'Standard',
-            sku: p.sku || 'N/A',
-            price: Number(p.sale_price || p.base_price),
-            sale_price: null,
-            inventory: 50,
-            is_active: true,
-            sort_order: 0,
-          }
-        ],
-        images: sortedImages.length > 0 ? sortedImages : [
-          {
-            id: `img-${p.id}`,
-            product_id: p.id,
-            url: p.og_image_url || '/Serum Bottle.jpeg',
-            alt_text: p.name,
-            sort_order: 0,
-            is_video: false,
-          }
-        ],
+        category: categoryObj,
+        variants,
+        images,
       };
     });
 
