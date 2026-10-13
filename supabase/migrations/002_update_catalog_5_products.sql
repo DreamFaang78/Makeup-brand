@@ -7,11 +7,11 @@
 -- 1. Ensure Categories Exist with Canonical Slugs
 INSERT INTO public.categories (id, name, slug, description, image_url, sort_order, is_active)
 VALUES
-  ('081c55fe-b0ec-4df4-a400-a44f7a7152d5', 'Cleansers', 'cleansers', 'Gentle daily cleansing rituals', '/lanan-face-wash.jpeg', 0, true),
-  ('ab599fa6-9562-44df-a52e-f39f25f70bf0', 'Moisturisers', 'moisturisers', 'Deep hydration for every skin type', '/lanan-face-moisturizer.jpeg', 1, true),
-  ('bec469d0-bb3c-4ebe-aa04-1cb282c0424f', 'Sunscreen', 'sunscreen', 'Broad spectrum daily protection', '/lanan-sunscreen-spf-50.jpeg', 2, true),
-  ('a081e852-628d-493e-a158-f196d26a8326', 'Toners', 'toners', 'Balancing and refreshing toner rituals', '/lanan-glutathione-face-toner.jpeg', 3, true),
-  ('51ebeaa3-8500-4e78-a56b-4319703f5d52', 'Serums', 'serums', 'Concentrated formulas for targeted skin concerns', '/lanan-glutathione-face-serum.jpeg', 4, true)
+  ('081c55fe-b0ec-4df4-a400-a44f7a7152d5', 'Cleansers', 'cleansers', 'Gentle daily cleansing rituals', 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-face-wash.jpeg', 0, true),
+  ('ab599fa6-9562-44df-a52e-f39f25f70bf0', 'Moisturisers', 'moisturisers', 'Deep hydration for every skin type', 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-face-moisturizer.jpeg', 1, true),
+  ('bec469d0-bb3c-4ebe-aa04-1cb282c0424f', 'Sunscreen', 'sunscreen', 'Broad spectrum daily protection', 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-sunscreen-spf-50.jpeg', 2, true),
+  ('a081e852-628d-493e-a158-f196d26a8326', 'Toners', 'toners', 'Balancing and refreshing toner rituals', 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-glutathione-face-toner.jpeg', 3, true),
+  ('51ebeaa3-8500-4e78-a56b-4319703f5d52', 'Serums', 'serums', 'Concentrated formulas for targeted skin concerns', 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-glutathione-face-serum.jpeg', 4, true)
 ON CONFLICT (slug) DO UPDATE SET
   name = EXCLUDED.name,
   image_url = EXCLUDED.image_url,
@@ -56,7 +56,7 @@ BEGIN
       true,
       4.8,
       86,
-      '/lanan-face-wash.jpeg'
+      'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-face-wash.jpeg'
     );
   ELSE
     UPDATE public.products SET
@@ -72,7 +72,7 @@ BEGIN
       sku = 'LFW-100',
       status = 'active',
       is_bestseller = true,
-      og_image_url = '/lanan-face-wash.jpeg'
+      og_image_url = 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-face-wash.jpeg'
     WHERE id = v_prod_id;
   END IF;
 
@@ -84,7 +84,7 @@ BEGIN
   -- Ensure primary image
   DELETE FROM public.product_images WHERE product_id = v_prod_id;
   INSERT INTO public.product_images (product_id, url, alt_text, sort_order, is_video)
-  VALUES (v_prod_id, '/lanan-face-wash.jpeg', 'LANAN Face Wash – 100 ml', 0, false);
+  VALUES (v_prod_id, 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-face-wash.jpeg', 'LANAN Face Wash – 100 ml', 0, false);
 END $$;
 
 -- 4. Standardize Product 2: LANAN Face Moisturizer – 50 g (status: draft / hidden)
@@ -115,7 +115,7 @@ BEGIN
       false,
       4.7,
       42,
-      '/lanan-face-moisturizer.jpeg'
+      'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-face-moisturizer.jpeg'
     );
   ELSE
     UPDATE public.products SET
@@ -131,7 +131,7 @@ BEGIN
       sku = 'LFM-50',
       status = 'draft',
       is_bestseller = false,
-      og_image_url = '/lanan-face-moisturizer.jpeg'
+      og_image_url = 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-face-moisturizer.jpeg'
     WHERE id = v_prod_id;
   END IF;
 
@@ -143,7 +143,7 @@ BEGIN
   -- Ensure image (neutral ivory placeholder with LANAN logo)
   DELETE FROM public.product_images WHERE product_id = v_prod_id;
   INSERT INTO public.product_images (product_id, url, alt_text, sort_order, is_video)
-  VALUES (v_prod_id, '/lanan-face-moisturizer.jpeg', 'LANAN Face Moisturizer – 50 g', 0, false);
+  VALUES (v_prod_id, 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-face-moisturizer.jpeg', 'LANAN Face Moisturizer – 50 g', 0, false);
 END $$;
 
 -- 5. Standardize Product 3: LANAN Sunscreen SPF 50 PA++++ – 50 g
@@ -174,7 +174,7 @@ BEGIN
       true,
       4.9,
       114,
-      '/lanan-sunscreen-spf-50.jpeg'
+      'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-sunscreen-spf-50.jpeg'
     );
   ELSE
     UPDATE public.products SET
@@ -190,7 +190,7 @@ BEGIN
       sku = 'LSP-50',
       status = 'active',
       is_bestseller = true,
-      og_image_url = '/lanan-sunscreen-spf-50.jpeg'
+      og_image_url = 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-sunscreen-spf-50.jpeg'
     WHERE id = v_prod_id;
   END IF;
 
@@ -202,7 +202,7 @@ BEGIN
   -- Ensure primary image
   DELETE FROM public.product_images WHERE product_id = v_prod_id;
   INSERT INTO public.product_images (product_id, url, alt_text, sort_order, is_video)
-  VALUES (v_prod_id, '/lanan-sunscreen-spf-50.jpeg', 'LANAN Sunscreen SPF 50 PA++++ – 50 g', 0, false);
+  VALUES (v_prod_id, 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-sunscreen-spf-50.jpeg', 'LANAN Sunscreen SPF 50 PA++++ – 50 g', 0, false);
 END $$;
 
 -- 6. Standardize Product 4: LANAN Glutathione Face Toner – 100 ml
@@ -233,7 +233,7 @@ BEGIN
       false,
       4.6,
       53,
-      '/lanan-glutathione-face-toner.jpeg'
+      'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-glutathione-face-toner.jpeg'
     );
   ELSE
     UPDATE public.products SET
@@ -249,7 +249,7 @@ BEGIN
       sku = 'LGT-100',
       status = 'active',
       is_bestseller = false,
-      og_image_url = '/lanan-glutathione-face-toner.jpeg'
+      og_image_url = 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-glutathione-face-toner.jpeg'
     WHERE id = v_prod_id;
   END IF;
 
@@ -261,7 +261,7 @@ BEGIN
   -- Ensure primary image
   DELETE FROM public.product_images WHERE product_id = v_prod_id;
   INSERT INTO public.product_images (product_id, url, alt_text, sort_order, is_video)
-  VALUES (v_prod_id, '/lanan-glutathione-face-toner.jpeg', 'LANAN Glutathione Face Toner – 100 ml', 0, false);
+  VALUES (v_prod_id, 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-glutathione-face-toner.jpeg', 'LANAN Glutathione Face Toner – 100 ml', 0, false);
 END $$;
 
 -- 7. Standardize Product 5: LANAN Glutathione Face Serum – 30 ml
@@ -292,7 +292,7 @@ BEGIN
       true,
       4.9,
       142,
-      '/lanan-glutathione-face-serum.jpeg'
+      'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-glutathione-face-serum.jpeg'
     );
   ELSE
     UPDATE public.products SET
@@ -308,7 +308,7 @@ BEGIN
       sku = 'LGS-30',
       status = 'active',
       is_bestseller = true,
-      og_image_url = '/lanan-glutathione-face-serum.jpeg'
+      og_image_url = 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-glutathione-face-serum.jpeg'
     WHERE id = v_prod_id;
   END IF;
 
@@ -320,5 +320,5 @@ BEGIN
   -- Ensure primary image
   DELETE FROM public.product_images WHERE product_id = v_prod_id;
   INSERT INTO public.product_images (product_id, url, alt_text, sort_order, is_video)
-  VALUES (v_prod_id, '/lanan-glutathione-face-serum.jpeg', 'LANAN Glutathione Face Serum – 30 ml', 0, false);
+  VALUES (v_prod_id, 'https://zvcstzvofyfvwedelewn.supabase.co/storage/v1/object/public/products/catalog/lanan-glutathione-face-serum.jpeg', 'LANAN Glutathione Face Serum – 30 ml', 0, false);
 END $$;
