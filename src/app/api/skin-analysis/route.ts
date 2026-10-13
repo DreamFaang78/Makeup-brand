@@ -46,71 +46,69 @@ export async function POST(request: NextRequest) {
           skinTypeDescription:
             'Your skin shows characteristics of both oily and dry types. The T-zone (forehead, nose, and chin) has active sebaceous glands with mild shine, while the cheeks remain relatively balanced. Common in Indian climate zones with humidity variation.',
           concerns: [
-            { name: 'Pigmentation', severityPercent: 65, details: 'Mild hyperpigmentation around the forehead and mouth corners, likely caused by UV exposure and hormonal activity.' },
+            { name: 'Pigmentation', severityPercent: 65, details: 'Mild hyperpigmentation around the forehead and mouth corners, likely caused by UV exposure and environmental stress.' },
             { name: 'Enlarged Pores', severityPercent: 48, details: 'Visible enlarged pores in the nose and T-zone region due to excess sebum accumulation.' },
-            { name: 'Hydration', severityPercent: 35, details: 'Cheeks show slight dehydration signs. A lightweight, non-comedogenic moisturiser will help.' },
+            { name: 'Hydration', severityPercent: 35, details: 'Cheeks show slight dehydration signs that benefit from lightweight humectant layering.' },
           ],
           routineExplanation:
-            'Your combination skin needs a balance-focused routine. Start with the Petal Soft Cleansing Foam to clear excess oil without stripping moisture. Follow with Niacinamide Clarity Toner to regulate sebum and refine pores. Apply Radiance Revival Serum to fade pigmentation, and lock in moisture with the Rose Dew SPF 40 to protect against UV-induced darkening.',
+            'Your combination skin thrives on balanced clarity and hydration. Cleanse with LANAN Face Wash to control excess oil and clear pores without stripping. Follow with LANAN Glutathione Face Toner to rebalance and prep. Layer LANAN Glutathione Face Serum for brightening, and seal with LANAN Sunscreen SPF 50 PA++++ for broad-spectrum protection.',
           recommendedProductSlugs: [
-            'petal-soft-cleansing-foam',
-            'niacinamide-clarity-toner',
-            'radiance-revival-serum',
-            'rose-dew-spf40-sunscreen',
+            'lanan-face-wash',
+            'lanan-glutathione-face-toner',
+            'lanan-glutathione-face-serum',
+            'lanan-sunscreen-spf-50',
           ],
         },
         {
           skinType: 'Dry & Sensitive',
           skinTypeDescription:
-            'Your skin has a compromised moisture barrier with low sebum production. Visible dry patches appear on the cheeks, and there is mild flakiness around the nose. The skin reacts sensitively to environmental triggers — typical for dry Indian winters and air-conditioned environments.',
+            'Your skin has a delicate moisture barrier that requires gentle care. The skin reacts sensitively to environmental triggers — typical for dry weather and indoor air-conditioned environments.',
           concerns: [
-            { name: 'Hydration Deficit', severityPercent: 82, details: 'Significant moisture deficit with tight skin texture and early fine lines around eyes.' },
-            { name: 'Sensitivity & Redness', severityPercent: 70, details: 'Mild redness and hyper-reactivity visible on both cheeks, suggesting a weakened skin barrier.' },
-            { name: 'Dark Circles', severityPercent: 55, details: 'Hollow puffiness and dark shadows under the eyes, common in dehydrated skin types.' },
+            { name: 'Hydration Deficit', severityPercent: 82, details: 'Significant moisture deficit with tight skin texture and early fine dehydration lines.' },
+            { name: 'Sensitivity & Redness', severityPercent: 70, details: 'Mild sensitivity and reactive redness, suggesting a weakened barrier.' },
+            { name: 'Dullness', severityPercent: 55, details: 'Lack of radiant glow due to moisture depletion.' },
           ],
           routineExplanation:
-            'Your dry, sensitive skin needs barrier-repairing care above all else. Use the Petal Soft Foam for a gentle, non-stripping cleanse. Apply the Velvet Hydra Moisturiser twice daily to deeply replenish moisture. The Golden Hour Eye Cream tackles dark circles and puffiness. Use the Saffron Glow Mask weekly to brighten and soothe inflamed areas.',
+            'Your dry, sensitive skin needs gentle antioxidant care and high UV protection. Use LANAN Glutathione Face Toner to immediately infuse moisture. Apply LANAN Glutathione Face Serum with Hyaluronic Acid and Ceramide NP to replenish the barrier. Always shield with LANAN Sunscreen SPF 50 PA++++ against daily UV rays.',
           recommendedProductSlugs: [
-            'petal-soft-cleansing-foam',
-            'velvet-hydra-moisturiser',
-            'golden-hour-eye-cream',
-            'saffron-glow-face-mask',
+            'lanan-glutathione-face-toner',
+            'lanan-glutathione-face-serum',
+            'lanan-sunscreen-spf-50',
           ],
         },
         {
           skinType: 'Oily & Acne-Prone',
           skinTypeDescription:
-            'Your skin has overactive sebaceous glands producing high sebum levels across the full face. This excess oil traps dead skin cells and bacteria, leading to clogged pores, blackheads, and occasional inflammatory acne lesions. Very common in humid Indian climates.',
+            'Your skin has active sebaceous glands producing excess sebum across the T-zone and cheeks. This excess oil can trap dead skin cells and impurities, leading to congestion and occasional breakouts.',
           concerns: [
-            { name: 'Active Acne', severityPercent: 75, details: 'Active breakouts and post-inflammatory hyperpigmentation marks visible on both cheeks and chin.' },
-            { name: 'Enlarged Pores', severityPercent: 80, details: 'Heavily clogged and stretched pores throughout the T-zone and cheek area.' },
-            { name: 'Pigmentation', severityPercent: 40, details: 'Post-acne blemishes and uneven skin tone in areas of past breakouts.' },
+            { name: 'Excess Sebum', severityPercent: 75, details: 'Visible shine and excess oiliness across the forehead, nose, and chin.' },
+            { name: 'Enlarged Pores', severityPercent: 80, details: 'Congested and noticeable pores throughout the T-zone.' },
+            { name: 'Blemishes', severityPercent: 45, details: 'Uneven skin texture and post-blemish spots.' },
           ],
           routineExplanation:
-            'Your oily, acne-prone skin needs a disciplined, oil-control routine. Cleanse twice daily with the Petal Soft Foam to remove sebum and bacteria without over-drying. Apply Niacinamide Clarity Toner to regulate oil and tighten pores. Add the Radiance Revival Serum to fade acne marks. Always seal with Rose Dew SPF 40 — sun protection prevents further darkening of blemishes.',
+            'Your oily, breakout-prone skin benefits from active clarifying ingredients. Cleanse twice daily with LANAN Face Wash formulated with 2% Salicylic Acid and 1% Niacinamide to clarify pores. Refine with LANAN Glutathione Face Toner, and protect daily with lightweight LANAN Sunscreen SPF 50 PA++++.',
           recommendedProductSlugs: [
-            'petal-soft-cleansing-foam',
-            'niacinamide-clarity-toner',
-            'radiance-revival-serum',
-            'rose-dew-spf40-sunscreen',
+            'lanan-face-wash',
+            'lanan-glutathione-face-toner',
+            'lanan-sunscreen-spf-50',
           ],
         },
         {
           skinType: 'Normal',
           skinTypeDescription:
-            'Your skin is well-balanced with an even distribution of sebum and good hydration. Minimal visible concerns — no significant oiliness or dryness — with a smooth texture and even tone. A small amount of environmental stress (UV, dust) is present but manageable.',
+            'Your skin is well-balanced with an even distribution of sebum and good hydration. Minimal visible concerns — smooth texture, even tone, and healthy barrier function.',
           concerns: [
-            { name: 'UV Damage', severityPercent: 30, details: 'Slight tan and early pigmentation on the forehead from daily sun exposure.' },
-            { name: 'Hydration', severityPercent: 22, details: 'Skin is well-hydrated but could maintain it better with a daily moisturiser.' },
-            { name: 'Dullness', severityPercent: 28, details: 'Mild lack of radiance that a brightening serum can easily correct.' },
+            { name: 'UV Protection', severityPercent: 30, details: 'Preventive defense needed against daily tropical sun exposure.' },
+            { name: 'Hydration', severityPercent: 22, details: 'Skin is balanced and benefits from daily antioxidant hydration.' },
+            { name: 'Radiance', severityPercent: 28, details: 'Gentle support needed to maintain an illuminated, healthy-looking glow.' },
           ],
           routineExplanation:
-            'Your balanced skin just needs a maintenance routine to stay healthy. A gentle foam cleanser in the morning, the Radiance Revival Serum for a luminous boost, and the Rose Dew SPF 40 for daily UV protection. Add the Saffron Glow Mask once a week for a brightening ritual.',
+            'Your balanced skin will flourish with a simple, high-performance daily ritual. Cleanse with LANAN Face Wash, hydrate with LANAN Glutathione Face Toner, boost radiance with LANAN Glutathione Face Serum, and defend with LANAN Sunscreen SPF 50 PA++++.',
           recommendedProductSlugs: [
-            'radiance-revival-serum',
-            'rose-dew-spf40-sunscreen',
-            'saffron-glow-face-mask',
-            'velvet-hydra-moisturiser',
+            'lanan-face-wash',
+            'lanan-glutathione-face-toner',
+            'lanan-glutathione-face-serum',
+            'lanan-sunscreen-spf-50',
           ],
         },
       ];
@@ -148,14 +146,11 @@ Determine:
 2. Top 3 skin concerns with 0-100% severity scores based directly on visible indicators.
 3. A personalized skincare routine explanation tailored to these findings.
 4. 3-4 recommended product slugs from this catalog ONLY:
-   - 'radiance-revival-serum' → targets: pigmentation, brightening, uneven tone, dullness
-   - 'velvet-hydra-moisturiser' → targets: dry skin, hydration, sensitivity, barrier repair
-   - 'petal-soft-cleansing-foam' → targets: oily/combination/acne skin, deep cleanse
-   - 'golden-hour-eye-cream' → targets: dark circles, puffiness, eye area concerns
-   - 'saffron-glow-face-mask' → targets: brightening, dullness, weekly ritual, all skin types
-   - 'rose-dew-spf40-sunscreen' → targets: daily UV protection, all skin types
-   - 'niacinamide-clarity-toner' → targets: oily skin, enlarged pores, acne, sebum control
-   - 'midnight-repair-night-cream' → targets: anti-aging, intensive dry skin, overnight repair
+   - 'lanan-face-wash' → targets: oily/combination/acne-prone skin, deep pore cleanse, sebum control
+   - 'lanan-glutathione-face-toner' → targets: refreshing, hydrating, evening tone, prep
+   - 'lanan-glutathione-face-serum' → targets: brightening, deep hydration, radiant glow, dullness
+   - 'lanan-sunscreen-spf-50' → targets: daily UV protection, all skin types, broad-spectrum SPF 50 PA++++
+
 
 Instructions for descriptions:
 - 'skinTypeDescription': Write 3 detailed sentences explaining the specific visual indicators observed in the photos that led to this skin type classification (e.g. "I notice mild shine and active pores around the nose and T-zone in the forehead photo, while the cheek photos show balanced skin...").

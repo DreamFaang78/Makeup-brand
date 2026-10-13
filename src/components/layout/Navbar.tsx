@@ -140,11 +140,11 @@ export default function Navbar() {
             {[
               '✦ Free shipping on orders above ₹599',
               '✦ Premium Indian skincare crafted for you',
-              '✦ Secure payments via Razorpay',
+              '✦ Cash on Delivery (COD) Available',
               '✦ 100% cruelty-free & dermatologist tested',
               '✦ Free shipping on orders above ₹599',
               '✦ Premium Indian skincare crafted for you',
-              '✦ Secure payments via Razorpay',
+              '✦ Cash on Delivery (COD) Available',
               '✦ 100% cruelty-free & dermatologist tested',
             ].map((text, i) => (
               <span key={i} className="text-gold text-[10px] sm:text-xs font-body font-medium tracking-[0.15em] mx-8 uppercase">
@@ -172,7 +172,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center gap-3.5 flex-shrink-0" onClick={closeMobileMenu}>
               <div className="relative w-12 h-12 lg:w-15 lg:h-15 filter drop-shadow-[0_0_12px_rgba(201,169,110,0.65)]">
                 <Image
-                  src="/lanan logo.png"
+                  src="/lanan-logo.png"
                   alt="LANAN Logo"
                   fill
                   sizes="60px"

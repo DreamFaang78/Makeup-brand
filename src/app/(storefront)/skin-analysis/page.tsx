@@ -355,7 +355,7 @@ export default function SkinAnalysisPage() {
                     {/* Center image */}
                     <div className="absolute inset-10 rounded-full overflow-hidden shadow-glow-gold">
                       <Image
-                        src="/Hero Banner Model.jpeg"
+                        src="/hero-banner-model.jpeg"
                         alt="AI Skin Analysis"
                         fill
                         className="object-cover"
@@ -597,7 +597,7 @@ export default function SkinAnalysisPage() {
                 <div className="absolute inset-2 rounded-full border border-gold/30 animate-spin-slow" />
                 <div className="absolute inset-0 rounded-full overflow-hidden border-2 border-gold/40">
                   <Image
-                    src={images['front'] || '/Hero Banner Model.jpeg'}
+                    src={images['front'] || '/hero-banner-model.jpeg'}
                     alt="Scanning"
                     fill
                     className="object-cover opacity-70"

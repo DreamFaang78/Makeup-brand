@@ -26,29 +26,29 @@ const VIRAL_TRENDS = [
     title: 'The "Glass Skin" Layering Ritual',
     views: '142M+ Views',
     platform: 'TikTok & Reels',
-    concept: 'Achieving a translucent, poreless, and highly hydrated complexion that mimics a sheet of crystal-clear glass through deep humectant and barrier moisture layering.',
-    whyItWorks: 'By prep-hydrating the skin layers with a Niacinamide-rich toner and sealing with a deep, climate-balanced barrier cream, the skin reflects light evenly for a permanent dewiness.',
-    matchedProductSlugs: ['niacinamide-clarity-toner', 'velvet-hydra-moisturiser'],
+    concept: 'Achieving a translucent, poreless, and highly hydrated complexion that mimics crystal-clear glass through deep humectant and barrier moisture layering.',
+    whyItWorks: 'By prep-hydrating the skin layers with the Glutathione Face Toner and infusing active brightness with the Glutathione Face Serum, the skin reflects light evenly for lasting radiance.',
+    matchedProductSlugs: ['lanan-glutathione-face-toner', 'lanan-glutathione-face-serum'],
     bgGradient: 'from-amber-500/10 via-amber-500/5 to-transparent'
   },
   {
     id: 'trend-2',
-    title: '4-Night "Skin Cycling"',
+    title: 'Daily Radiance Reset',
     views: '86M+ Views',
     platform: 'Dermatologist Hotlist',
-    concept: 'A strategic night-by-night rotation that alternates active treatment nights (exfoliation and active serums) with designated recovery nights to restore the skin barrier.',
-    whyItWorks: 'It prevents active ingredient overlap (like retinol or strong acids) which frequently compromises the skin lipid barrier, allowing maximum efficacy with zero irritation.',
-    matchedProductSlugs: ['radiance-revival-serum', 'midnight-repair-night-cream'],
+    concept: 'A strategic daily routine that purifies pores with Salicylic Acid, brightens with Glutathione, and defends against photoaging with broad-spectrum SPF 50 PA++++.',
+    whyItWorks: 'Cleansing with active salicylic acid clears excess oil and dullness, while high PA++++ sun protection prevents pigmentation and sun damage.',
+    matchedProductSlugs: ['lanan-face-wash', 'lanan-sunscreen-spf-50'],
     bgGradient: 'from-purple-500/10 via-purple-500/5 to-transparent'
   },
   {
     id: 'trend-3',
-    title: 'Saffron Glow "Slugging"',
-    views: '35M+ Views',
+    title: 'Antioxidant Power Duo',
+    views: '52M+ Views',
     platform: 'Instagram Trends',
-    concept: 'Applying an intensive nutrient-dense mask over your night moisturiser to lock in active hydration, locking out dryness, and restoring a plump, golden glow by morning.',
-    whyItWorks: 'The occlusive effect prevents transepidermal water loss (TEWL) during sleep when skin repair is active, forcing botanical antioxidants deep into the stratum corneum.',
-    matchedProductSlugs: ['saffron-glow-face-mask', 'midnight-repair-night-cream'],
+    concept: 'Layering concentrated Glutathione and Vitamin C serum with protective SPF 50 PA++++ to neutralize oxidative stress and maintain all-day luminosity.',
+    whyItWorks: 'Antioxidants supercharge UV defense, ensuring comprehensive protection against UV rays and environmental aggressors.',
+    matchedProductSlugs: ['lanan-glutathione-face-serum', 'lanan-sunscreen-spf-50'],
     bgGradient: 'from-rose-500/10 via-rose-500/5 to-transparent'
   }
 ];
@@ -57,31 +57,31 @@ const VIRAL_TRENDS = [
 const CYCLE_NIGHTS = [
   {
     day: 'Night 1',
-    phase: 'Exfoliate & Prep',
-    desc: 'Clear out dead skin cells to allow subsequent actives to penetrate deeper. Cleanse thoroughly, then apply a refining toner.',
-    productSlug: 'niacinamide-clarity-toner',
-    tip: 'Avoid harsh physical scrubs. Focus on chemical exfoliants like Niacinamide to soothe while clearing pores.'
+    phase: 'Deep Cleanse & Prep',
+    desc: 'Clear away excess sebum, dirt, and impurities with Salicylic Acid 2% and Niacinamide 1% to prep skin.',
+    productSlug: 'lanan-face-wash',
+    tip: 'Massage gently in circular motions for 60 seconds before rinsing thoroughly.'
   },
   {
     day: 'Night 2',
-    phase: 'Active Treatment',
-    desc: 'Apply your concentrated active serums to target specific concerns like hyperpigmentation, uneven tone, and fine lines.',
-    productSlug: 'radiance-revival-serum',
-    tip: 'Apply to completely dry skin to prevent deep irritation, pressing gently into the face and neck.'
+    phase: 'Hydrate & Refine',
+    desc: 'Restore skin hydration, refresh tired complexion, and reveal your natural glow with Glutathione toner.',
+    productSlug: 'lanan-glutathione-face-toner',
+    tip: 'Pat gently into damp skin using palms to boost moisture absorption.'
   },
   {
     day: 'Night 3',
-    phase: 'Barrier Recovery',
-    desc: 'Give actives a break. Focus entirely on hydration and skin barrier repair. Replenish moisture reserves.',
-    productSlug: 'velvet-hydra-moisturiser',
-    tip: 'Apply on slightly damp skin to lock in maximum hydration.'
+    phase: 'Active Brightening',
+    desc: 'Target uneven tone, dullness, and fatigue with concentrated Glutathione and Vitamin C serum.',
+    productSlug: 'lanan-glutathione-face-serum',
+    tip: 'Apply 2-3 drops to fingertips and smooth evenly over face and neck until absorbed.'
   },
   {
     day: 'Night 4',
-    phase: 'Deep Sealing',
-    desc: 'Seal in moisture and repair compounds with an intensive, barrier-restoring night cream or sleeping mask.',
-    productSlug: 'midnight-repair-night-cream',
-    tip: 'Massage in upward circular motions to stimulate blood circulation and overnight drainage.'
+    phase: 'Hydration Reset',
+    desc: 'Give skin a soothing moisture reset and lock in hydration for a supple, healthy-looking glow.',
+    productSlug: 'lanan-glutathione-face-toner',
+    tip: 'Layer toner generously to refresh moisture reserves before sleep.'
   }
 ];
 

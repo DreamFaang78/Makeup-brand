@@ -60,7 +60,7 @@ export default function AboutPage() {
             <div className="relative">
               <div className="aspect-square rounded-card overflow-hidden">
                 <Image
-                  src="/Bathroom Shelf Mockup.jpeg"
+                  src="/bathroom-shelf-mockup.jpeg"
                   alt="LANAN skincare products"
                   width={600}
                   height={600}

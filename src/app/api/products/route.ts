@@ -71,7 +71,7 @@ export async function GET() {
       } else if (p.og_image_url) {
         images = [{ id: `img-${p.id}`, url: p.og_image_url, alt_text: p.name, sort_order: 0, is_video: false }];
       } else {
-        images = [{ id: `img-${p.id}`, url: '/Serum Bottle.jpeg', alt_text: p.name, sort_order: 0, is_video: false }];
+        images = [{ id: `img-${p.id}`, url: '/serum-bottle.jpeg', alt_text: p.name, sort_order: 0, is_video: false }];
       }
 
       // Handle variants & inventory (supports product_variants or stock column)
