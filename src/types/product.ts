@@ -82,6 +82,10 @@ export interface ProductCardData {
   name: string;
   slug: string;
   tagline: string;
+  description?: string;
+  ingredients?: string;
+  how_to_use?: string[];
+  status?: ProductStatus;
   base_price: number;
   sale_price: number | null;
   rating_avg: number;
