@@ -17,10 +17,10 @@ const REVENUE_DATA = [
 ];
 
 const TOP_PRODUCTS = [
-  { rank: 1, name: 'Radiance Revival Serum', sales: 412, revenue: 411588, stock: '45 left' },
-  { rank: 2, name: 'Velvet Hydra Moisturiser', sales: 245, revenue: 220255, stock: '67 left' },
-  { rank: 3, name: 'Rose Dew SPF 40 Sunscreen', sales: 188, revenue: 122012, stock: '88 left' },
-  { rank: 4, name: 'Saffron Glow Face Mask', sales: 112, revenue: 123088, stock: '19 left' },
+  { rank: 1, name: 'LANAN Glutathione Face Serum – 30 ml', sales: 412, revenue: 303644, stock: '100 in stock' },
+  { rank: 2, name: 'LANAN Sunscreen SPF 50 PA++++ – 50 g', sales: 288, revenue: 212256, stock: '100 in stock' },
+  { rank: 3, name: 'LANAN Face Wash – 100 ml', sales: 245, revenue: 123235, stock: '100 in stock' },
+  { rank: 4, name: 'LANAN Glutathione Face Toner – 100 ml', sales: 182, revenue: 76258, stock: '100 in stock' },
 ];
 
 export default function AdminAnalyticsPage() {
