@@ -161,7 +161,7 @@ export default function ProductDetailPage() {
           {/* ── LEFT: Gallery ── */}
           <div className="space-y-3">
             {/* Main Image */}
-            <div className="relative aspect-square rounded-card overflow-hidden bg-beige/30">
+            <div className="relative aspect-square rounded-card overflow-hidden bg-ivory border border-beige/40 flex items-center justify-center">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeImage}
@@ -169,13 +169,14 @@ export default function ProductDetailPage() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="absolute inset-0"
+                  className="absolute inset-0 flex items-center justify-center p-3"
                 >
                   <Image
-                    src={product.images[activeImage]?.url ?? 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&auto=format&fit=crop'}
+                    src={product.images[activeImage]?.url ?? '/serum-bottle.jpeg'}
                     alt={product.images[activeImage]?.alt_text ?? product.name}
                     fill
-                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-contain p-2"
                     priority
                   />
                 </motion.div>
@@ -212,11 +213,11 @@ export default function ProductDetailPage() {
                     key={img.id}
                     onClick={() => setActiveImage(i)}
                     className={cn(
-                      'flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all',
-                      activeImage === i ? 'border-gold' : 'border-transparent'
+                      'flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all bg-ivory',
+                      activeImage === i ? 'border-gold shadow-xs' : 'border-beige/60 hover:border-gold/50'
                     )}
                   >
-                    <Image src={img.url} alt={img.alt_text} width={64} height={64} className="w-full h-full object-cover" />
+                    <Image src={img.url} alt={img.alt_text || product.name} width={64} height={64} className="w-full h-full object-contain p-1" />
                   </button>
                 ))}
               </div>
@@ -532,7 +533,7 @@ export default function ProductDetailPage() {
         {/* You May Also Like */}
         <div className="mt-10 pt-10 border-t border-beige">
           <h2 className="font-heading text-2xl text-obsidian mb-6">You May Also Like</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-stretch">
             {allProducts.map((p, i) => (
               <ProductCard key={p.id} product={p} index={i} />
             ))}

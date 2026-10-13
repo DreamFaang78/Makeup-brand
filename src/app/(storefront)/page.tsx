@@ -321,7 +321,7 @@ export default function HomePage() {
                     
                     {/* Embedded ambient video snippet for movement */}
                     <video
-                      src="/Product Hero.mp4"
+                      src="/product-hero.mp4"
                       autoPlay
                       loop
                       muted
@@ -334,45 +334,45 @@ export default function HomePage() {
                   </div>
                 </motion.div>
 
-                {/* Showcase Item 1: Floating Velvet Hydra Serum */}
+                {/* Showcase Item 1: Floating Glutathione Face Serum */}
                 <motion.div
                   animate={{ y: [-6, -22, -6] }}
                   transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
                   className="absolute top-6 left-12 w-[160px] h-[220px] rounded-card border-2 border-gold/30 bg-white/90 backdrop-blur-md p-2.5 shadow-luxury-lg cursor-pointer hover:border-gold hover:scale-105 transition-all duration-300"
                 >
-                  <div className="relative w-full h-full rounded-card overflow-hidden">
+                  <div className="relative w-full h-full rounded-card overflow-hidden bg-ivory">
                     <Image
-                      src="/Serum Bottle.jpeg"
-                      alt="Velvet Hydra Serum"
+                      src="/lanan-glutathione-face-serum.jpeg"
+                      alt="LANAN Glutathione Face Serum – 30 ml"
                       fill
                       sizes="160px"
-                      className="object-cover"
+                      className="object-contain p-2"
                       priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-obsidian/45 to-transparent flex flex-col justify-end p-2">
-                      <p className="text-[10px] font-body font-bold text-white tracking-wide uppercase">Velvet Hydra</p>
-                      <p className="text-[9px] font-mono text-gold-light mt-0.5">Hydrating Glow</p>
+                    <div className="absolute inset-0 bg-gradient-to-t from-obsidian/45 to-transparent flex flex-col justify-end p-2 pointer-events-none">
+                      <p className="text-[10px] font-body font-bold text-white tracking-wide uppercase">Glutathione Serum</p>
+                      <p className="text-[9px] font-mono text-gold-light mt-0.5">Radiant Glow</p>
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Showcase Item 2: Saffron Glow Mask */}
+                {/* Showcase Item 2: Sunscreen SPF 50 */}
                 <motion.div
                   animate={{ y: [12, -4, 12] }}
                   transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
                   className="absolute bottom-10 right-8 w-[140px] h-[170px] rounded-card border border-beige-dark/40 bg-white/95 backdrop-blur-md p-2 shadow-luxury cursor-pointer hover:border-gold hover:scale-105 transition-all duration-300"
                 >
-                  <div className="relative w-full h-full rounded-card overflow-hidden">
+                  <div className="relative w-full h-full rounded-card overflow-hidden bg-ivory">
                     <Image
-                      src="/Saffron Face Mask.jpeg"
-                      alt="Saffron Glow Mask"
+                      src="/lanan-sunscreen-spf-50.jpeg"
+                      alt="LANAN Sunscreen SPF 50 PA++++ – 50 g"
                       fill
                       sizes="140px"
-                      className="object-cover"
+                      className="object-contain p-1.5"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 to-transparent flex flex-col justify-end p-2">
-                      <p className="text-[9px] font-body font-bold text-white tracking-wide">Saffron Glow</p>
-                      <p className="text-[8px] font-mono text-gold-light mt-0.5">Radiance Revival</p>
+                    <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 to-transparent flex flex-col justify-end p-2 pointer-events-none">
+                      <p className="text-[9px] font-body font-bold text-white tracking-wide">Sunscreen SPF 50</p>
+                      <p className="text-[8px] font-mono text-gold-light mt-0.5">PA++++ Protection</p>
                     </div>
                   </div>
                 </motion.div>
@@ -464,7 +464,7 @@ export default function HomePage() {
               <FadeUp delay={0.2}>
                 <div className="relative aspect-[4/3] rounded-card overflow-hidden shadow-luxury border-4 border-white">
                   <Image
-                    src="/skincare concern  ingredient section.jpeg"
+                    src="/skincare-concern-ingredient-section.jpeg"
                     alt="LANAN Skin Concerns"
                     fill
                     sizes="(max-width: 1024px) 100vw, 40vw"
@@ -505,7 +505,7 @@ export default function HomePage() {
               ))}
             </div>
           ) : bestsellers.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 items-stretch">
               {bestsellers.map((product, i) => (
                 <ProductCard key={product.id} product={product} index={i} />
               ))}
@@ -545,7 +545,7 @@ export default function HomePage() {
               <div className="relative">
                 <div className="aspect-[4/5] rounded-card overflow-hidden">
                   <Image
-                    src="/premium story section..jpeg"
+                    src="/premium-story-section.jpeg"
                     alt="LANAN Brand Story"
                     width={560}
                     height={700}
@@ -630,7 +630,7 @@ export default function HomePage() {
               <FadeUp delay={0.2}>
                 <div className="relative aspect-video rounded-card overflow-hidden shadow-luxury border-4 border-beige/40 bg-obsidian group">
                   <video
-                    src="/Skincare Ritual.mp4"
+                    src="/skincare-ritual.mp4"
                     autoPlay
                     loop
                     muted
@@ -714,7 +714,7 @@ export default function HomePage() {
               <FadeUp delay={0.1}>
                 <div className="relative aspect-[4/5] rounded-card overflow-hidden shadow-luxury border-4 border-beige/40">
                   <Image
-                    src="/Ingredient Transparency Image.jpeg"
+                    src="/ingredient-transparency-image.jpeg"
                     alt="LANAN Ingredient Transparency"
                     fill
                     sizes="(max-width: 1024px) 100vw, 40vw"
@@ -789,7 +789,7 @@ export default function HomePage() {
               <FadeUp delay={0.2}>
                 <div className="relative aspect-[4/3] rounded-card overflow-hidden shadow-luxury border-4 border-white bg-white">
                   <Image
-                    src="/BeforeAfter Style Concern.jpeg"
+                    src="/before-after-style-concern.jpeg"
                     alt="LANAN Skin Before & After Comparison"
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -815,21 +815,21 @@ export default function HomePage() {
             {[
               {
                 title: 'Morning Ritual',
-                desc: 'Start with our gentle cleanser, follow with the niacinamide toner, and seal in moisture with Velvet Hydra. Finish with Rose Dew SPF 40.',
-                image: '/Sunscreen.jpeg',
+                desc: 'Cleanse with LANAN Face Wash, hydrate skin with Glutathione Face Toner, and shield with Sunscreen SPF 50 PA++++.',
+                image: '/lanan-sunscreen-spf-50.jpeg',
                 tag: 'AM',
               },
               {
                 title: 'Evening Ritual',
-                desc: 'Double cleanse, apply the Radiance Revival Serum to target pigmentation, and layer on Midnight Repair Night Cream for deep overnight renewal.',
-                image: '/Serum Bottle.jpeg',
+                desc: 'Wash away daily pollutants with LANAN Face Wash, tone with Glutathione Face Toner, and apply Glutathione Face Serum for radiant hydration.',
+                image: '/lanan-glutathione-face-serum.jpeg',
                 tag: 'PM',
               },
               {
-                title: 'Weekly Ritual',
-                desc: 'Treat yourself to the Saffron Glow Mask every Sunday. 15 minutes of indulgence for a week of radiance.',
-                image: '/Saffron Face Mask.jpeg',
-                tag: '7D',
+                title: 'Daily Radiance Ritual',
+                desc: 'Clinically balanced botanical regimen formulated with Salicylic Acid, Niacinamide, Glutathione, and Vitamin C for clear, glowing skin.',
+                image: '/lanan-face-wash.jpeg',
+                tag: 'DAILY',
               },
             ].map((ritual, i) => (
               <FadeUp key={ritual.title} delay={i * 0.1}>
@@ -975,7 +975,7 @@ export default function HomePage() {
         <div className="container-lanan">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { icon: <ShieldCheck size={22} className="text-gold" />, title: 'Secure Payments', desc: 'Razorpay encrypted checkout' },
+              { icon: <ShieldCheck size={22} className="text-gold" />, title: 'Cash on Delivery', desc: 'Pay safely at your doorstep' },
               { icon: <Truck size={22} className="text-gold" />, title: 'Fast Delivery', desc: 'Pan India 3-7 business days' },
               { icon: <Leaf size={22} className="text-gold" />, title: 'Skin-Safe Promise', desc: 'No harmful chemicals' },
               { icon: <Heart size={22} className="text-gold" />, title: 'Easy Returns', desc: '7-day hassle-free returns' },

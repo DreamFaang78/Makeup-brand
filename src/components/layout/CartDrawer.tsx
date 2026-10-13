@@ -146,13 +146,13 @@ export default function CartDrawer() {
                   {items.map((item) => (
                     <li key={item.id} className="flex gap-3 px-5 py-4">
                       {/* Image */}
-                      <div className="w-16 h-16 rounded-xl overflow-hidden bg-beige flex-shrink-0">
+                      <div className="w-16 h-16 rounded-xl overflow-hidden bg-ivory border border-beige/60 flex-shrink-0 flex items-center justify-center aspect-square">
                         <Image
-                          src={item.image_url || 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=120&auto=format&fit=crop'}
+                          src={item.image_url || '/serum-bottle.jpeg'}
                           alt={item.product_name}
                           width={64}
                           height={64}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain p-1"
                         />
                       </div>
 
@@ -186,12 +186,12 @@ export default function CartDrawer() {
                           {/* Price */}
                           <div className="text-right flex flex-col items-end">
                             {item.base_price && item.base_price > item.unit_price && (
-                              <span className="font-mono text-[11px] text-taupe/70 line-through">
+                              <span className="font-sans tabular-nums text-[11px] text-taupe/70 line-through font-normal">
                                 {formatPrice(item.base_price * item.quantity)}
                               </span>
                             )}
                             <div className="flex items-center gap-1.5">
-                              <span className="font-mono text-sm font-semibold text-obsidian">
+                              <span className="font-sans tabular-nums text-sm font-bold text-obsidian">
                                 {formatPrice(item.unit_price * item.quantity)}
                               </span>
                               {item.base_price && item.base_price > item.unit_price && (
@@ -265,25 +265,27 @@ export default function CartDrawer() {
                 <div className="px-5 py-3 space-y-2">
                   <div className="flex justify-between text-xs font-body text-taupe">
                     <span>Subtotal</span>
-                    <span className="font-mono">{formatPrice(subtotal)}</span>
+                    <span className="font-sans tabular-nums font-semibold text-obsidian">{formatPrice(subtotal)}</span>
                   </div>
                   {couponDiscount > 0 && (
                     <div className="flex justify-between text-xs font-body text-success-green">
                       <span>Coupon Discount</span>
-                      <span className="font-mono">-{formatPrice(couponDiscount)}</span>
+                      <span className="font-sans tabular-nums font-semibold">-{formatPrice(couponDiscount)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-xs font-body text-taupe">
                     <span>Shipping</span>
-                    <span className="font-mono">
+                    <span className="font-sans tabular-nums">
                       {shippingCharge === 0 ? (
                         <span className="text-success-green font-semibold">FREE</span>
-                      ) : formatPrice(shippingCharge)}
+                      ) : (
+                        <span className="font-semibold text-obsidian">{formatPrice(shippingCharge)}</span>
+                      )}
                     </span>
                   </div>
                   <div className="flex justify-between text-xs font-body text-taupe">
                     <span>GST (included)</span>
-                    <span className="font-mono">{formatPrice(gstAmount)}</span>
+                    <span className="font-sans tabular-nums font-medium text-taupe">{formatPrice(gstAmount)}</span>
                   </div>
                   {(() => {
                     const productSavings = items.reduce(
@@ -295,13 +297,13 @@ export default function CartDrawer() {
                     return (
                       <div className="flex justify-between items-center text-xs font-body py-1.5 px-2.5 rounded-lg bg-[#5B1924]/10 border border-[#5B1924]/20 text-[#5B1924]">
                         <span className="font-semibold">You Save On This Order</span>
-                        <span className="font-mono font-bold">{formatPrice(totalSavings)}</span>
+                        <span className="font-sans tabular-nums font-bold">{formatPrice(totalSavings)}</span>
                       </div>
                     );
                   })()}
                   <div className="flex justify-between text-sm font-body font-semibold text-obsidian pt-2 border-t border-beige">
                     <span>Total</span>
-                    <span className="font-mono">{formatPrice(total)}</span>
+                    <span className="font-sans tabular-nums font-bold text-obsidian text-base">{formatPrice(total)}</span>
                   </div>
                 </div>
 

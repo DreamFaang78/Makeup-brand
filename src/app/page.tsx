@@ -307,7 +307,7 @@ export default function HomePage() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-80 h-80 rounded-full overflow-hidden shadow-glow-gold bg-gradient-to-br from-beige to-ivory">
                     <video
-                      src="/Product Hero.mp4"
+                      src="/product-hero.mp4"
                       autoPlay
                       loop
                       muted
@@ -324,14 +324,14 @@ export default function HomePage() {
                   className="absolute top-4 -right-4 bg-white rounded-card p-3 shadow-luxury"
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg overflow-hidden">
-                      <Image src="/Serum Bottle.jpeg" alt="Product" width={32} height={32} className="w-full h-full object-cover" />
+                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-ivory">
+                      <Image src="/lanan-glutathione-face-serum.jpeg" alt="LANAN Glutathione Face Serum" width={32} height={32} className="w-full h-full object-contain p-0.5" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-body font-semibold text-obsidian">Velvet Hydra</p>
+                      <p className="text-[10px] font-body font-semibold text-obsidian">Glutathione Serum</p>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] font-mono text-taupe/70 line-through">₹1,099</span>
-                        <span className="text-[10px] font-mono font-bold text-obsidian lanan-sale-price-glow">₹899</span>
+                        <span className="text-[9px] font-mono text-taupe/70 line-through">₹899</span>
+                        <span className="text-[10px] font-mono font-bold text-obsidian lanan-sale-price-glow">₹737</span>
                         <span className="text-[8px] font-body font-bold px-1 rounded-full bg-[#5B1924] text-[#F7F1EA] border border-[#C9A96E]/40 lanan-sale-badge-pulse">SAVE 18%</span>
                       </div>
                     </div>
@@ -420,7 +420,7 @@ export default function HomePage() {
               <FadeUp delay={0.2}>
                 <div className="relative aspect-[4/3] rounded-card overflow-hidden shadow-luxury border-4 border-white">
                   <Image
-                    src="/skincare concern  ingredient section.jpeg"
+                    src="/skincare-concern-ingredient-section.jpeg"
                     alt="LANAN Skin Concerns"
                     fill
                     sizes="(max-width: 1024px) 100vw, 40vw"
@@ -461,7 +461,7 @@ export default function HomePage() {
               ))}
             </div>
           ) : bestsellers.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 items-stretch">
               {bestsellers.map((product, i) => (
                 <ProductCard key={product.id} product={product} index={i} />
               ))}
@@ -569,8 +569,8 @@ export default function HomePage() {
                     {/* 2x2 photo grid */}
                     <div className="grid grid-cols-2 gap-2 p-4">
                       {[
-                        { label: 'Front Profile', img: '/Hero Banner Model.jpeg', done: true },
-                        { label: 'Forehead Zone', img: '/Product in Hand.jpeg', done: true },
+                        { label: 'Front Profile', img: '/hero-banner-model.jpeg', done: true },
+                        { label: 'Forehead Zone', img: '/product-in-hand.jpeg', done: true },
                         { label: 'Left Cheek', img: null, done: false },
                         { label: 'Right Cheek', img: null, done: false },
                       ].map((slot, i) => (
@@ -682,7 +682,7 @@ export default function HomePage() {
               <div className="relative">
                 <div className="aspect-[4/5] rounded-card overflow-hidden">
                   <Image
-                    src="/premium story section..jpeg"
+                    src="/premium-story-section.jpeg"
                     alt="LANAN Brand Story"
                     width={560}
                     height={700}
@@ -767,7 +767,7 @@ export default function HomePage() {
               <FadeUp delay={0.2}>
                 <div className="relative aspect-video rounded-card overflow-hidden shadow-luxury border-4 border-beige/40 bg-obsidian group">
                   <video
-                    src="/Skincare Ritual.mp4"
+                    src="/skincare-ritual.mp4"
                     autoPlay
                     loop
                     muted
@@ -851,7 +851,7 @@ export default function HomePage() {
               <FadeUp delay={0.1}>
                 <div className="relative aspect-[4/5] rounded-card overflow-hidden shadow-luxury border-4 border-beige/40">
                   <Image
-                    src="/Ingredient Transparency Image.jpeg"
+                    src="/ingredient-transparency-image.jpeg"
                     alt="LANAN Ingredient Transparency"
                     fill
                     sizes="(max-width: 1024px) 100vw, 40vw"
@@ -926,7 +926,7 @@ export default function HomePage() {
               <FadeUp delay={0.2}>
                 <div className="relative aspect-[4/3] rounded-card overflow-hidden shadow-luxury border-4 border-white bg-white">
                   <Image
-                    src="/BeforeAfter Style Concern.jpeg"
+                    src="/before-after-style-concern.jpeg"
                     alt="LANAN Skin Before & After Comparison"
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -952,21 +952,21 @@ export default function HomePage() {
             {[
               {
                 title: 'Morning Ritual',
-                desc: 'Start with our gentle cleanser, follow with the niacinamide toner, and seal in moisture with Velvet Hydra. Finish with Rose Dew SPF 40.',
-                image: '/Sunscreen.jpeg',
+                desc: 'Cleanse with LANAN Face Wash, hydrate skin with Glutathione Face Toner, and shield with Sunscreen SPF 50 PA++++.',
+                image: '/lanan-sunscreen-spf-50.jpeg',
                 tag: 'AM',
               },
               {
                 title: 'Evening Ritual',
-                desc: 'Double cleanse, apply the Radiance Revival Serum to target pigmentation, and layer on Midnight Repair Night Cream for deep overnight renewal.',
-                image: '/Serum Bottle.jpeg',
+                desc: 'Wash away daily pollutants with LANAN Face Wash, tone with Glutathione Face Toner, and apply Glutathione Face Serum for radiant hydration.',
+                image: '/lanan-glutathione-face-serum.jpeg',
                 tag: 'PM',
               },
               {
-                title: 'Weekly Ritual',
-                desc: 'Treat yourself to the Saffron Glow Mask every Sunday. 15 minutes of indulgence for a week of radiance.',
-                image: '/Saffron Face Mask.jpeg',
-                tag: '7D',
+                title: 'Daily Radiance Ritual',
+                desc: 'Clinically balanced botanical regimen formulated with Salicylic Acid, Niacinamide, Glutathione, and Vitamin C for clear, glowing skin.',
+                image: '/lanan-face-wash.jpeg',
+                tag: 'DAILY',
               },
             ].map((ritual, i) => (
               <FadeUp key={ritual.title} delay={i * 0.1}>
@@ -1112,7 +1112,7 @@ export default function HomePage() {
         <div className="container-lanan">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { icon: <ShieldCheck size={22} className="text-gold" />, title: 'Secure Payments', desc: 'Razorpay encrypted checkout' },
+              { icon: <ShieldCheck size={22} className="text-gold" />, title: 'Cash on Delivery', desc: 'Pay safely at your doorstep' },
               { icon: <Truck size={22} className="text-gold" />, title: 'Fast Delivery', desc: 'Pan India 3-7 business days' },
               { icon: <Leaf size={22} className="text-gold" />, title: 'Skin-Safe Promise', desc: 'No harmful chemicals' },
               { icon: <Heart size={22} className="text-gold" />, title: 'Easy Returns', desc: '7-day hassle-free returns' },

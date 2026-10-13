@@ -12,7 +12,7 @@ import { DEMO_PRODUCTS } from '@/lib/data/products';
 import { cn } from '@/lib/utils';
 import type { SortOption, SkinType, SkinConcern, ProductCardData } from '@/types/product';
 
-const CATEGORIES = ['All', 'Serums', 'Moisturisers', 'Cleansers', 'Sunscreen', 'Eye Care', 'Masks', 'Toners'];
+const CATEGORIES = ['All', 'Cleansers', 'Moisturisers', 'Sunscreen', 'Toners', 'Serums'];
 const SKIN_TYPES: SkinType[] = ['oily', 'dry', 'combination', 'sensitive', 'normal'];
 const SKIN_CONCERNS: SkinConcern[] = ['pigmentation', 'acne', 'hydration', 'anti-aging', 'brightening', 'dark-circles', 'pores', 'sensitivity', 'uneven-tone'];
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
@@ -294,7 +294,7 @@ export default function ShopPage() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-5"
+                  className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-5 items-stretch"
                 >
                   {filteredProducts.map((product, i) => (
                     <ProductCard key={product.id} product={product} index={i} />
