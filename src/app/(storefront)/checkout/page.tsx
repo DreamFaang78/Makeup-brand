@@ -290,7 +290,7 @@ export default function CheckoutPage() {
     setStep('delivery');
   };
 
-  /* ── Place Cash on Delivery Order ── */
+  /* ── Place Cash on Delivery Order via Shopify Checkout ── */
   const handlePlaceCodOrder = async () => {
     if (loading) return;
     if (items.length === 0) {
@@ -301,74 +301,33 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      const orderPayload = {
-        customer: {
-          name: contact.name || nameInput || 'Lanan Customer',
-          phone: contact.phone || phoneInput,
-          email: contact.email || emailInput || null,
-        },
-        shipping_address: {
-          full_name: contact.name || nameInput,
-          phone: contact.phone || phoneInput,
-          line1: addrState.line1,
-          line2: addrState.line2,
-          city: addrState.city,
-          state: addrState.state,
-          pincode: addrState.pincode,
-          landmark: addrState.landmark,
-        },
-        delivery_method: deliveryMethod || 'standard',
-        payment_method: 'cod',
-        subtotal,
-        discount_amt: discount,
-        shipping_charge: shippingCharge,
-        gst_amount: gstAmount,
-        total_amount: total,
-        coupon_code: useCartStore.getState().couponCode || null,
-        items: items.map((item) => ({
-          product_id: item.product_id,
-          variant_id: item.variant_id || null,
-          product_name: item.product_name,
-          variant_name: item.variant_name || null,
-          quantity: item.quantity,
-          unit_price: item.unit_price,
-          total_price: item.unit_price * item.quantity,
-          gst_rate: 18,
-          image_url: item.image_url || null,
-        })),
-      };
+      const lines = items.map((item) => ({
+        merchandiseId: item.variant_id || item.product_id,
+        quantity: item.quantity,
+      }));
 
-      const res = await fetch('/api/orders', {
+      const res = await fetch('/api/shopify/cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderPayload),
+        body: JSON.stringify({
+          action: 'checkout',
+          lines,
+          discountCode: useCartStore.getState().couponCode || null,
+        }),
       });
 
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to place order. Please try again.');
+      if (!res.ok || !data.success || !data.checkoutUrl) {
+        throw new Error(data.error || 'Failed to initialize Shopify checkout. Please try again.');
       }
 
-      // Success
-      clearCart();
-      setConfirmedOrder({
-        id: data.order_id,
-        number: data.order_number,
-        total: data.total_amount || total,
-        paymentMethod: 'Cash on Delivery (COD)',
-        customerName: contact.name || nameInput,
-        city: addrState.city,
-        state: addrState.state,
-        pincode: addrState.pincode,
-      });
-
-      setStep('success');
-      toast.success('Your order has been placed successfully via Cash on Delivery!');
+      toast.info('Redirecting to Shopify Secure Checkout...');
+      // Handoff to Shopify's real checkout so order appears in Shopify Admin
+      window.location.href = data.checkoutUrl;
     } catch (err: any) {
-      console.error('[Checkout] Order error:', err);
-      toast.error(err.message || 'Something went wrong while placing your order. Please try again.');
-    } finally {
+      console.error('[Checkout] Shopify handoff error:', err);
+      toast.error(err.message || 'Something went wrong while launching checkout. Please try again.');
       setLoading(false);
     }
   };
@@ -868,12 +827,12 @@ export default function CheckoutPage() {
                       {loading ? (
                         <span className="flex items-center gap-2">
                           <span className="w-4 h-4 border-2 border-obsidian/30 border-t-obsidian rounded-full animate-spin" />
-                          Placing Your COD Order...
+                          Connecting to Shopify Secure Checkout...
                         </span>
                       ) : (
                         <span className="flex items-center gap-1.5">
                           <Banknote size={16} />
-                          Confirm Order (Cash on Delivery) — {formatPrice(total)}
+                          Proceed to Shopify Checkout (Cash on Delivery) — {formatPrice(total)}
                         </span>
                       )}
                     </button>

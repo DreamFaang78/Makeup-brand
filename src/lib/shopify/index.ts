@@ -131,13 +131,51 @@ export async function getShopifyCollections() {
 }
 
 /**
+ * Build a robust Shopify Cart Permalink that routes customers directly to Shopify Checkout
+ * e.g. https://domain/cart/{variant_id}:{qty},{variant_id}:{qty}?discount={coupon}
+ */
+export function buildShopifyCartPermalink(
+  lines: Array<{ merchandiseId: string; quantity: number }>,
+  discountCode?: string | null
+): string | null {
+  const { domain, isConfigured } = getShopifyConfig();
+  if (!isConfigured || !domain) return null;
+
+  const validItems: string[] = [];
+
+  for (const item of lines) {
+    if (!item?.merchandiseId) continue;
+    const qty = Math.max(1, Number(item.quantity) || 1);
+
+    // Extract digits from variant GID or numeric ID string
+    const match = String(item.merchandiseId).match(/\d+/g);
+    if (match && match.length > 0) {
+      const variantId = match[match.length - 1];
+      validItems.push(`${variantId}:${qty}`);
+    }
+  }
+
+  if (validItems.length === 0) return null;
+
+  let url = `https://${domain}/cart/${validItems.join(',')}`;
+  if (discountCode && discountCode.trim()) {
+    url += `?discount=${encodeURIComponent(discountCode.trim())}`;
+  }
+  return url;
+}
+
+/**
  * Create a new Shopify cart and return its ID and checkout URL
  */
 export async function createShopifyCart(
-  lines: Array<{ merchandiseId: string; quantity: number }>
+  lines: Array<{ merchandiseId: string; quantity: number }>,
+  discountCode?: string | null
 ): Promise<ShopifyCart | null> {
-  const { isConfigured } = getShopifyConfig();
+  const { isConfigured, domain } = getShopifyConfig();
   if (!isConfigured) return null;
+
+  // Generate universal permalink as primary or backup checkout URL
+  const permalinkUrl = buildShopifyCartPermalink(lines, discountCode);
 
   try {
     // Ensure only valid Shopify variant GIDs are sent to cartCreate
@@ -148,27 +186,51 @@ export async function createShopifyCart(
         quantity: Math.max(1, Number(l.quantity) || 1),
       }));
 
-    const res = await shopifyFetch<{
-      cartCreate: {
-        cart: ShopifyCart | null;
-        userErrors: Array<{ field: string; message: string }>;
-      };
-    }>({
-      query: CREATE_CART_MUTATION,
-      variables: {
-        lines: formattedLines,
-      },
-    });
+    if (formattedLines.length > 0) {
+      const res = await shopifyFetch<{
+        cartCreate: {
+          cart: ShopifyCart | null;
+          userErrors: Array<{ field: string; message: string }>;
+        };
+      }>({
+        query: CREATE_CART_MUTATION,
+        variables: {
+          lines: formattedLines,
+        },
+      });
 
-    if (res?.data?.cartCreate?.cart) {
-      return res.data.cartCreate.cart;
-    }
-    if (res?.data?.cartCreate?.userErrors?.length) {
-      console.error('[Shopify Cart Error]:', res.data.cartCreate.userErrors);
+      if (res?.data?.cartCreate?.cart) {
+        const cart = res.data.cartCreate.cart;
+        // If permalink is available, prefer it because trial/headless stores may not route /cart/c/
+        return {
+          ...cart,
+          checkoutUrl: permalinkUrl || cart.checkoutUrl,
+        };
+      }
+      if (res?.data?.cartCreate?.userErrors?.length) {
+        console.error('[Shopify Cart Error]:', res.data.cartCreate.userErrors);
+      }
     }
   } catch (err: any) {
     console.error('[Shopify createCart Error]:', err.message);
   }
+
+  // If GraphQL cart creation had issues or lines weren't full GIDs, return synthesized cart with permalink
+  if (permalinkUrl) {
+    return {
+      id: `cart-permalink-${Date.now()}`,
+      checkoutUrl: permalinkUrl,
+      totalQuantity: lines.reduce((acc, l) => acc + (Number(l.quantity) || 1), 0),
+      cost: {
+        subtotalAmount: { amount: '0', currencyCode: 'INR' },
+        totalAmount: { amount: '0', currencyCode: 'INR' },
+        totalTaxAmount: null,
+      },
+      lines: { edges: [] },
+      discountCodes: discountCode ? [{ code: discountCode, applicable: true }] : [],
+    };
+  }
+
   return null;
 }
 

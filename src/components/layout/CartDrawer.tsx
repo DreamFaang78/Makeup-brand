@@ -74,15 +74,19 @@ export default function CartDrawer() {
       const res = await fetch('/api/shopify/cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'create', lines }),
+        body: JSON.stringify({
+          action: 'checkout',
+          lines,
+          discountCode: couponCode || null,
+        }),
       });
       const data = await res.json();
-      if (data?.success && data?.cart?.checkoutUrl) {
-        window.location.href = data.cart.checkoutUrl;
+      if (data?.success && data?.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
         return;
       }
     } catch (err) {
-      console.warn('Shopify cart handoff falling back to internal checkout:', err);
+      console.warn('Shopify cart handoff falling back to checkout page:', err);
     } finally {
       setIsCheckingOut(false);
     }

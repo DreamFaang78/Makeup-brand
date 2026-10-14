@@ -145,6 +145,26 @@ export default function ProductDetailPage() {
 
   const handleBuyNow = async () => {
     await handleAddToCart();
+    const variantId = selectedVariant?.id;
+    if (variantId) {
+      try {
+        const res = await fetch('/api/shopify/cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'checkout',
+            lines: [{ merchandiseId: variantId, quantity: qty }],
+          }),
+        });
+        const data = await res.json();
+        if (data?.success && data?.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+          return;
+        }
+      } catch (err) {
+        console.warn('Direct checkout handoff failed, redirecting to checkout page:', err);
+      }
+    }
     window.location.href = '/checkout';
   };
 
