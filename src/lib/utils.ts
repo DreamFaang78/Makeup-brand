@@ -101,7 +101,7 @@ export const BRAND = {
   socialLinks: {
     instagram: 'https://instagram.com/lanan.in',
     facebook: 'https://www.facebook.com/people/Lanan-Skin-Care/61593584686254/',
-    youtube: 'https://www.youtube.com/@AvishekYadav-o9b',
+    youtube: 'https://youtube.com/@lanan.787?si=WAkPbqo1aw3EIUAp',
     twitter: 'https://x.com/AvishekYad79945',
     linkedin: 'https://www.linkedin.com/in/avishek-yadav-8067373b4/',
     marketingEmail: 'mailto:mataraneel@lvbrilanan.com',
