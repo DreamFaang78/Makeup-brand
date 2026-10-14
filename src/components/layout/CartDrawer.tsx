@@ -7,8 +7,9 @@
 import { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Minus, Plus, Trash2, Tag, ChevronRight, ShoppingBag, Gift } from 'lucide-react';
+import { X, Minus, Plus, Trash2, Tag, ChevronRight, ShoppingBag, Gift, Loader2 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -23,8 +24,10 @@ export default function CartDrawer() {
     couponDiscount, applyCoupon, removeCoupon, freeShippingProgress,
   } = useCartStore();
 
+  const router = useRouter();
   const [couponInput, setCouponInput] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
 
   // Lock body scroll when open
@@ -59,6 +62,32 @@ export default function CartDrawer() {
       toast.error('Invalid coupon code');
     }
     setCouponLoading(false);
+  }
+
+  async function handleCheckout() {
+    setIsCheckingOut(true);
+    try {
+      const lines = items.map((i) => ({
+        merchandiseId: i.variant_id || i.product_id,
+        quantity: i.quantity,
+      }));
+      const res = await fetch('/api/shopify/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'create', lines }),
+      });
+      const data = await res.json();
+      if (data?.success && data?.cart?.checkoutUrl) {
+        window.location.href = data.cart.checkoutUrl;
+        return;
+      }
+    } catch (err) {
+      console.warn('Shopify cart handoff falling back to internal checkout:', err);
+    } finally {
+      setIsCheckingOut(false);
+    }
+    closeCart();
+    router.push('/checkout');
   }
 
   const remaining = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
@@ -309,14 +338,23 @@ export default function CartDrawer() {
 
                 {/* Checkout CTA */}
                 <div className="px-5 pb-5 pt-1">
-                  <Link
-                    href="/checkout"
-                    onClick={closeCart}
-                    className="btn-gold w-full justify-center text-center py-4 text-sm"
+                  <button
+                    onClick={handleCheckout}
+                    disabled={isCheckingOut}
+                    className="btn-gold w-full justify-center text-center py-4 text-sm disabled:opacity-75 disabled:cursor-wait"
                   >
-                    Proceed to Checkout
-                    <ChevronRight size={16} />
-                  </Link>
+                    {isCheckingOut ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin mr-2" />
+                        Securing Checkout...
+                      </>
+                    ) : (
+                      <>
+                        Proceed to Checkout
+                        <ChevronRight size={16} />
+                      </>
+                    )}
+                  </button>
                   <button
                     onClick={closeCart}
                     className="w-full text-center text-xs font-body text-taupe hover:text-gold transition-colors mt-2 py-1"

@@ -52,6 +52,7 @@ export interface Product {
   slug: string;
   tagline: string;
   description: string;
+  description_html?: string;
   ingredients: string;
   how_to_use: string[];
   category_id: string;
@@ -83,6 +84,7 @@ export interface ProductCardData {
   slug: string;
   tagline: string;
   description?: string;
+  description_html?: string;
   ingredients?: string;
   how_to_use?: string[];
   status?: ProductStatus;

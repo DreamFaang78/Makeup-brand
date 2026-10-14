@@ -93,7 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-body bg-ivory text-obsidian antialiased">
         <Providers>
           <Navbar />
-          <main className="pt-[calc(64px+36px)] lg:pt-[calc(80px+36px)] min-h-screen">
+          <main className="pt-[116px] lg:pt-[128px] min-h-screen">
             {children}
           </main>
           <Footer />

@@ -16,7 +16,15 @@ const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB per image (base64 ~ 4/3 raw siz
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { images } = body;
+    const { images, consentGiven } = body;
+
+    // ─── Validate consent ─────────────────────────────────────────────────────
+    if (!consentGiven) {
+      return NextResponse.json(
+        { error: 'Explicit user consent is required for AI cosmetic skin analysis.' },
+        { status: 400 }
+      );
+    }
 
     // ─── Validate input ───────────────────────────────────────────────────────
     if (!images || !Array.isArray(images) || images.length === 0) {
@@ -39,7 +47,7 @@ export async function POST(request: NextRequest) {
     // ─── Mock fallback (no API key) ───────────────────────────────────────────
     if (!apiKey) {
       console.warn('[skin-analysis] GEMINI_API_KEY not set — returning mock profile.');
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise(resolve => setTimeout(resolve, 2500));
       const mockProfiles = [
         {
           skinType: 'Combination',
@@ -52,12 +60,25 @@ export async function POST(request: NextRequest) {
           ],
           routineExplanation:
             'Your combination skin thrives on balanced clarity and hydration. Cleanse with LANAN Face Wash to control excess oil and clear pores without stripping. Follow with LANAN Glutathione Face Toner to rebalance and prep. Layer LANAN Glutathione Face Serum for brightening, and seal with LANAN Sunscreen SPF 50 PA++++ for broad-spectrum protection.',
+          amRoutine: [
+            'Step 1: Cleanse with LANAN Face Wash using lukewarm water',
+            'Step 2: Mist or pat LANAN Glutathione Face Toner onto damp skin',
+            'Step 3: Apply 3-4 drops of LANAN Glutathione Face Serum',
+            'Step 4: Shield with two fingers of LANAN Sunscreen SPF 50 PA++++',
+          ],
+          pmRoutine: [
+            'Step 1: Cleanse away pollution and SPF with LANAN Face Wash',
+            'Step 2: Hydrate with LANAN Glutathione Face Toner',
+            'Step 3: Nourish barrier overnight with LANAN Face Moisturizer',
+          ],
           recommendedProductSlugs: [
             'lanan-face-wash',
             'lanan-glutathione-face-toner',
             'lanan-glutathione-face-serum',
             'lanan-sunscreen-spf-50',
           ],
+          disclaimer:
+            'Cosmetic Guidance Only: This assessment is an automated visual analysis intended for beauty and skincare education. It does not replace medical consultation with a dermatologist.',
         },
         {
           skinType: 'Dry & Sensitive',
@@ -70,11 +91,24 @@ export async function POST(request: NextRequest) {
           ],
           routineExplanation:
             'Your dry, sensitive skin needs gentle antioxidant care and high UV protection. Use LANAN Glutathione Face Toner to immediately infuse moisture. Apply LANAN Glutathione Face Serum with Hyaluronic Acid and Ceramide NP to replenish the barrier. Always shield with LANAN Sunscreen SPF 50 PA++++ against daily UV rays.',
+          amRoutine: [
+            'Step 1: Gentle splash or light cleanse with LANAN Face Wash',
+            'Step 2: Pat 2 layers of LANAN Glutathione Face Toner',
+            'Step 3: Apply LANAN Glutathione Face Serum on damp skin',
+            'Step 4: Broad-spectrum defense with LANAN Sunscreen SPF 50 PA++++',
+          ],
+          pmRoutine: [
+            'Step 1: Gentle cleanse with LANAN Face Wash',
+            'Step 2: Deep hydration with LANAN Glutathione Face Toner',
+            'Step 3: Barrier sealing with LANAN Face Moisturizer',
+          ],
           recommendedProductSlugs: [
             'lanan-glutathione-face-toner',
             'lanan-glutathione-face-serum',
             'lanan-sunscreen-spf-50',
           ],
+          disclaimer:
+            'Cosmetic Guidance Only: This assessment is an automated visual analysis intended for beauty and skincare education. It does not replace medical consultation with a dermatologist.',
         },
         {
           skinType: 'Oily & Acne-Prone',
@@ -87,29 +121,23 @@ export async function POST(request: NextRequest) {
           ],
           routineExplanation:
             'Your oily, breakout-prone skin benefits from active clarifying ingredients. Cleanse twice daily with LANAN Face Wash formulated with 2% Salicylic Acid and 1% Niacinamide to clarify pores. Refine with LANAN Glutathione Face Toner, and protect daily with lightweight LANAN Sunscreen SPF 50 PA++++.',
+          amRoutine: [
+            'Step 1: Deep pore cleanse with LANAN Face Wash (Salicylic Acid 2%)',
+            'Step 2: Clarify and minimize pores with LANAN Glutathione Face Toner',
+            'Step 3: Lightweight non-comedogenic protection with LANAN Sunscreen SPF 50',
+          ],
+          pmRoutine: [
+            'Step 1: Thorough evening cleanse with LANAN Face Wash',
+            'Step 2: Gentle balancing with LANAN Glutathione Face Toner',
+            'Step 3: Lightweight hydration with LANAN Face Moisturizer',
+          ],
           recommendedProductSlugs: [
             'lanan-face-wash',
             'lanan-glutathione-face-toner',
             'lanan-sunscreen-spf-50',
           ],
-        },
-        {
-          skinType: 'Normal',
-          skinTypeDescription:
-            'Your skin is well-balanced with an even distribution of sebum and good hydration. Minimal visible concerns — smooth texture, even tone, and healthy barrier function.',
-          concerns: [
-            { name: 'UV Protection', severityPercent: 30, details: 'Preventive defense needed against daily tropical sun exposure.' },
-            { name: 'Hydration', severityPercent: 22, details: 'Skin is balanced and benefits from daily antioxidant hydration.' },
-            { name: 'Radiance', severityPercent: 28, details: 'Gentle support needed to maintain an illuminated, healthy-looking glow.' },
-          ],
-          routineExplanation:
-            'Your balanced skin will flourish with a simple, high-performance daily ritual. Cleanse with LANAN Face Wash, hydrate with LANAN Glutathione Face Toner, boost radiance with LANAN Glutathione Face Serum, and defend with LANAN Sunscreen SPF 50 PA++++.',
-          recommendedProductSlugs: [
-            'lanan-face-wash',
-            'lanan-glutathione-face-toner',
-            'lanan-glutathione-face-serum',
-            'lanan-sunscreen-spf-50',
-          ],
+          disclaimer:
+            'Cosmetic Guidance Only: This assessment is an automated visual analysis intended for beauty and skincare education. It does not replace medical consultation with a dermatologist.',
         },
       ];
       const profile = mockProfiles[Math.floor(Math.random() * mockProfiles.length)];
@@ -190,9 +218,23 @@ Respond with ONLY valid JSON matching the specified schema. Do not use unescaped
         recommendedProductSlugs: {
           type: "ARRAY",
           items: { type: "STRING" }
+        },
+        amRoutine: {
+          type: "ARRAY",
+          items: { type: "STRING" },
+          description: "Step-by-step AM skincare routine steps"
+        },
+        pmRoutine: {
+          type: "ARRAY",
+          items: { type: "STRING" },
+          description: "Step-by-step PM skincare routine steps"
+        },
+        disclaimer: {
+          type: "STRING",
+          description: "Clear cosmetic guidance disclaimer statement"
         }
       },
-      required: ["skinType", "skinTypeDescription", "concerns", "routineExplanation", "recommendedProductSlugs"]
+      required: ["skinType", "skinTypeDescription", "concerns", "routineExplanation", "recommendedProductSlugs", "amRoutine", "pmRoutine", "disclaimer"]
     };
 
     const requestBody = {

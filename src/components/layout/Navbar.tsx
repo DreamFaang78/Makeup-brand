@@ -16,6 +16,7 @@ import { useUIStore } from '@/store/uiStore';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/utils/supabase/client';
 import { toast } from 'sonner';
+import SearchModal from '@/components/layout/SearchModal';
 
 const NAV_LINKS = [
   {
@@ -41,6 +42,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   const supabase = createClient();
@@ -157,20 +159,20 @@ export default function Navbar() {
         {/* ── Main Navbar ── */}
         <header
           className={cn(
-            'w-full transition-all duration-500 z-40',
+            'w-full transition-all duration-300 z-40',
             // Laptop floating premium style
-            'lg:max-w-7xl lg:mx-auto lg:mt-3 lg:rounded-xl2 lg:border',
+            'lg:max-w-7xl lg:mx-auto lg:mt-2.5 lg:rounded-xl2 lg:border',
             scrolled
-              ? 'bg-obsidian border-gold/30 shadow-luxury-lg'
+              ? 'bg-obsidian/95 backdrop-blur-xl border-gold/30 shadow-luxury-lg'
               : 'bg-obsidian border-gold/20 lg:border-gold/25'
           )}
         >
         <div className="container-lanan">
-          <div className="flex items-center justify-between h-20 lg:h-24">
+          <div className="flex items-center justify-between h-20">
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3.5 flex-shrink-0" onClick={closeMobileMenu}>
-              <div className="relative w-12 h-12 lg:w-15 lg:h-15 filter drop-shadow-[0_0_12px_rgba(201,169,110,0.65)]">
+              <div className="relative w-12 h-12 lg:w-14 lg:h-14 filter drop-shadow-[0_0_12px_rgba(201,164,93,0.65)]">
                 <Image
                   src="/lanan-logo.png"
                   alt="LANAN Logo"
@@ -181,7 +183,7 @@ export default function Navbar() {
                 />
               </div>
               <span
-                className="font-heading font-bold tracking-[0.25em] text-2xl lg:text-3xl bg-gradient-to-r from-gold-light via-gold to-gold-dark bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(201,169,110,0.45)] transition-all duration-300 hover:brightness-110"
+                className="font-heading font-bold tracking-[0.25em] text-2xl lg:text-3xl bg-gradient-to-r from-gold-light via-gold to-gold-dark bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(201,164,93,0.45)] transition-all duration-300 hover:brightness-110"
               >
                 LANAN
               </span>
@@ -259,7 +261,8 @@ export default function Navbar() {
 
               {/* Search */}
               <button
-                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold"
+                onClick={() => setSearchOpen(true)}
+                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold cursor-pointer"
                 aria-label="Search products"
               >
                 <Search size={18} />
@@ -552,6 +555,13 @@ export default function Navbar() {
                     <Sparkles size={15} className="animate-pulse" />
                     Free AI Skin Analysis
                   </Link>
+                  <button
+                    onClick={() => { closeMobileMenu(); setSearchOpen(true); }}
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-gold/30 text-gold text-sm font-body hover:bg-gold/10 transition-colors"
+                  >
+                    <Search size={15} />
+                    Search Formulations
+                  </button>
                   <Link href="/shop" onClick={closeMobileMenu} className="btn-outline-gold w-full justify-center">
                     Shop Now
                   </Link>
@@ -561,6 +571,9 @@ export default function Navbar() {
           </>
         )}
       </AnimatePresence>
+
+      {/* ── Search Modal ── */}
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }

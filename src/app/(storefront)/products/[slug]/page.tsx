@@ -41,27 +41,45 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     let isMounted = true;
-    fetch('/api/products')
-      .then((res) => res.json())
-      .then((data) => {
-        if (!isMounted) return;
-        const catalog: ProductCardData[] = data.success && Array.isArray(data.products) && data.products.length > 0
-          ? data.products
-          : DEMO_PRODUCTS;
 
-        const found = catalog.find((p) => p.slug === slug || p.id === slug) ?? null;
-        setProduct(found);
-        if (found) {
-          setSelectedVariant(found.variants?.[0] ?? null);
-          setAllProducts(catalog.filter((p) => p.id !== found.id).slice(0, 4));
+    async function loadProductData() {
+      try {
+        let currentProduct: ProductCardData | null = null;
+        try {
+          const singleRes = await fetch(`/api/products/${slug}`);
+          const singleData = await singleRes.json();
+          if (singleData.success && singleData.product) {
+            currentProduct = singleData.product;
+          }
+        } catch (err) {
+          console.warn('Failed to fetch product by handle, checking catalog:', err);
         }
-      })
-      .catch((err) => {
+
+        const catalogRes = await fetch('/api/products');
+        const catalogData = await catalogRes.json();
+        const catalog: ProductCardData[] =
+          catalogData.success && Array.isArray(catalogData.products) && catalogData.products.length > 0
+            ? catalogData.products
+            : DEMO_PRODUCTS;
+
+        if (!currentProduct) {
+          currentProduct = catalog.find((p) => p.slug === slug || p.id === slug) ?? null;
+        }
+
+        if (!isMounted) return;
+        setProduct(currentProduct);
+        if (currentProduct) {
+          setSelectedVariant(currentProduct.variants?.[0] ?? null);
+          setAllProducts(catalog.filter((p) => p.id !== currentProduct!.id).slice(0, 4));
+        }
+      } catch (err) {
         console.error('Error fetching product detail:', err);
-      })
-      .finally(() => {
+      } finally {
         if (isMounted) setLoading(false);
-      });
+      }
+    }
+
+    loadProductData();
 
     return () => {
       isMounted = false;
@@ -289,14 +307,11 @@ export default function ProductDetailPage() {
             {/* Stock status */}
             {selectedVariant && (
               <p className={cn(
-                'text-xs font-body font-medium',
-                isOutOfStock ? 'text-error-red' : selectedVariant.inventory <= 5 ? 'text-amber-600' : 'text-success-green'
+                'text-xs font-body font-medium flex items-center gap-1.5',
+                isOutOfStock ? 'text-error-red' : 'text-success-green'
               )}>
-                {isOutOfStock
-                  ? 'Out of Stock'
-                  : selectedVariant.inventory <= 5
-                    ? `Only ${selectedVariant.inventory} left in stock`
-                    : 'In Stock'}
+                <span className={cn('w-2 h-2 rounded-full', isOutOfStock ? 'bg-error-red' : 'bg-success-green')} />
+                {isOutOfStock ? 'Currently Unavailable' : 'In Stock & Ready to Ship'}
               </p>
             )}
 

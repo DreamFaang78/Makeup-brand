@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Camera, Trash2, Loader2, ArrowRight, ShieldCheck,
   Award, AlertCircle, RotateCcw, ShoppingBag, Star, CheckCircle2,
-  ScanFace, Zap, Brain, FlaskConical,
+  ScanFace, Zap, Brain, FlaskConical, Sun,
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
@@ -32,6 +32,9 @@ interface AnalysisResult {
   skinTypeDescription: string;
   concerns: SkinConcernResult[];
   routineExplanation: string;
+  amRoutine?: string[];
+  pmRoutine?: string[];
+  disclaimer?: string;
   recommendedProductSlugs: string[];
   isMock: boolean;
 }
@@ -160,6 +163,7 @@ export default function SkinAnalysisPage() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
   const [scanStatus, setScanStatus] = useState(SCAN_STATUSES[0]);
+  const [hasConsented, setHasConsented] = useState(false);
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const { addItem } = useCartStore();
 
@@ -208,7 +212,7 @@ export default function SkinAnalysisPage() {
       const res = await fetch('/api/skin-analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ images: Object.values(images) }),
+        body: JSON.stringify({ images: Object.values(images), consentGiven: hasConsented }),
         signal: AbortSignal.timeout(60000),
       });
       
@@ -260,6 +264,7 @@ export default function SkinAnalysisPage() {
     setImages({});
     setResult(null);
     setErrorMsg('');
+    setHasConsented(false);
     setStep('upload');
     Object.values(fileInputRefs.current).forEach(ref => { if (ref) ref.value = ''; });
   };
@@ -553,28 +558,80 @@ export default function SkinAnalysisPage() {
               </div>
             </div>
 
+            {/* What this scan can & cannot tell you */}
+            <div className="bg-white rounded-2xl border border-beige/60 p-5 mb-6 shadow-sm">
+              <h3 className="text-xs font-body font-bold text-obsidian uppercase tracking-wider mb-3">
+                What Our AI Scan Can & Cannot Tell You
+              </h3>
+              <div className="grid sm:grid-cols-2 gap-4 text-xs font-body">
+                <div className="space-y-1.5 p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-emerald-950">
+                  <div className="flex items-center gap-1.5 font-semibold text-emerald-800">
+                    <CheckCircle2 size={13} className="text-emerald-600" />
+                    What It Can Tell You
+                  </div>
+                  <ul className="list-disc list-inside space-y-1 text-[11px] text-charcoal/80">
+                    <li>Visible skin surface type & sebum distribution</li>
+                    <li>Pore congestion & visual texture variations</li>
+                    <li>Surface hyperpigmentation & dark spots</li>
+                    <li>Tailored 4-step AM/PM LANAN ritual steps</li>
+                  </ul>
+                </div>
+                <div className="space-y-1.5 p-3 rounded-xl bg-amber-500/5 border border-amber-500/20 text-amber-950">
+                  <div className="flex items-center gap-1.5 font-semibold text-amber-800">
+                    <AlertCircle size={13} className="text-amber-600" />
+                    What It Cannot Tell You
+                  </div>
+                  <ul className="list-disc list-inside space-y-1 text-[11px] text-charcoal/80">
+                    <li>No clinical or dermatological medical diagnosis</li>
+                    <li>Cannot detect deep subcutaneous conditions</li>
+                    <li>Cannot diagnose hormonal causes or cysts</li>
+                    <li>Not a substitute for a licensed dermatologist</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Consent Agreement Checkbox */}
+            <div className="bg-ivory border border-gold/30 rounded-2xl p-4 mb-6">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={hasConsented}
+                  onChange={(e) => setHasConsented(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-gold/40 text-gold focus:ring-gold accent-gold"
+                  id="skin-analysis-consent"
+                />
+                <div className="text-xs font-body text-charcoal leading-relaxed">
+                  <span className="font-semibold text-obsidian">Consent to Ephemeral Processing: </span>
+                  I consent to the ephemeral transmission and processing of my uploaded face photos by LANAN and Google Gemini AI solely for real-time cosmetic skincare guidance. I understand that my photos are processed ephemerally and never stored in any customer database or product catalog, and that this analysis represents cosmetic education, not medical advice.
+                </div>
+              </label>
+            </div>
+
             {/* CTA */}
             <motion.button
               onClick={handleAnalyze}
-              disabled={!allUploaded}
+              disabled={!allUploaded || !hasConsented}
               className="w-full btn-gold text-sm py-4 justify-center disabled:opacity-40 disabled:cursor-not-allowed"
-              whileHover={allUploaded ? { scale: 1.01 } : {}}
-              whileTap={allUploaded ? { scale: 0.99 } : {}}
+              whileHover={allUploaded && hasConsented ? { scale: 1.01 } : {}}
+              whileTap={allUploaded && hasConsented ? { scale: 0.99 } : {}}
               id="analyze-skin-btn"
             >
-              {allUploaded ? (
+              {!allUploaded ? (
+                `Upload ${4 - uploadedCount} more photo${4 - uploadedCount !== 1 ? 's' : ''} to continue`
+              ) : !hasConsented ? (
+                'Please check the consent box above to proceed'
+              ) : (
                 <>
                   <Sparkles size={16} className="animate-pulse" />
                   Analyze My Skin Now
                   <ArrowRight size={16} />
                 </>
-              ) : (
-                `Upload ${4 - uploadedCount} more photo${4 - uploadedCount !== 1 ? 's' : ''} to continue`
               )}
             </motion.button>
 
             <p className="text-center text-[10px] font-body text-taupe mt-3">
-              🔒 Your photos are processed in real-time and never stored on our servers.
+              🔒 Ephemeral & Private: Photos are analyzed in real-time and never retained.
             </p>
           </motion.div>
         )}
@@ -692,6 +749,15 @@ export default function SkinAnalysisPage() {
             </div>
 
             <div className="container-lanan py-10 max-w-4xl">
+              {/* Medical / Cosmetic Disclaimer */}
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 mb-8 flex items-start gap-3 text-xs font-body text-charcoal">
+                <AlertCircle size={18} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold text-obsidian">Cosmetic Guidance Disclaimer: </span>
+                  {result.disclaimer || 'This AI analysis provides cosmetic skincare guidance only and is not a clinical medical diagnosis. For persistent, severe, or painful skin conditions, please consult a board-certified dermatologist.'}
+                </div>
+              </div>
+
               <div className="grid lg:grid-cols-3 gap-8">
 
                 {/* ── Left column: skin type + concerns ── */}
@@ -747,6 +813,47 @@ export default function SkinAnalysisPage() {
                     </div>
                     <p className="text-sm font-body text-charcoal leading-relaxed">{result.routineExplanation}</p>
                   </motion.div>
+
+                  {/* Morning & Evening Rituals */}
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="bg-white rounded-2xl border border-beige/60 p-5 shadow-card">
+                      <div className="flex items-center gap-2 mb-3 text-obsidian font-semibold text-xs font-body uppercase tracking-wider">
+                        <Sun size={15} className="text-gold" />
+                        Morning Ritual (AM)
+                      </div>
+                      <ul className="space-y-2 text-xs font-body text-charcoal">
+                        {(result.amRoutine || [
+                          'Step 1: Cleanse with LANAN Face Wash',
+                          'Step 2: Balance with LANAN Glutathione Face Toner',
+                          'Step 3: Brighten with LANAN Glutathione Face Serum',
+                          'Step 4: Protect with LANAN Sunscreen SPF 50',
+                        ]).map((step, idx) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-gold font-bold text-[11px]">•</span>
+                            <span>{step}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-white rounded-2xl border border-beige/60 p-5 shadow-card">
+                      <div className="flex items-center gap-2 mb-3 text-obsidian font-semibold text-xs font-body uppercase tracking-wider">
+                        <Sparkles size={15} className="text-gold" />
+                        Evening Ritual (PM)
+                      </div>
+                      <ul className="space-y-2 text-xs font-body text-charcoal">
+                        {(result.pmRoutine || [
+                          'Step 1: Deep cleanse with LANAN Face Wash',
+                          'Step 2: Hydrate with LANAN Glutathione Face Toner',
+                          'Step 3: Nourish overnight with LANAN Face Moisturizer',
+                        ]).map((step, idx) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-gold font-bold text-[11px]">•</span>
+                            <span>{step}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
 
                 {/* ── Right column: products + actions ── */}
@@ -815,13 +922,21 @@ export default function SkinAnalysisPage() {
                                   salePrice={prod.sale_price}
                                   size="sm"
                                 />
-                                <button
-                                  onClick={() => handleAddToCart(prod)}
-                                  className="flex items-center gap-1 bg-obsidian text-ivory text-[9px] font-body font-semibold px-2.5 py-1.5 rounded-pill hover:bg-gold hover:text-obsidian transition-colors"
-                                >
-                                  <ShoppingBag size={9} />
-                                  Add
-                                </button>
+                                <div className="flex items-center gap-2">
+                                  <Link
+                                    href={`/products/${prod.slug}`}
+                                    className="text-[10px] font-body text-taupe hover:text-gold transition-colors underline"
+                                  >
+                                    View
+                                  </Link>
+                                  <button
+                                    onClick={() => handleAddToCart(prod)}
+                                    className="flex items-center gap-1 bg-obsidian text-ivory text-[9px] font-body font-semibold px-2.5 py-1.5 rounded-pill hover:bg-gold hover:text-obsidian transition-colors"
+                                  >
+                                    <ShoppingBag size={9} />
+                                    Add
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </motion.div>

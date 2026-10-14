@@ -39,15 +39,15 @@ export default function ShopPage() {
       .then((res) => res.json())
       .then((data) => {
         if (!isMounted) return;
-        if (data.success && Array.isArray(data.products)) {
+        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
           setAllProducts(data.products);
         } else {
-          setAllProducts([]);
+          setAllProducts(DEMO_PRODUCTS);
         }
       })
       .catch((err) => {
-        console.error('Error fetching live products:', err);
-        if (isMounted) setAllProducts([]);
+        console.warn('Falling back to default LANAN catalog on shop page:', err);
+        if (isMounted) setAllProducts(DEMO_PRODUCTS);
       })
       .finally(() => {
         if (isMounted) setIsLoading(false);
@@ -68,9 +68,12 @@ export default function ShopPage() {
     let products = [...allProducts];
 
     if (selectedCategory !== 'All') {
+      const target = selectedCategory.trim().toLowerCase();
+      const keyword = target.replace(/s$/, '').replace(/ers$/, '');
       products = products.filter((p) => {
-        const catName = typeof p.category === 'string' ? p.category : p.category?.name || '';
-        return catName.trim().toLowerCase() === selectedCategory.trim().toLowerCase();
+        const catName = (typeof p.category === 'string' ? p.category : p.category?.name || '').toLowerCase();
+        const pName = (p.name || '').toLowerCase();
+        return catName.includes(target) || catName.includes(keyword) || pName.includes(keyword);
       });
     }
 

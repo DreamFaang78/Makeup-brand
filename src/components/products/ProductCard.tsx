@@ -102,11 +102,6 @@ export default function ProductCard({ product, index = 0 }: Props) {
               {isOutOfStock && (
                 <span className="badge-oos shadow-xs">Out of Stock</span>
               )}
-              {isLowStock && !isOutOfStock && (
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-body font-semibold uppercase bg-amber-100 text-amber-700 shadow-xs">
-                  Only {activeVariant?.inventory} left
-                </span>
-              )}
             </div>
 
             {/* Wishlist */}
