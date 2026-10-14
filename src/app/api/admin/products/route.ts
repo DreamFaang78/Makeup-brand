@@ -81,7 +81,7 @@ export async function GET() {
       } else if (p.og_image_url) {
         images = [{ id: `img-${p.id}`, url: p.og_image_url, alt_text: p.name, sort_order: 0, is_video: false }];
       } else {
-        images = [{ id: `img-${p.id}`, url: '/Serum Bottle.jpeg', alt_text: p.name, sort_order: 0, is_video: false }];
+        images = [{ id: `img-${p.id}`, url: '/serum-bottle.jpeg', alt_text: p.name, sort_order: 0, is_video: false }];
       }
 
       // Variants
@@ -270,7 +270,7 @@ export async function POST(req: NextRequest) {
           is_bestseller: prod.is_bestseller,
           rating_avg: prod.rating_avg,
           rating_count: prod.rating_count,
-          og_image_url: prod.images[0]?.url || '/Serum Bottle.jpeg',
+          og_image_url: prod.images[0]?.url || '/serum-bottle.jpeg',
         }));
 
         const { error: pErr } = await supabase.from('products').upsert(productsToInsert, { onConflict: 'slug' });
@@ -317,7 +317,7 @@ export async function POST(req: NextRequest) {
           slug: prod.slug,
           description: prod.tagline || prod.name,
           price: prod.sale_price || prod.base_price,
-          image_url: prod.images[0]?.url || '/Serum Bottle.jpeg',
+          image_url: prod.images[0]?.url || '/serum-bottle.jpeg',
           category: prod.category?.name || 'Skincare',
           stock: prod.variants[0]?.inventory || 50,
           is_active: true,
@@ -363,7 +363,7 @@ export async function POST(req: NextRequest) {
     // Normalizing photos
     const imagesToProcess: string[] = Array.isArray(body.images) && body.images.length > 0
       ? body.images.map((img: any) => typeof img === 'string' ? img : img.url).filter(Boolean)
-      : [image_url || '/Serum Bottle.jpeg'];
+      : [image_url || '/serum-bottle.jpeg'];
 
     // Resolve or find Category ID (for relational schema)
     let categoryId: string | null = null;
@@ -481,7 +481,7 @@ export async function POST(req: NextRequest) {
       slug,
       description: tagline || name,
       price: effectivePrice,
-      image_url: imagesToProcess[0] || '/Serum Bottle.jpeg',
+      image_url: imagesToProcess[0] || '/serum-bottle.jpeg',
       category: categoryName || 'Skincare',
       stock: invNum,
       is_active: true,

@@ -7,16 +7,18 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { CartItem } from '@/types/order';
 
-const FREE_SHIPPING_THRESHOLD = 599;
-const STANDARD_SHIPPING = 79;
-const GST_RATE = 0.18;
+export const FREE_SHIPPING_THRESHOLD = 599;
+export const STANDARD_SHIPPING = 79;
+export const GST_RATE = 0.18;
 
-function calcCart(items: CartItem[], couponDiscount: number) {
-  const subtotal = items.reduce((s, i) => s + i.unit_price * i.quantity, 0);
-  const discounted = Math.max(subtotal - couponDiscount, 0);
-  const shipping = discounted >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING;
-  const gst = Math.round(discounted * GST_RATE * 100) / 100;
-  const total = discounted + shipping + gst;
+export function calcCart(items: CartItem[], couponDiscount: number) {
+  const subtotal = items.reduce((s, i) => s + (Number(i.unit_price) || 0) * (Number(i.quantity) || 1), 0);
+  const discounted = Math.max(subtotal - (Number(couponDiscount) || 0), 0);
+  const shipping = subtotal === 0 ? 0 : (discounted >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING);
+  // In Indian D2C pricing, prices are inclusive of GST.
+  // The GST component is extracted from the price (18% inclusive):
+  const gst = subtotal > 0 ? Math.round((discounted - (discounted / (1 + GST_RATE))) * 100) / 100 : 0;
+  const total = discounted + shipping;
   return { subtotal, shipping, gst, total };
 }
 
@@ -41,6 +43,7 @@ interface CartState {
   clearCart: () => void;
   applyCoupon: (code: string, discount: number) => void;
   removeCoupon: () => void;
+  recalculate: () => void;
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
@@ -162,6 +165,22 @@ export const useCartStore = create<CartState>()(
         set({ couponCode: null, couponDiscount: 0, shippingCharge: shipping, gstAmount: gst, total });
       },
 
+      recalculate: () => {
+        const state = get();
+        const items = state.items || [];
+        const discount = state.couponDiscount || 0;
+        const { subtotal, shipping, gst, total } = calcCart(items, discount);
+        const progress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
+        set({
+          subtotal,
+          shippingCharge: shipping,
+          gstAmount: gst,
+          total,
+          itemCount: items.reduce((s, i) => s + (i.quantity || 1), 0),
+          freeShippingProgress: progress,
+        });
+      },
+
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
       toggleCart: () => set((s) => ({ isOpen: !s.isOpen })),
@@ -169,10 +188,28 @@ export const useCartStore = create<CartState>()(
     {
       name: 'lanan-cart',
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          const items = state.items || [];
+          const discount = state.couponDiscount || 0;
+          const { subtotal, shipping, gst, total } = calcCart(items, discount);
+          state.subtotal = subtotal;
+          state.shippingCharge = shipping;
+          state.gstAmount = gst;
+          state.total = total;
+          state.itemCount = items.reduce((s, i) => s + (i.quantity || 1), 0);
+          state.freeShippingProgress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
+        }
+      },
       partialize: (state) => ({
         items: state.items,
         couponCode: state.couponCode,
         couponDiscount: state.couponDiscount,
+        subtotal: state.subtotal,
+        shippingCharge: state.shippingCharge,
+        gstAmount: state.gstAmount,
+        total: state.total,
+        itemCount: state.itemCount,
       }),
     }
   )

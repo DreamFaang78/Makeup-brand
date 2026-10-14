@@ -12,20 +12,21 @@
 ───────────────────────────────────────────────────────────────────────────── */
 @theme {
   /* Colors */
-  --color-obsidian: #0A0A0A;
-  --color-gold: #C9A96E;
-  --color-gold-light: #D4B88A;
-  --color-gold-dark: #A8813D;
-  --color-gold-muted: #E8D4B0;
-  --color-taupe: #9B7465;
-  --color-taupe-light: #B8907E;
-  --color-taupe-dark: #7A5A4C;
-  --color-ivory: #F7F1EA;
-  --color-ivory-dark: #EDE4D8;
-  --color-beige: #E8D8CA;
-  --color-beige-light: #F2EAE1;
-  --color-beige-dark: #D4C0AE;
-  --color-charcoal: #2D2D2D;
+  --color-obsidian: #090807;
+  --color-gold: #C9A45D;
+  --color-gold-light: #DFBF7E;
+  --color-gold-dark: #A9813D;
+  --color-gold-muted: #EED8B5;
+  --color-taupe: #A97867;
+  --color-taupe-light: #C49888;
+  --color-taupe-dark: #7A5344;
+  --color-ivory: #F7F0E7;
+  --color-ivory-dark: #ECE3D7;
+  --color-beige: #E6D7C8;
+  --color-beige-light: #F2EAE0;
+  --color-beige-dark: #D4C0AF;
+  --color-charcoal: #1E1B18;
+  --color-burgundy: #5B1924;
   --color-success-green: #2D7A4F;
   --color-error-red: #C0392B;
 
@@ -67,8 +68,8 @@
   }
 
   @keyframes pulseGold {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(201, 169, 110, 0.4); }
-    50% { box-shadow: 0 0 0 12px rgba(201, 169, 110, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201, 164, 93, 0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(201, 164, 93, 0); }
   }
 }
 
@@ -76,9 +77,19 @@
    CSS CUSTOM PROPERTIES (runtime variables)
 ───────────────────────────────────────────────────────────────────────────── */
 :root {
-  --gradient-gold: linear-gradient(135deg, #C9A96E 0%, #A8813D 50%, #C9A96E 100%);
-  --gradient-hero: linear-gradient(160deg, #F7F1EA 0%, #E8D8CA 100%);
-  --gradient-dark: linear-gradient(180deg, #0A0A0A 0%, #1A1A1A 100%);
+  --color-obsidian: #090807;
+  --color-ivory: #F7F0E7;
+  --color-gold: #C9A45D;
+  --color-gold-dark: #A9813D;
+  --color-taupe: #A97867;
+  --color-burgundy: #5B1924;
+
+  --header-height: 124px;
+  --header-height-mobile: 108px;
+
+  --gradient-gold: linear-gradient(135deg, #C9A45D 0%, #A9813D 50%, #C9A45D 100%);
+  --gradient-hero: linear-gradient(160deg, #F7F0E7 0%, #E8D9CA 100%);
+  --gradient-dark: linear-gradient(180deg, #090807 0%, #171513 100%);
   --font-heading: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', 'Manrope', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -99,10 +110,20 @@
 
   body {
     font-family: var(--font-body);
-    background-color: #F7F1EA;
-    color: #0A0A0A;
+    background-color: var(--color-ivory);
+    color: var(--color-obsidian);
     line-height: 1.6;
     overflow-x: hidden;
+  }
+
+  /* Section heading scroll offset so sticky navbar never obscures targets */
+  section[id], div[id], h2[id], h3[id] {
+    scroll-margin-top: calc(var(--header-height) + 24px);
+  }
+  @media (max-width: 1024px) {
+    section[id], div[id], h2[id], h3[id] {
+      scroll-margin-top: calc(var(--header-height-mobile) + 16px);
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {

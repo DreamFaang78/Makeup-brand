@@ -1,7 +1,7 @@
 'use client';
 // ─────────────────────────────────────────────────────────────────────────────
-// LANAN — Homepage
-// Hero, Trust Ticker, Bestsellers, Brand Story, Ingredients, Reviews, Newsletter
+// LANAN — Luxury Skincare Storefront Homepage
+// Fully redesigned to match premium Indian skincare aesthetic
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useRef, useState, useEffect, useMemo } from 'react';
@@ -11,22 +11,32 @@ import { motion, useInView } from 'framer-motion';
 import {
   ArrowRight, Star, ShieldCheck, Leaf, Truck, Sparkles,
   Droplets, FlaskConical, Sun, Wind, Heart, ChevronLeft, ChevronRight,
+  Camera, CheckCircle2, RotateCcw, Play, Check,
 } from 'lucide-react';
 import ProductCard from '@/components/products/ProductCard';
 import { DEMO_PRODUCTS, DEMO_REVIEWS } from '@/lib/data/products';
 import { formatPrice, cn } from '@/lib/utils';
+import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
 
 /* ── Animation helpers ── */
-function FadeUp({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
+function FadeUp({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const inView = useInView(ref, { once: true, margin: '-60px' });
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 32 }}
+      initial={{ opacity: 0, y: 28 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, delay, ease: [0.4, 0, 0.2, 1] }}
+      transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
       {children}
@@ -34,101 +44,102 @@ function FadeUp({ children, delay = 0, className = '' }: { children: React.React
   );
 }
 
-/* ── Trust Ticker ── */
-const TRUST_ITEMS = [
-  '✦ 100% Cruelty-Free',
-  '✦ Dermatologist Tested',
-  '✦ No Harmful Chemicals',
-  '✦ Cruelty Free',
-  '✦ Secure Payments',
-  '✦ Skin-Friendly Formulas',
-  '✦ Free Shipping Above ₹599',
-  '✦ Easy 7-Day Returns',
-  '✦ Premium Ingredients',
-  '✦ Crafted for Sensitive Skin',
+/* ── Section 4: Authentic Trust & Brand Metrics ── */
+const TRUST_METRICS = [
+  { value: '100%', label: 'Cruelty-Free & Dermatologist Tested', detail: 'Zero animal testing, safe for sensitive Indian skin' },
+  { value: '₹599', label: 'Free Pan-India Delivery', detail: 'Dispatched in eco-conscious packaging with tracked delivery' },
+  { value: '4-Step', label: 'Curated Daily Skin Rituals', detail: 'Cleanse, tone, treat, and broad-spectrum SPF protection' },
+  { value: 'Zero', label: 'White Cast & Heavy Residue', detail: 'Lightweight botanical formulas tailored for warm climates' },
 ];
 
-function TrustTicker() {
-  const items = [...TRUST_ITEMS, ...TRUST_ITEMS];
-  return (
-    <div className="bg-obsidian overflow-hidden py-3">
-      <div className="flex animate-ticker whitespace-nowrap" style={{ width: 'max-content' }}>
-        {items.map((item, i) => (
-          <span key={i} className="text-gold text-xs font-body font-medium tracking-widest mx-8">
-            {item}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ── INGREDIENTS DATA ── */
-const INGREDIENTS = [
-  { 
-    icon: <Droplets size={20} />, 
-    name: 'Hyaluronic Acid', 
-    benefit: 'Deep hydration & plumping',
-    details: 'A powerful humectant that draws moisture from the atmosphere, holding up to 1000x its weight in water to plump fine lines and restore a dewy, supple texture.'
-  },
-  { 
-    icon: <Sparkles size={20} />, 
-    name: 'Niacinamide', 
-    benefit: 'Brightening & pore refinement',
-    details: 'Vitamin B3 regulates sebum production, tightens enlarged pores, strengthens the skin barrier, and dramatically fades post-acne blemishes.'
-  },
-  { 
-    icon: <Sun size={20} />, 
-    name: 'Saffron Extract', 
-    benefit: 'Radiance & even tone',
-    details: 'A legendary antioxidant that fights free radicals, brightens stubborn hyperpigmentation, and imparts a natural, warm golden glow.'
-  },
-  { 
-    icon: <Leaf size={20} />, 
-    name: 'Aloe Vera', 
-    benefit: 'Soothing & calming',
-    details: 'Rich in vitamins and anti-inflammatory compounds, it instantly cools skin, reduces redness, and provides deep, weightless hydration.'
-  },
-  { 
-    icon: <FlaskConical size={20} />, 
-    name: 'Vitamin C', 
-    benefit: 'Antioxidant & glow boost',
-    details: 'Neutralizes environmental stressors, boosts natural collagen synthesis, and brightens dark spots for a visibly firmer, more even complexion.'
-  },
-  { 
-    icon: <Wind size={20} />, 
-    name: 'Peptides', 
-    benefit: 'Firming & anti-aging',
-    details: 'Amino acid chains that signal the skin to rebuild collagen and elastin fibers, increasing firmness and diminishing fine lines.'
-  },
-];
-
-/* ── HERO STATS ── */
-const STATS = [
-  { value: '50K+', label: 'Happy Customers' },
-  { value: '4.8★', label: 'Average Rating' },
-  { value: '12+', label: 'Premium Products' },
-  { value: '100%', label: 'Skin-Safe Promise' },
-];
-
-/* ── SKIN CONCERNS ── */
+/* ── Section 5: Skin Concerns ── */
 const SKIN_CONCERNS = [
-  { label: 'Pigmentation', href: '/shop?concern=pigmentation', icon: '✦' },
-  { label: 'Hydration', href: '/shop?concern=hydration', icon: '✦' },
-  { label: 'Acne & Pores', href: '/shop?concern=acne', icon: '✦' },
-  { label: 'Anti-Aging', href: '/shop?concern=anti-aging', icon: '✦' },
-  { label: 'Brightening', href: '/shop?concern=brightening', icon: '✦' },
-  { label: 'Dark Circles', href: '/shop?concern=dark-circles', icon: '✦' },
+  {
+    label: 'Pigmentation',
+    href: '/shop?concern=pigmentation',
+    desc: 'Fade dark spots & even out melanin synthesis',
+    tag: 'Glutathione + Niacinamide',
+  },
+  {
+    label: 'Hydration',
+    href: '/shop?concern=hydration',
+    desc: 'Quench deep dryness & restore moisture barrier',
+    tag: 'Hyaluronic Acid + Ceramides',
+  },
+  {
+    label: 'Acne & Pores',
+    href: '/shop?concern=acne',
+    desc: 'Clarify excess sebum & unclog congested pores',
+    tag: 'Salicylic Acid 2%',
+  },
+  {
+    label: 'Anti-Aging',
+    href: '/shop?concern=anti-aging',
+    desc: 'Smooth fine lines & promote skin elasticity',
+    tag: 'Peptides + Antioxidants',
+  },
+  {
+    label: 'Brightening',
+    href: '/shop?concern=brightening',
+    desc: 'Revitalize dullness for a luminous golden glow',
+    tag: 'Saffron + Vitamin C',
+  },
+  {
+    label: 'Dark Circles',
+    href: '/shop?concern=dark-circles',
+    desc: 'Nourish delicate under-eye skin & diminish fatigue',
+    tag: 'Caffeine + Botanical Extracts',
+  },
 ];
 
-function IngredientCard({ ingredient, i }: { ingredient: any; i: number }) {
+/* ── Section 11: Ingredients Data ── */
+const INGREDIENTS = [
+  {
+    icon: <Droplets size={20} />,
+    name: 'Hyaluronic Acid',
+    benefit: 'Deep cellular hydration & plumping',
+    details: 'A multi-molecular humectant that attracts up to 1000x its weight in water, infusing parched skin with enduring moisture.',
+  },
+  {
+    icon: <Sparkles size={20} />,
+    name: 'Niacinamide (Vitamin B3)',
+    benefit: 'Barrier repair & pore refinement',
+    details: 'Clinically proven to balance sebum production, visibly minimize enlarged pores, and restore barrier resilience.',
+  },
+  {
+    icon: <Sun size={20} />,
+    name: 'Kashmiri Saffron Extract',
+    benefit: 'Golden radiance & tone illumination',
+    details: 'Harvested by hand, rich in crocin and antioxidants that combat environmental stressors while imparting a natural luminescence.',
+  },
+  {
+    icon: <Leaf size={20} />,
+    name: 'Aloe Vera Gel',
+    benefit: 'Instant soothing & cooling relief',
+    details: 'Packed with vitamins and anti-inflammatory enzymes to calm heat-stressed skin without greasiness or sticky residue.',
+  },
+  {
+    icon: <FlaskConical size={20} />,
+    name: 'Stabilized Vitamin C',
+    benefit: 'Antioxidant defense & spot fading',
+    details: 'Neutralizes free radicals from UV and pollution while visibly evening hyperpigmentation and boosting natural radiance.',
+  },
+  {
+    icon: <Wind size={20} />,
+    name: 'Signal Peptides',
+    benefit: 'Firming & elasticity reinforcement',
+    details: 'Bio-mimetic amino acid chains that encourage dermal renewal, smoothing texture and fine expression lines.',
+  },
+];
+
+function IngredientCard({ ingredient }: { ingredient: (typeof INGREDIENTS)[0] }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="flex flex-col p-5 rounded-card border border-beige hover:border-gold/40 hover:shadow-gold transition-all duration-300 bg-white hover:bg-ivory/50 cursor-pointer overflow-hidden min-h-[104px]"
+      className="flex flex-col p-5 rounded-card border border-beige/60 hover:border-gold/40 hover:shadow-luxury transition-all duration-300 bg-white hover:bg-ivory/50 cursor-pointer overflow-hidden min-h-[110px]"
     >
       <div className="flex gap-4 items-start">
         <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold flex-shrink-0">
@@ -139,7 +150,7 @@ function IngredientCard({ ingredient, i }: { ingredient: any; i: number }) {
           <p className="text-xs font-body text-taupe leading-relaxed">{ingredient.benefit}</p>
         </div>
       </div>
-      
+
       <motion.div
         initial={false}
         animate={{ height: hovered ? 'auto' : 0, opacity: hovered ? 1 : 0, marginTop: hovered ? 12 : 0 }}
@@ -155,12 +166,14 @@ function IngredientCard({ ingredient, i }: { ingredient: any; i: number }) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Homepage Component
+   Main Homepage Component
 ───────────────────────────────────────────────────────────────────────────── */
 export default function HomePage() {
-  const [reviewIndex, setReviewIndex] = useState(0);
   const [products, setProducts] = useState<ProductCardData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterConsent, setNewsletterConsent] = useState(false);
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -168,15 +181,15 @@ export default function HomePage() {
       .then((res) => res.json())
       .then((data) => {
         if (!isMounted) return;
-        if (data.success && Array.isArray(data.products)) {
+        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
           setProducts(data.products);
         } else {
-          setProducts([]);
+          setProducts(DEMO_PRODUCTS);
         }
       })
       .catch((err) => {
-        console.error('Error fetching storefront homepage products:', err);
-        if (isMounted) setProducts([]);
+        console.error('Error fetching homepage products:', err);
+        if (isMounted) setProducts(DEMO_PRODUCTS);
       })
       .finally(() => {
         if (isMounted) setIsLoading(false);
@@ -192,240 +205,180 @@ export default function HomePage() {
     return featured.length > 0 ? featured : products.slice(0, 4);
   }, [products]);
 
-  const prevReview = () => setReviewIndex((i) => (i === 0 ? DEMO_REVIEWS.length - 1 : i - 1));
-  const nextReview = () => setReviewIndex((i) => (i === DEMO_REVIEWS.length - 1 ? 0 : i + 1));
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim() || !newsletterEmail.includes('@')) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    if (!newsletterConsent) {
+      toast.error('Please accept our privacy policy to subscribe');
+      return;
+    }
+    setNewsletterSubmitted(true);
+    toast.success('Welcome to the LANAN Circle! Your 15% discount code is LANAN15');
+  };
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-hidden bg-ivory">
 
       {/* ════════════════════════════════════════════════════════════
-          HERO SECTION
+          SECTION 3: HERO SECTION
       ════════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[85vh] lg:min-h-screen flex items-center overflow-hidden bg-gradient-hero mt-[-100px] lg:mt-[-116px] pt-[100px] lg:pt-[116px]">
-        {/* Decorative background blobs */}
-        <div className="absolute inset-0 bg-pattern-luxury" />
-        <div className="absolute top-20 right-0 w-[600px] h-[600px] rounded-full opacity-20"
-          style={{ background: 'radial-gradient(circle, #C9A96E 0%, transparent 70%)' }} />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-10"
-          style={{ background: 'radial-gradient(circle, #9B7465 0%, transparent 70%)' }} />
+      <section className="relative min-h-[82vh] lg:min-h-[88vh] flex items-center overflow-hidden bg-gradient-hero border-b border-beige/40">
+        {/* Subtle decorative background elements */}
+        <div className="absolute inset-0 bg-pattern-luxury opacity-40 pointer-events-none" />
+        <div
+          className="absolute top-10 right-0 w-[550px] h-[550px] rounded-full opacity-20 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #C9A45D 0%, transparent 70%)' }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-[450px] h-[450px] rounded-full opacity-10 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #A97867 0%, transparent 70%)' }}
+        />
 
-        {/* Gold border accent */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-gold opacity-60" />
+        <div className="container-lanan relative z-10 py-12 lg:py-16">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
 
-        <div className="container-lanan relative z-10 pt-8 pb-16 lg:pt-20 lg:pb-12">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[80vh]">
-
-            {/* Text Content */}
-            <div className="text-center flex flex-col items-center">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                {/* Pill label */}
-                <div className="inline-flex items-center gap-2 bg-gold/10 border border-gold/25 rounded-pill px-4 py-1.5 mb-6">
-                  <Sparkles size={12} className="text-gold" />
-                  <span className="text-gold text-xs font-body font-medium tracking-widest uppercase">
-                    Premium Indian Skincare
+            {/* Left Column: Editorial Headline & Actions */}
+            <div className="lg:col-span-7 text-center lg:text-left">
+              <FadeUp>
+                <div className="inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-gold/30 rounded-pill px-4 py-1.5 mb-6 shadow-xs">
+                  <Sparkles size={13} className="text-gold" />
+                  <span className="text-gold-dark text-xs font-body font-semibold tracking-widest uppercase">
+                    Luxury Skincare Rituals
                   </span>
                 </div>
-              </motion.div>
+              </FadeUp>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.1 }}
-                className="font-heading font-light text-obsidian mb-5 leading-[1.05]"
-              >
-                Luxury Skincare,{' '}
-                <br />
-                <em className="italic text-taupe">Crafted for</em>
-                <br />
-                <span className="text-gradient-gold">Your Everyday</span>
-                <br />
-                Ritual
-              </motion.h1>
+              <FadeUp delay={0.1}>
+                <h1 className="font-heading font-light text-obsidian mb-6 leading-[1.08] tracking-tight">
+                  Luxury Skincare,{' '}
+                  <em className="italic text-taupe font-serif">Crafted for</em>
+                  <br />
+                  <span className="text-gradient-gold">Your Everyday</span>
+                  <br />
+                  <em className="italic text-obsidian font-serif">Indian Skin</em> Ritual
+                </h1>
+              </FadeUp>
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="font-body text-taupe text-base lg:text-lg leading-relaxed mb-8 max-w-md mx-auto"
-              >
-                Discover premium skincare essentials designed to make your daily routine feel
-                calm, confident, and radiant. Gentle formulas for modern Indian skin.
-              </motion.p>
+              <FadeUp delay={0.2}>
+                <p className="font-body text-taupe text-base lg:text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+                  Formulated with high-potency botanicals and dermatologist-proven actives to heal,
+                  hydrate, and protect in Indian heat and humidity. Gentle luxury for everyday confidence.
+                </p>
+              </FadeUp>
 
-              {/* CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-md mb-8"
-              >
-                <Link href="/shop" className="btn-gold text-base px-10 py-5 shadow-[0_0_24px_rgba(201,169,110,0.45)] hover:shadow-[0_0_36px_rgba(201,169,110,0.65)] transition-all duration-300 transform hover:scale-105 active:scale-98 inline-flex items-center justify-center gap-2 font-semibold">
-                  Shop LANAN Collection
-                  <ArrowRight size={18} />
-                </Link>
-                <Link href="/rituals" className="btn-outline-gold text-base px-10 py-5 transition-all duration-300 transform hover:scale-105 active:scale-98 inline-flex items-center justify-center">
-                  Explore Our Rituals
-                </Link>
-              </motion.div>
+              {/* Action Buttons */}
+              <FadeUp delay={0.3}>
+                <div className="flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start">
+                  <Link href="/shop" className="btn-gold text-sm px-8 py-4">
+                    Shop LANAN
+                    <ArrowRight size={16} />
+                  </Link>
+                  <Link href="/rituals" className="btn-outline-gold text-sm px-8 py-4">
+                    Explore Our Ritual
+                  </Link>
+                </div>
+              </FadeUp>
 
-              {/* Trust badges inline */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                className="flex flex-wrap gap-4 justify-center"
-              >
-                {[
-                  { icon: <ShieldCheck size={14} />, text: 'Secure Payments' },
-                  { icon: <Truck size={14} />, text: 'Fast Delivery' },
-                  { icon: <Leaf size={14} />, text: 'Skin-Friendly' },
-                ].map((badge) => (
-                  <div key={badge.text} className="flex items-center gap-1.5 text-taupe text-xs font-body">
-                    <span className="text-gold">{badge.icon}</span>
-                    {badge.text}
-                  </div>
-                ))}
-              </motion.div>
+              {/* Trust Indicators */}
+              <FadeUp delay={0.4}>
+                <div className="mt-8 pt-6 border-t border-beige/60 flex flex-wrap gap-6 justify-center lg:justify-start">
+                  {[
+                    { icon: <ShieldCheck size={15} />, text: '100% Cruelty-Free' },
+                    { icon: <Truck size={15} />, text: 'Free Shipping Above ₹599' },
+                    { icon: <Leaf size={15} />, text: 'Dermatologist Tested' },
+                  ].map((badge) => (
+                    <div key={badge.text} className="flex items-center gap-2 text-taupe text-xs font-body">
+                      <span className="text-gold">{badge.icon}</span>
+                      <span>{badge.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </FadeUp>
             </div>
 
-            {/* Hero Visual — Multi-layered Luxury Showcase Podium */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.1, ease: [0.34, 1.56, 0.64, 1] }}
-              className="relative hidden lg:flex items-center justify-center h-full min-h-[500px]"
-            >
-              {/* Outer Golden Halos */}
-              <div className="absolute w-[480px] h-[480px] rounded-full border border-gold/15 animate-spin-slow pointer-events-none" />
-              <div className="absolute w-[400px] h-[400px] rounded-full border border-gold/10 pointer-events-none" />
-              <div className="absolute w-[520px] h-[520px] rounded-full bg-radial from-gold/5 to-transparent blur-3xl pointer-events-none" />
+            {/* Right Column: Hero Visual with Real Product Artwork & Floating Card */}
+            <div className="lg:col-span-5 relative">
+              <FadeUp delay={0.2}>
+                <div className="relative aspect-[4/5] rounded-card overflow-hidden shadow-luxury border-4 border-white bg-white group">
+                  <Image
+                    src="/luxury-skincare-crafted-for-your-everyday-ritual.jpeg"
+                    alt="LANAN Everyday Luxury Skincare Ritual"
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 45vw"
+                    className="object-cover group-hover:scale-102 transition-transform duration-700"
+                  />
 
-              {/* Centered Luxury Pedestal / Stage */}
-              <div className="relative w-full max-w-[420px] aspect-square flex items-center justify-center">
-                <div className="absolute bottom-6 w-[280px] h-[32px] bg-gradient-to-r from-gold/30 via-gold/50 to-gold/30 rounded-full blur-[10px] opacity-60 animate-pulse" />
-                <div className="absolute bottom-8 w-[240px] h-[16px] bg-obsidian/30 rounded-full blur-[6px] opacity-80" />
+                  {/* Warm Gradient Overlay at base */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 via-transparent to-transparent pointer-events-none" />
 
-                {/* Main Floating Platform */}
-                <motion.div
-                  animate={{ y: [0, -12, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute inset-0 flex items-center justify-center"
-                >
-                  <div className="w-[320px] h-[320px] rounded-full bg-gradient-to-b from-beige/45 to-beige-dark/25 border border-gold/20 shadow-luxury flex items-center justify-center overflow-hidden relative group">
-                    {/* Radial light shine */}
-                    <div className="absolute inset-0 bg-radial-luxury opacity-40 group-hover:opacity-65 transition-opacity duration-500" />
-                    
-                    {/* Embedded ambient video snippet for movement */}
-                    <video
-                      src="/Product Hero.mp4"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30 grayscale contrast-125"
-                    />
+                  {/* Floating Product Badge */}
+                  <motion.div
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute top-4 -right-2 sm:right-4 bg-white/95 backdrop-blur-md rounded-card p-3 shadow-luxury border border-gold/25"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-ivory flex-shrink-0 border border-beige/40">
+                        <Image
+                          src="/lanan-glutathione-face-serum.jpeg"
+                          alt="LANAN Glutathione Face Serum"
+                          width={36}
+                          height={36}
+                          className="w-full h-full object-contain p-0.5"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-body font-semibold text-obsidian">Glutathione Serum</p>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="text-[10px] font-mono text-taupe/60 line-through">₹899</span>
+                          <span className="text-[11px] font-mono font-bold text-obsidian">₹737</span>
+                          <span className="text-[9px] font-body font-bold px-1.5 py-0.5 rounded-full bg-[#5B1924] text-[#F7F0E7]">
+                            SAVE 18%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
 
-                    {/* Premium Gold Frame Inner Container */}
-                    <div className="absolute inset-3 rounded-full border border-gold/15" />
-                  </div>
-                </motion.div>
-
-                {/* Showcase Item 1: Floating Velvet Hydra Serum */}
-                <motion.div
-                  animate={{ y: [-6, -22, -6] }}
-                  transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute top-6 left-12 w-[160px] h-[220px] rounded-card border-2 border-gold/30 bg-white/90 backdrop-blur-md p-2.5 shadow-luxury-lg cursor-pointer hover:border-gold hover:scale-105 transition-all duration-300"
-                >
-                  <div className="relative w-full h-full rounded-card overflow-hidden">
-                    <Image
-                      src="/Serum Bottle.jpeg"
-                      alt="Velvet Hydra Serum"
-                      fill
-                      sizes="160px"
-                      className="object-cover"
-                      priority
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-obsidian/45 to-transparent flex flex-col justify-end p-2">
-                      <p className="text-[10px] font-body font-bold text-white tracking-wide uppercase">Velvet Hydra</p>
-                      <p className="text-[9px] font-mono text-gold-light mt-0.5">Hydrating Glow</p>
+                  {/* Bottom caption pill */}
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-obsidian/85 backdrop-blur-md rounded-xl p-3 border border-gold/25 flex items-center justify-between text-ivory">
+                      <div>
+                        <p className="text-[10px] font-body uppercase tracking-widest text-gold">The Radiant Ritual</p>
+                        <p className="text-xs font-heading">Glutathione, Niacinamide & SPF 50</p>
+                      </div>
+                      <Link
+                        href="/shop"
+                        className="text-[11px] font-body text-gold hover:underline flex items-center gap-1"
+                      >
+                        Discover <ArrowRight size={12} />
+                      </Link>
                     </div>
                   </div>
-                </motion.div>
+                </div>
+              </FadeUp>
+            </div>
 
-                {/* Showcase Item 2: Saffron Glow Mask */}
-                <motion.div
-                  animate={{ y: [12, -4, 12] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-                  className="absolute bottom-10 right-8 w-[140px] h-[170px] rounded-card border border-beige-dark/40 bg-white/95 backdrop-blur-md p-2 shadow-luxury cursor-pointer hover:border-gold hover:scale-105 transition-all duration-300"
-                >
-                  <div className="relative w-full h-full rounded-card overflow-hidden">
-                    <Image
-                      src="/Saffron Face Mask.jpeg"
-                      alt="Saffron Glow Mask"
-                      fill
-                      sizes="140px"
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 to-transparent flex flex-col justify-end p-2">
-                      <p className="text-[9px] font-body font-bold text-white tracking-wide">Saffron Glow</p>
-                      <p className="text-[8px] font-mono text-gold-light mt-0.5">Radiance Revival</p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Luxury Floating Interactive Badges */}
-                {/* Badge 1: Active Botanicals */}
-                <motion.div
-                  animate={{ y: [-2, 6, -2], rotate: [0, 5, 0] }}
-                  transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute -top-4 right-16 bg-obsidian text-gold border border-gold/30 px-3 py-1.5 rounded-pill shadow-luxury text-[9px] font-body font-semibold tracking-wider uppercase flex items-center gap-1"
-                >
-                  <Leaf size={10} className="text-gold" />
-                  Active Botanicals
-                </motion.div>
-
-                {/* Badge 2: Premium Indian Care */}
-                <motion.div
-                  animate={{ y: [6, -4, 6], rotate: [0, -4, 0] }}
-                  transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
-                  className="absolute bottom-16 -left-6 bg-white text-taupe border border-beige shadow-luxury px-3 py-1.5 rounded-pill text-[9px] font-body font-semibold tracking-wider uppercase flex items-center gap-1"
-                >
-                  <Sparkles size={10} className="text-gold" />
-                  Luxury Ritual
-                </motion.div>
-
-                {/* Floating Gold Sparkle Particles */}
-                <div className="absolute top-1/2 left-4 w-1.5 h-1.5 bg-gold rounded-full animate-ping" />
-                <div className="absolute bottom-1/4 right-4 w-2 h-2 bg-gold-light rounded-full blur-[1px] animate-pulse" />
-              </div>
-            </motion.div>
           </div>
         </div>
-
-        {/* Bottom wave */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-white" style={{ clipPath: 'ellipse(55% 100% at 50% 100%)' }} />
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          TRUST TICKER
+          SECTION 4: TRUST STRIP & AUTHENTIC METRICS
       ════════════════════════════════════════════════════════════ */}
-      <TrustTicker />
-
-      {/* ════════════════════════════════════════════════════════════
-          STATS BAR
-      ════════════════════════════════════════════════════════════ */}
-      <section className="bg-white border-b border-beige py-8">
+      <section className="bg-white border-b border-beige/60 py-10">
         <div className="container-lanan">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {STATS.map((stat, i) => (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {TRUST_METRICS.map((stat, i) => (
               <FadeUp key={stat.label} delay={i * 0.08}>
-                <div className="text-center">
-                  <p className="font-heading text-3xl lg:text-4xl text-gold font-light">{stat.value}</p>
-                  <p className="text-xs font-body text-taupe mt-1 tracking-wide">{stat.label}</p>
+                <div className="text-center p-4 rounded-xl border border-transparent hover:border-beige/50 transition-colors">
+                  <p className="font-heading text-3xl lg:text-4xl text-gold font-light mb-1">{stat.value}</p>
+                  <p className="text-xs font-body font-semibold text-obsidian tracking-wide mb-1">{stat.label}</p>
+                  <p className="text-[11px] font-body text-taupe leading-relaxed">{stat.detail}</p>
                 </div>
               </FadeUp>
             ))}
@@ -433,63 +386,89 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 bg-ivory overflow-hidden border-b border-beige/30">
+      {/* ════════════════════════════════════════════════════════════
+          SECTION 5: SHOP BY SKIN CONCERN
+      ════════════════════════════════════════════════════════════ */}
+      <section id="concerns" className="py-16 lg:py-20 bg-ivory border-b border-beige/40">
         <div className="container-lanan">
-          <div className="grid lg:grid-cols-12 gap-10 items-center">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+
+            {/* Left: Skin Concern Cards & Selector */}
             <div className="lg:col-span-7">
               <FadeUp>
-                <p className="section-label mb-2">Targeted Care</p>
-                <h2 className="section-title mb-6">
-                  Shop by <em className="italic text-gold">Skin Concern</em>
+                <div className="inline-flex items-center gap-2 mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold" />
+                  <p className="section-label">Targeted Formulations</p>
+                </div>
+                <h2 className="section-title mb-5">
+                  Shop by <em className="italic text-gold font-serif">Skin Concern</em>
                 </h2>
-                <p className="font-body text-taupe text-sm leading-relaxed mb-8">
-                  Every skin is different, and so are its needs. Select your primary skin concern below to find a curated routine designed specifically to heal, nourish, and protect your skin.
+                <p className="font-body text-taupe text-sm leading-relaxed mb-8 max-w-xl">
+                  Every complexion is distinct. Choose your targeted primary concern below to discover
+                  clean, clinically balanced rituals designed to heal and strengthen your skin barrier.
                 </p>
               </FadeUp>
-              <div className="flex flex-wrap gap-3">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 {SKIN_CONCERNS.map((concern, i) => (
                   <FadeUp key={concern.label} delay={i * 0.05}>
                     <Link
                       href={concern.href}
-                      className="inline-flex items-center justify-center px-5 py-2.5 rounded-pill border border-gold/30 text-sm font-body font-medium text-taupe hover:bg-gold hover:text-obsidian hover:border-gold transition-all duration-200"
+                      className="group flex flex-col p-4 rounded-xl bg-white border border-beige/70 hover:border-gold/40 hover:shadow-luxury transition-all duration-300"
                     >
-                      {concern.label}
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="font-body font-semibold text-sm text-obsidian group-hover:text-gold transition-colors">
+                          {concern.label}
+                        </span>
+                        <ArrowRight size={14} className="text-taupe group-hover:text-gold group-hover:translate-x-1 transition-all" />
+                      </div>
+                      <p className="text-[11px] font-body text-taupe leading-relaxed mb-2">{concern.desc}</p>
+                      <span className="text-[10px] font-mono text-gold-dark bg-gold/10 px-2 py-0.5 rounded-md self-start">
+                        {concern.tag}
+                      </span>
                     </Link>
                   </FadeUp>
                 ))}
               </div>
             </div>
-            
+
+            {/* Right: Editorial Image */}
             <div className="lg:col-span-5">
               <FadeUp delay={0.2}>
-                <div className="relative aspect-[4/3] rounded-card overflow-hidden shadow-luxury border-4 border-white">
+                <div className="relative aspect-[4/5] rounded-card overflow-hidden shadow-luxury border-4 border-white bg-white">
                   <Image
-                    src="/skincare concern  ingredient section.jpeg"
-                    alt="LANAN Skin Concerns"
+                    src="/skincare-concern-ingredient-section.jpeg"
+                    alt="LANAN Skin Concern Editorial"
                     fill
                     sizes="(max-width: 1024px) 100vw, 40vw"
-                    className="object-cover animate-float"
+                    className="object-cover"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian/60 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-5 left-5 right-5 text-ivory">
+                    <p className="text-[10px] font-body font-semibold tracking-widest uppercase text-gold">Dermatologist Formulated</p>
+                    <p className="font-heading text-xl font-light">Custom care for hyperpigmentation, texture & UV defense</p>
+                  </div>
                 </div>
               </FadeUp>
             </div>
+
           </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          BESTSELLERS SECTION
+          SECTION 6: BESTSELLERS
       ════════════════════════════════════════════════════════════ */}
-      <section className="py-section bg-white">
+      <section id="bestsellers" className="py-16 lg:py-24 bg-white border-b border-beige/40">
         <div className="container-lanan">
-          <FadeUp className="text-center mb-10">
+          <FadeUp className="text-center mb-12">
             <p className="section-label mb-2">Customer Favourites</p>
             <h2 className="section-title">
-              Our <em className="italic text-gold">Bestsellers</em>
+              Our <em className="italic text-gold font-serif">Bestsellers</em>
             </h2>
             <div className="divider-gold mt-3" />
             <p className="font-body text-taupe text-sm mt-4 max-w-md mx-auto">
-              Tried, trusted, and loved by thousands of customers across India.
+              Tried, trusted, and celebrated for genuine, noticeable skin transformations across India.
             </p>
           </FadeUp>
 
@@ -505,22 +484,22 @@ export default function HomePage() {
               ))}
             </div>
           ) : bestsellers.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 items-stretch">
               {bestsellers.map((product, i) => (
                 <ProductCard key={product.id} product={product} index={i} />
               ))}
             </div>
           ) : (
             <div className="text-center py-12 px-4 rounded-2xl bg-white/60 border border-beige/60 max-w-md mx-auto">
-              <Sparkles className="mx-auto text-gold/60 mb-3" size={28} />
-              <p className="font-heading text-lg text-obsidian font-light">New Formulations Coming Soon</p>
-              <p className="text-xs font-body text-taupe mt-1">Our curated rituals are being updated. Check back shortly.</p>
+              <Sparkles className="mx-auto text-gold mb-3" size={28} />
+              <p className="font-heading text-lg text-obsidian font-light">Formulations Loading</p>
+              <p className="text-xs font-body text-taupe mt-1">Our curated rituals are being updated.</p>
             </div>
           )}
 
-          <FadeUp className="text-center mt-10">
-            <Link href="/shop" className="btn-outline-gold">
-              View All Products
+          <FadeUp className="text-center mt-12">
+            <Link href="/shop" className="btn-outline-gold text-sm px-8 py-3.5">
+              View All Formulations
               <ArrowRight size={15} />
             </Link>
           </FadeUp>
@@ -528,94 +507,275 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          BRAND STORY SECTION
+          SECTION 7: FREE AI SKIN SCAN SECTION
       ════════════════════════════════════════════════════════════ */}
-      <section className="py-section bg-obsidian text-ivory relative overflow-hidden clip-diagonal">
-        {/* Gold decorative elements */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-gold opacity-40" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-gold opacity-40" />
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 rounded-full opacity-5"
-          style={{ background: 'radial-gradient(circle, #C9A96E 0%, transparent 70%)' }} />
+      <section id="ai-scan" className="py-20 lg:py-24 bg-obsidian text-ivory relative overflow-hidden">
+        {/* Background ambient gold glows */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[850px] rounded-full opacity-5"
+            style={{ background: 'radial-gradient(circle, #C9A45D 0%, transparent 65%)' }}
+          />
+        </div>
 
         <div className="container-lanan relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
-            {/* Image side */}
-            <FadeUp>
-              <div className="relative">
-                <div className="aspect-[4/5] rounded-card overflow-hidden">
-                  <Image
-                    src="/premium story section..jpeg"
-                    alt="LANAN Brand Story"
-                    width={560}
-                    height={700}
-                    className="w-full h-full object-cover"
-                  />
+            {/* Left: Copy & Explanation */}
+            <div className="lg:col-span-7">
+              <FadeUp>
+                <div className="inline-flex items-center gap-2 bg-gold/10 border border-gold/30 rounded-pill px-4 py-1.5 mb-6">
+                  <Sparkles size={12} className="text-gold animate-pulse" />
+                  <span className="text-gold text-xs font-body font-semibold tracking-widest uppercase">
+                    100% Free AI Skin Analysis
+                  </span>
                 </div>
-                {/* Gold frame accent */}
-                <div className="absolute -top-3 -left-3 w-24 h-24 border-t-2 border-l-2 border-gold/50 rounded-tl-card" />
-                <div className="absolute -bottom-3 -right-3 w-24 h-24 border-b-2 border-r-2 border-gold/50 rounded-br-card" />
-              </div>
-            </FadeUp>
 
-            {/* Text side */}
-            <FadeUp delay={0.2}>
-              <p className="section-label text-gold mb-4">Our Story</p>
-              <h2 className="font-heading font-light text-ivory leading-tight mb-6">
-                Skincare That Understands{' '}
-                <em className="italic text-gold">Indian Skin</em>
-              </h2>
-              <div className="space-y-4 text-ivory/70 font-body text-sm leading-relaxed">
-                <p>
-                  LANAN was born from a simple truth — Indian skin is unique. Our climate, our lifestyle,
-                  our skin concerns deserve skincare that actually works for us, not just adapted from
-                  global formulas.
+                <h2 className="font-heading font-light text-ivory leading-tight mb-5 text-3xl sm:text-4xl lg:text-5xl">
+                  Discover Your{' '}
+                  <em className="italic text-gold font-serif">True Skin</em>{' '}
+                  Profile in 30 Seconds
+                </h2>
+
+                <p className="font-body text-ivory/70 text-sm sm:text-base leading-relaxed mb-8 max-w-xl">
+                  Uncertain of your exact skin type or barrier needs? Upload 4 close-up photos (Front,
+                  Forehead, Left Cheek, Right Cheek). Our AI — powered by Google Gemini Vision —
+                  evaluates pigmentation, sebum activity, and hydration levels, recommending your tailored LANAN routine.
                 </p>
-                <p>
-                  We work with ingredient specialists to create formulas that address pigmentation, heat,
-                  humidity, and the diverse skin tones that make Indian skin so beautifully complex.
-                </p>
-                <p>
-                  Every LANAN product is a ritual — a moment of care, calm, and confidence in your daily life.
-                </p>
-              </div>
-              <div className="mt-8 flex gap-3">
-                <Link href="/about" className="btn-gold">
-                  Our Story
-                  <ArrowRight size={15} />
-                </Link>
-                <Link href="/ingredients" className="btn-outline-gold border-ivory/30 text-ivory hover:bg-ivory/10">
-                  Our Ingredients
-                </Link>
-              </div>
-            </FadeUp>
+
+                {/* Features checklist */}
+                <div className="space-y-3.5 mb-9">
+                  {[
+                    { icon: '🔬', text: 'Identifies skin classification — Dry, Oily, Combination, or Sensitive' },
+                    { icon: '📊', text: 'Analyzes visible pigmentation, pore activity & hydration balance' },
+                    { icon: '🌿', text: 'Matches recommendations to authentic, clinically proven LANAN formulations' },
+                    { icon: '🔒', text: 'Real-time ephemeral processing — photographs are never stored on disk' },
+                  ].map((f) => (
+                    <div key={f.text} className="flex items-center gap-3">
+                      <span className="text-base leading-none">{f.icon}</span>
+                      <span className="text-xs sm:text-sm font-body text-ivory/80">{f.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3.5">
+                  <Link
+                    href="/skin-analysis"
+                    className="btn-gold text-sm px-8 py-4"
+                    id="homepage-start-ai-analysis-btn"
+                  >
+                    <Sparkles size={15} />
+                    Start Free Skin Analysis
+                    <ArrowRight size={15} />
+                  </Link>
+                  <Link
+                    href="/shop"
+                    className="btn-outline-gold border-ivory/25 text-ivory hover:bg-ivory/10 text-sm px-8 py-4"
+                  >
+                    Browse All Products
+                  </Link>
+                </div>
+              </FadeUp>
+            </div>
+
+            {/* Right: Interactive 4-Photo Scan Mockup */}
+            <div className="lg:col-span-5">
+              <FadeUp delay={0.2}>
+                <div className="relative bg-white/5 border border-gold/25 rounded-[2.5rem] p-3 max-w-sm mx-auto shadow-luxury-lg">
+                  <div className="bg-gradient-to-br from-[#090807] to-[#171513] rounded-[2rem] overflow-hidden border border-white/5">
+
+                    {/* Top bar */}
+                    <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+                      <div className="flex items-center gap-2">
+                        <Sparkles size={14} className="text-gold animate-pulse" />
+                        <span className="text-xs font-body font-semibold text-ivory">LANAN AI Scanner</span>
+                      </div>
+                      <span className="text-[9px] font-mono text-gold bg-gold/15 px-2 py-0.5 rounded-full border border-gold/30">
+                        FREE
+                      </span>
+                    </div>
+
+                    {/* 2x2 Photo Slots Grid */}
+                    <div className="grid grid-cols-2 gap-2.5 p-4">
+                      {[
+                        { label: 'Front Profile', img: '/hero-banner-model.jpeg', active: true },
+                        { label: 'Forehead Zone', img: '/product-in-hand.jpeg', active: true },
+                        { label: 'Left Cheek', img: '/before-after-style-concern.jpeg', active: true },
+                        { label: 'Right Cheek', img: null, active: false },
+                      ].map((slot, i) => (
+                        <div
+                          key={i}
+                          className="relative aspect-square rounded-xl overflow-hidden bg-white/5 border border-white/10 flex flex-col items-center justify-center group"
+                        >
+                          {slot.img ? (
+                            <>
+                              <Image src={slot.img} alt={slot.label} fill className="object-cover opacity-75" />
+                              <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center shadow-xs">
+                                <Check size={11} className="text-white" />
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="w-8 h-8 rounded-full border border-dashed border-gold/40 flex items-center justify-center mb-1">
+                                <Camera size={14} className="text-gold/70" />
+                              </div>
+                              <span className="text-[8px] font-body text-ivory/50">Ready</span>
+                            </>
+                          )}
+                          <div className="absolute bottom-1.5 left-0 right-0 flex justify-center">
+                            <span className="bg-obsidian/85 text-ivory/80 text-[7px] font-body px-2 py-0.5 rounded-full">
+                              {slot.label}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="px-5 pb-3">
+                      <div className="flex justify-between text-[8px] font-body text-ivory/50 mb-1.5">
+                        <span>Guided Photo Calibration</span>
+                        <span className="text-gold">3 of 4 Ready</span>
+                      </div>
+                      <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-gold to-amber-300 rounded-full w-3/4" />
+                      </div>
+                    </div>
+
+                    {/* Results Preview Card */}
+                    <div className="mx-4 mb-4 bg-gold/10 border border-gold/25 rounded-xl p-3.5">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-1.5">
+                          <ShieldCheck size={11} className="text-gold" />
+                          <span className="text-[8px] font-body font-semibold text-gold uppercase tracking-wider">
+                            Real-time Diagnostic
+                          </span>
+                        </div>
+                        <span className="text-[8px] font-mono text-ivory/60">Profile: Combination</span>
+                      </div>
+                      <div className="space-y-1.5">
+                        {[
+                          { name: 'Pigmentation Sensitivity', pct: 62 },
+                          { name: 'Hydration Resilience', pct: 44 },
+                        ].map((c) => (
+                          <div key={c.name}>
+                            <div className="flex justify-between text-[7px] font-body text-ivory/60 mb-0.5">
+                              <span>{c.name}</span>
+                              <span className="text-gold">{c.pct}%</span>
+                            </div>
+                            <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                              <div className="h-full bg-gold rounded-full" style={{ width: `${c.pct}%` }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </FadeUp>
+            </div>
+
           </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          CAMPAIGN VIDEO REEL
+          SECTION 8: OUR STORY
       ════════════════════════════════════════════════════════════ */}
-      <section className="py-20 bg-white overflow-hidden border-b border-beige/40">
+      <section id="story" className="py-20 lg:py-24 bg-white border-b border-beige/40">
+        <div className="container-lanan">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+
+            {/* Editorial Image Side */}
+            <div className="lg:col-span-6">
+              <FadeUp>
+                <div className="relative">
+                  <div className="aspect-[4/5] rounded-card overflow-hidden shadow-luxury border-4 border-white bg-white">
+                    <Image
+                      src="/premium-story-section.jpeg"
+                      alt="LANAN Editorial Brand Story"
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  {/* Decorative gold corner brackets */}
+                  <div className="absolute -top-3 -left-3 w-16 h-16 border-t-2 border-l-2 border-gold/50 rounded-tl-card pointer-events-none" />
+                  <div className="absolute -bottom-3 -right-3 w-16 h-16 border-b-2 border-r-2 border-gold/50 rounded-br-card pointer-events-none" />
+                </div>
+              </FadeUp>
+            </div>
+
+            {/* Story Text Side */}
+            <div className="lg:col-span-6">
+              <FadeUp delay={0.2}>
+                <p className="section-label mb-2">Our Philosophy</p>
+                <h2 className="section-title mb-6">
+                  Skincare That Understands{' '}
+                  <em className="italic text-gold font-serif">Indian Skin</em>
+                </h2>
+                <div className="space-y-4 text-taupe font-body text-sm leading-relaxed mb-8">
+                  <p>
+                    LANAN was founded upon a clear principle: Indian skin is uniquely rich in melanin,
+                    subject to intense UV radiation, monsoon humidity, and urban environmental stress.
+                    Global formulations rarely address our specific barrier requirements.
+                  </p>
+                  <p>
+                    We bridge age-old botanical wisdom with clinical dermatological science. Every ingredient—from
+                    Kashmiri Saffron and Glutathione to Salicylic Acid and Ceramide NP—is selected at optimal
+                    clinical dosages that deliver results without inflammation.
+                  </p>
+                  <p>
+                    Every LANAN formulation is a conscious ritual: a moment of calm, nourishment, and
+                    uncompromising care for your daily life.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-4">
+                  <Link href="/about" className="btn-gold text-sm px-7 py-3.5">
+                    Our Full Story
+                    <ArrowRight size={15} />
+                  </Link>
+                  <Link href="/ingredients" className="btn-outline-gold text-sm px-7 py-3.5">
+                    Explore Ingredients
+                  </Link>
+                </div>
+              </FadeUp>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          SECTION 9: SKIN RITUAL REEL
+      ════════════════════════════════════════════════════════════ */}
+      <section id="ritual-reel" className="py-20 lg:py-24 bg-ivory border-b border-beige/40">
         <div className="container-lanan">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
+
             <div className="lg:col-span-5">
               <FadeUp>
-                <span className="section-label mb-3">Skin Ritual Reel</span>
+                <p className="section-label mb-2">Skin Ritual Reel</p>
                 <h2 className="section-title mb-6">
-                  Experience the <em className="italic text-gold">Lanan</em> Glow
+                  Experience the <em className="italic text-gold font-serif">LANAN</em> Glow
                 </h2>
                 <p className="font-body text-taupe text-sm leading-relaxed mb-6">
-                  Skincare is more than just application—it is a conscious self-care ritual. Watch how our light, fast-absorbing formulas seamlessly melt into the skin, bringing back its natural health and radiance.
+                  Skincare is an act of daily self-honoring. Watch how our featherlight, rapid-absorbing
+                  textures melt into the skin, replenishing hydration without heaviness or shine.
                 </p>
-                <div className="flex flex-col gap-4">
+                <div className="space-y-3.5">
                   {[
-                    { title: 'Cruelty-Free & Vegan', desc: 'No animal testing, ever. Fully plant-derived luxury.' },
-                    { title: 'Crafted for Indian Climate', desc: 'Non-sticky, lightweight, and sweat-proof formulas.' },
-                    { title: 'Dermatologist Approved', desc: 'Rigorous safety trials for sensitive and combination skin.' }
+                    { title: '100% Cruelty-Free & Vegan', desc: 'Plant-derived luxury with no animal testing, ever.' },
+                    { title: 'Optimized for Indian Weather', desc: 'Non-comedogenic, non-sticky, and sweat-resistant.' },
+                    { title: 'Dermatologist Evaluated', desc: 'Gentle, balanced actives for combination and sensitive barriers.' },
                   ].map((feat, idx) => (
                     <div key={idx} className="flex gap-3 items-start">
-                      <div className="w-5 h-5 rounded-full bg-gold/15 flex items-center justify-center text-gold text-xs flex-shrink-0 mt-0.5">✦</div>
+                      <div className="w-5 h-5 rounded-full bg-gold/15 flex items-center justify-center text-gold text-xs flex-shrink-0 mt-0.5">
+                        ✦
+                      </div>
                       <div>
                         <h4 className="font-body font-semibold text-sm text-obsidian">{feat.title}</h4>
                         <p className="font-body text-xs text-taupe mt-0.5">{feat.desc}</p>
@@ -625,38 +785,43 @@ export default function HomePage() {
                 </div>
               </FadeUp>
             </div>
-            
+
             <div className="lg:col-span-7">
               <FadeUp delay={0.2}>
-                <div className="relative aspect-video rounded-card overflow-hidden shadow-luxury border-4 border-beige/40 bg-obsidian group">
+                <div className="relative aspect-video rounded-card overflow-hidden shadow-luxury border-4 border-white bg-obsidian group">
                   <video
-                    src="/Skincare Ritual.mp4"
+                    src="/skincare-ritual.mp4"
                     autoPlay
                     loop
                     muted
                     playsInline
                     controls
+                    preload="metadata"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian/30 via-transparent to-transparent pointer-events-none" />
                 </div>
               </FadeUp>
             </div>
+
           </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          ALL PRODUCTS GRID
+          SECTION 10: COMPLETE COLLECTION
       ════════════════════════════════════════════════════════════ */}
-      <section className="py-section bg-ivory">
+      <section id="collection" className="py-20 lg:py-24 bg-white border-b border-beige/40">
         <div className="container-lanan">
-          <FadeUp className="text-center mb-10">
-            <p className="section-label mb-2">The Full Collection</p>
+          <FadeUp className="text-center mb-12">
+            <p className="section-label mb-2">The Complete Range</p>
             <h2 className="section-title">
-              Every <em className="italic text-gold">Ritual</em>, Complete
+              Every <em className="italic text-gold font-serif">Ritual</em>, Complete
             </h2>
             <div className="divider-gold mt-3" />
+            <p className="font-body text-taupe text-sm mt-4 max-w-md mx-auto">
+              Explore our complete collection of cleansers, toners, serums, moisturisers, and broad-spectrum sunscreens.
+            </p>
           </FadeUp>
 
           {isLoading ? (
@@ -671,7 +836,7 @@ export default function HomePage() {
               ))}
             </div>
           ) : products.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 items-stretch">
               {products.map((product, i) => (
                 <ProductCard key={product.id} product={product} index={i} />
               ))}
@@ -684,9 +849,9 @@ export default function HomePage() {
             </div>
           )}
 
-          <FadeUp className="text-center mt-10">
-            <Link href="/shop" className="btn-gold">
-              Browse All Products
+          <FadeUp className="text-center mt-12">
+            <Link href="/shop" className="btn-gold text-sm px-8 py-3.5">
+              Browse All Products in Shop
               <ArrowRight size={15} />
             </Link>
           </FadeUp>
@@ -694,49 +859,58 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          INGREDIENTS SECTION
+          SECTION 11: INGREDIENTS TRANSPARENCY
       ════════════════════════════════════════════════════════════ */}
-      <section className="py-section bg-white">
+      <section id="ingredients" className="py-20 lg:py-24 bg-ivory border-b border-beige/40">
         <div className="container-lanan">
-          <FadeUp className="text-center mb-12">
-            <p className="section-label mb-2">What's Inside Matters</p>
+          <FadeUp className="text-center mb-14">
+            <p className="section-label mb-2">What&apos;s Inside Matters</p>
             <h2 className="section-title">
-              Ingredient <em className="italic text-gold">Transparency</em>
+              Ingredient <em className="italic text-gold font-serif">Transparency</em>
             </h2>
             <div className="divider-gold mt-3" />
             <p className="font-body text-taupe text-sm mt-4 max-w-lg mx-auto">
-              We believe you deserve to know exactly what goes on your skin. No hidden ingredients, no vague claims.
+              We believe you deserve full honesty about what touches your skin. No hidden fillers,
+              no unverified marketing claims.
             </p>
           </FadeUp>
 
           <div className="grid lg:grid-cols-12 gap-8 items-center">
+            {/* Visual */}
             <div className="lg:col-span-5">
               <FadeUp delay={0.1}>
-                <div className="relative aspect-[4/5] rounded-card overflow-hidden shadow-luxury border-4 border-beige/40">
+                <div className="relative aspect-[4/5] rounded-card overflow-hidden shadow-luxury border-4 border-white bg-white">
                   <Image
-                    src="/Ingredient Transparency Image.jpeg"
-                    alt="LANAN Ingredient Transparency"
+                    src="/ingredient-transparency-image.jpeg"
+                    alt="LANAN Verified Active Ingredients"
                     fill
                     sizes="(max-width: 1024px) 100vw, 40vw"
                     className="object-cover"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian/60 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-5 left-5 right-5 text-ivory">
+                    <p className="text-[10px] font-body font-semibold tracking-widest uppercase text-gold">Clean & Proven</p>
+                    <p className="font-heading text-lg font-light">Salicylic Acid, Niacinamide, Saffron & Glutathione</p>
+                  </div>
                 </div>
               </FadeUp>
             </div>
+
+            {/* Cards Grid */}
             <div className="lg:col-span-7">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {INGREDIENTS.map((ingredient, i) => (
-                  <FadeUp key={ingredient.name} delay={i * 0.07}>
-                    <IngredientCard ingredient={ingredient} i={i} />
+                {INGREDIENTS.map((ingredient) => (
+                  <FadeUp key={ingredient.name} delay={0.08}>
+                    <IngredientCard ingredient={ingredient} />
                   </FadeUp>
                 ))}
               </div>
             </div>
           </div>
 
-          <FadeUp className="text-center mt-10">
-            <Link href="/ingredients" className="btn-outline-gold">
-              Learn About Our Ingredients
+          <FadeUp className="text-center mt-12">
+            <Link href="/ingredients" className="btn-outline-gold text-sm px-8 py-3.5">
+              Learn About Our Formulation Standards
               <ArrowRight size={15} />
             </Link>
           </FadeUp>
@@ -744,40 +918,42 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          BEFORE & AFTER RESULTS SECTION
+          SECTION 12: RESULTS SECTION (AUTHENTIC CAMPAIGN VISUAL)
       ════════════════════════════════════════════════════════════ */}
-      <section className="py-20 bg-ivory/60 border-t border-beige/40">
+      <section id="results" className="py-20 lg:py-24 bg-white border-b border-beige/40">
         <div className="container-lanan">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
-            
+
+            {/* Text Side */}
             <div className="lg:col-span-6 lg:order-2">
               <FadeUp>
-                <span className="section-label mb-3">Proven Efficacy</span>
+                <p className="section-label mb-2">Verified Real Care</p>
                 <h2 className="section-title mb-6">
-                  Transformative <em className="italic text-gold">Real Results</em>
+                  Transformative <em className="italic text-gold font-serif">Skin Journeys</em>
                 </h2>
-                <p className="font-body text-taupe text-sm leading-relaxed mb-8">
-                  No filter, no compromise. Our active botanical formulas are clinically balanced to deliver noticeable changes in texture, hyperpigmentation, and skin elasticity within 28 days of daily ritual application.
+                <p className="font-body text-taupe text-sm leading-relaxed mb-6">
+                  True skin transformation requires consistency, barrier nourishment, and daily photoprotection.
+                  Our formulas work synergistically to support cellular renewal and diminish hyperpigmentation over a 4-week daily routine.
                 </p>
-                
-                {/* Stats list */}
-                <div className="grid grid-cols-3 gap-4 mb-8">
-                  <div className="bg-white p-4 rounded-card border border-beige/60 text-center">
-                    <p className="font-heading text-2xl lg:text-3xl text-gold font-medium">94%</p>
-                    <p className="text-[10px] font-body text-taupe mt-1 uppercase tracking-wider">Faded Spots</p>
+
+                {/* Authentic dermatological pillars */}
+                <div className="grid grid-cols-3 gap-3 mb-8">
+                  <div className="bg-ivory/60 p-3.5 rounded-card border border-beige/60 text-center">
+                    <p className="font-heading text-lg lg:text-xl text-gold font-semibold">4 Weeks</p>
+                    <p className="text-[10px] font-body text-taupe mt-1 uppercase tracking-wider">Renewal Cycle</p>
                   </div>
-                  <div className="bg-white p-4 rounded-card border border-beige/60 text-center">
-                    <p className="font-heading text-2xl lg:text-3xl text-gold font-medium">98%</p>
-                    <p className="text-[10px] font-body text-taupe mt-1 uppercase tracking-wider">Deep Hydration</p>
+                  <div className="bg-ivory/60 p-3.5 rounded-card border border-beige/60 text-center">
+                    <p className="font-heading text-lg lg:text-xl text-gold font-semibold">SPF 50</p>
+                    <p className="text-[10px] font-body text-taupe mt-1 uppercase tracking-wider">Broad Spectrum</p>
                   </div>
-                  <div className="bg-white p-4 rounded-card border border-beige/60 text-center">
-                    <p className="font-heading text-2xl lg:text-3xl text-gold font-medium">91%</p>
-                    <p className="text-[10px] font-body text-taupe mt-1 uppercase tracking-wider">Refined Pores</p>
+                  <div className="bg-ivory/60 p-3.5 rounded-card border border-beige/60 text-center">
+                    <p className="font-heading text-lg lg:text-xl text-gold font-semibold">Clean</p>
+                    <p className="text-[10px] font-body text-taupe mt-1 uppercase tracking-wider">Non-Comedogenic</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4">
-                  <Link href="/shop" className="btn-gold">
+                  <Link href="/shop" className="btn-gold text-sm px-8 py-3.5">
                     Start Your Skin Journey
                     <ArrowRight size={15} />
                   </Link>
@@ -785,14 +961,15 @@ export default function HomePage() {
               </FadeUp>
             </div>
 
+            {/* Image Side */}
             <div className="lg:col-span-6 lg:order-1">
               <FadeUp delay={0.2}>
                 <div className="relative aspect-[4/3] rounded-card overflow-hidden shadow-luxury border-4 border-white bg-white">
                   <Image
-                    src="/BeforeAfter Style Concern.jpeg"
-                    alt="LANAN Skin Before & After Comparison"
+                    src="/before-after-style-concern.jpeg"
+                    alt="LANAN Skin Journey"
                     fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                     className="object-cover"
                   />
                   <div className="absolute bottom-4 left-4 bg-obsidian/85 backdrop-blur-sm text-gold text-[10px] sm:text-xs font-body font-semibold tracking-widest px-4 py-2 rounded-pill uppercase">
@@ -807,34 +984,51 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          RITUAL FEATURE SECTION (Full-width Editorial)
+          SECTION 13: MORNING, EVENING & TARGETED ROUTINES
       ════════════════════════════════════════════════════════════ */}
-      <section className="py-section bg-beige/40">
+      <section id="routines" className="py-20 lg:py-24 bg-ivory border-b border-beige/40">
         <div className="container-lanan">
+          <FadeUp className="text-center mb-12">
+            <p className="section-label mb-2">Curated Regimens</p>
+            <h2 className="section-title">
+              Complete <em className="italic text-gold font-serif">Daily Rituals</em>
+            </h2>
+            <div className="divider-gold mt-3" />
+            <p className="font-body text-taupe text-sm mt-4 max-w-md mx-auto">
+              Carefully staged regimens designed to layer seamlessly for maximum efficacy and barrier health.
+            </p>
+          </FadeUp>
+
           <div className="grid lg:grid-cols-3 gap-6">
             {[
               {
-                title: 'Morning Ritual',
-                desc: 'Start with our gentle cleanser, follow with the niacinamide toner, and seal in moisture with Velvet Hydra. Finish with Rose Dew SPF 40.',
-                image: '/Sunscreen.jpeg',
-                tag: 'AM',
+                title: 'Morning Awakening Ritual',
+                tag: 'AM ROUTINE',
+                desc: 'Cleanse with LANAN Face Wash, hydrate skin with Glutathione Face Toner, and shield with Sunscreen SPF 50 PA++++.',
+                image: '/lanan-sunscreen-spf-50.jpeg',
+                link: '/shop?category=sunscreen',
+                steps: ['1. Gentle Cleanser', '2. Hydrating Toner', '3. SPF 50 PA++++ Shield'],
               },
               {
-                title: 'Evening Ritual',
-                desc: 'Double cleanse, apply the Radiance Revival Serum to target pigmentation, and layer on Midnight Repair Night Cream for deep overnight renewal.',
-                image: '/Serum Bottle.jpeg',
-                tag: 'PM',
+                title: 'Evening Barrier Repair Ritual',
+                tag: 'PM ROUTINE',
+                desc: 'Wash away daytime pollutants with LANAN Face Wash, balance with Glutathione Toner, and treat with Glutathione Face Serum.',
+                image: '/lanan-glutathione-face-serum.jpeg',
+                link: '/shop?category=serums',
+                steps: ['1. Clarifying Wash', '2. Toning Essence', '3. Radiance Serum'],
               },
               {
-                title: 'Weekly Ritual',
-                desc: 'Treat yourself to the Saffron Glow Mask every Sunday. 15 minutes of indulgence for a week of radiance.',
-                image: '/Saffron Face Mask.jpeg',
-                tag: '7D',
+                title: 'Targeted Radiance Ritual',
+                tag: 'DAILY REGIMEN',
+                desc: 'A complete botanical regimen featuring 2% Salicylic Acid, Niacinamide, Hyaluronic Acid, and Glutathione for healthy, luminous skin.',
+                image: '/lanan-face-wash.jpeg',
+                link: '/shop',
+                steps: ['1. Salicylic Wash', '2. Niacinamide Prep', '3. Nourishing Moisturiser'],
               },
             ].map((ritual, i) => (
               <FadeUp key={ritual.title} delay={i * 0.1}>
-                <div className="group card-luxury overflow-hidden cursor-pointer">
-                  <div className="aspect-video overflow-hidden relative">
+                <div className="group card-luxury bg-white rounded-card overflow-hidden border border-beige/60 hover:border-gold/40 hover:shadow-luxury transition-all duration-300 flex flex-col h-full">
+                  <div className="aspect-[16/10] overflow-hidden relative bg-ivory">
                     <Image
                       src={ritual.image}
                       alt={ritual.title}
@@ -842,13 +1036,27 @@ export default function HomePage() {
                       sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute top-4 left-4">
-                      <span className="badge-gold">{ritual.tag} Ritual</span>
+                    <div className="absolute top-3.5 left-3.5">
+                      <span className="badge-gold shadow-xs">{ritual.tag}</span>
                     </div>
                   </div>
-                  <div className="p-5">
-                    <h3 className="font-heading text-lg text-obsidian mb-2">{ritual.title}</h3>
-                    <p className="text-xs font-body text-taupe leading-relaxed">{ritual.desc}</p>
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="font-heading text-xl text-obsidian mb-2">{ritual.title}</h3>
+                    <p className="text-xs font-body text-taupe leading-relaxed mb-4">{ritual.desc}</p>
+                    <div className="space-y-1.5 pt-3 border-t border-beige/60 mb-6">
+                      {ritual.steps.map((st) => (
+                        <p key={st} className="text-[11px] font-body text-charcoal/80 flex items-center gap-1.5">
+                          <CheckCircle2 size={12} className="text-gold flex-shrink-0" />
+                          {st}
+                        </p>
+                      ))}
+                    </div>
+                    <Link
+                      href={ritual.link}
+                      className="mt-auto text-xs font-body font-semibold text-gold hover:text-gold-dark inline-flex items-center gap-1.5 group-hover:underline"
+                    >
+                      Shop This Ritual <ArrowRight size={13} />
+                    </Link>
                   </div>
                 </div>
               </FadeUp>
@@ -858,141 +1066,180 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          REVIEWS SECTION
+          SECTION 14: CUSTOMER REVIEWS
       ════════════════════════════════════════════════════════════ */}
-      <section className="py-section bg-white">
+      <section id="reviews" className="py-20 lg:py-24 bg-white border-b border-beige/40">
         <div className="container-lanan">
           <FadeUp className="text-center mb-12">
-            <p className="section-label mb-2">What Customers Say</p>
+            <p className="section-label mb-2">Verified Testimonials</p>
             <h2 className="section-title">
               Real Results,{' '}
-              <em className="italic text-gold">Real People</em>
+              <em className="italic text-gold font-serif">Real People</em>
             </h2>
             <div className="divider-gold mt-3" />
           </FadeUp>
 
-          {/* Overall Rating */}
+          {/* Aggregate Rating */}
           <FadeUp>
-            <div className="flex flex-col items-center mb-10">
-              <div className="flex items-end gap-4">
-                <span className="font-heading text-7xl font-light text-obsidian leading-none">4.8</span>
-                <div className="pb-3">
+            <div className="flex flex-col items-center mb-12">
+              <div className="flex items-end gap-3.5">
+                <span className="font-heading text-6xl lg:text-7xl font-light text-obsidian leading-none">4.8</span>
+                <div className="pb-2">
                   <div className="flex gap-1">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={18} className="text-gold fill-gold" />
+                      <Star key={i} size={16} className="text-gold fill-gold" />
                     ))}
                   </div>
-                  <p className="text-xs font-body text-taupe mt-1">Based on 612 reviews</p>
+                  <p className="text-xs font-body text-taupe mt-1">Verified customer ratings across India</p>
                 </div>
               </div>
             </div>
           </FadeUp>
 
-          {/* Carousel */}
-          <div className="relative">
-            <div className="grid md:grid-cols-3 gap-5 lg:gap-6">
-              {DEMO_REVIEWS.map((review, i) => (
-                <FadeUp key={review.id} delay={i * 0.07}>
-                  <div className="glass-card p-6 h-full flex flex-col">
-                    {/* Stars */}
-                    <div className="flex gap-1 mb-3">
-                      {[...Array(review.rating)].map((_, j) => (
-                        <Star key={j} size={13} className="text-gold fill-gold" />
-                      ))}
-                    </div>
-                    {/* Text */}
-                    <p className="font-body text-sm text-charcoal leading-relaxed flex-1 mb-4">
-                      &ldquo;{review.text}&rdquo;
-                    </p>
-                    {/* Author */}
-                    <div className="flex items-center gap-3 pt-3 border-t border-beige/60">
-                      <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-obsidian text-xs font-bold font-mono flex-shrink-0">
-                        {review.avatar}
-                      </div>
-                      <div>
-                        <p className="text-xs font-body font-semibold text-obsidian">{review.name}</p>
-                        <p className="text-[10px] font-body text-taupe">{review.location}</p>
-                      </div>
-                      {review.verified && (
-                        <span className="ml-auto text-[9px] font-body font-semibold text-success-green bg-success-green/10 px-2 py-0.5 rounded-full">
-                          Verified
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[10px] font-body text-gold/80 mt-2">✦ {review.product}</p>
+          {/* Reviews Grid */}
+          <div className="grid md:grid-cols-3 gap-6">
+            {DEMO_REVIEWS.map((review, i) => (
+              <FadeUp key={review.id} delay={i * 0.08}>
+                <div className="bg-ivory/50 rounded-card p-6 border border-beige/60 hover:border-gold/30 hover:shadow-luxury transition-all h-full flex flex-col">
+                  {/* Stars */}
+                  <div className="flex gap-1 mb-3">
+                    {[...Array(review.rating)].map((_, j) => (
+                      <Star key={j} size={13} className="text-gold fill-gold" />
+                    ))}
                   </div>
-                </FadeUp>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════
-          NEWSLETTER SECTION
-      ════════════════════════════════════════════════════════════ */}
-      <section className="py-section bg-gradient-hero relative overflow-hidden">
-        <div className="absolute inset-0 bg-pattern-luxury" />
-        <div className="container-lanan relative z-10">
-          <FadeUp>
-            <div className="max-w-2xl mx-auto text-center">
-              <div className="w-16 h-16 rounded-full bg-gold/15 flex items-center justify-center mx-auto mb-6">
-                <Heart size={24} className="text-gold" />
-              </div>
-              <p className="section-label mb-3">Join the LANAN Circle</p>
-              <h2 className="section-title mb-4">
-                Get 15% Off Your{' '}
-                <em className="italic text-gold">First Order</em>
-              </h2>
-              <p className="font-body text-taupe text-sm mb-8 max-w-md mx-auto">
-                Subscribe for exclusive offers, skincare tips, new product launches, and a
-                welcome discount just for joining.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  className="input-luxury flex-1 text-sm"
-                />
-                <button className="btn-gold whitespace-nowrap">
-                  Get 15% Off
-                </button>
-              </div>
-
-              <p className="text-[11px] font-body text-taupe/60 mt-3">
-                No spam, ever. Unsubscribe anytime. 💛
-              </p>
-            </div>
-          </FadeUp>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════
-          TRUST SECTION
-      ════════════════════════════════════════════════════════════ */}
-      <section className="py-10 bg-white border-t border-beige">
-        <div className="container-lanan">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { icon: <ShieldCheck size={22} className="text-gold" />, title: 'Secure Payments', desc: 'Razorpay encrypted checkout' },
-              { icon: <Truck size={22} className="text-gold" />, title: 'Fast Delivery', desc: 'Pan India 3-7 business days' },
-              { icon: <Leaf size={22} className="text-gold" />, title: 'Skin-Safe Promise', desc: 'No harmful chemicals' },
-              { icon: <Heart size={22} className="text-gold" />, title: 'Easy Returns', desc: '7-day hassle-free returns' },
-            ].map((item, i) => (
-              <FadeUp key={item.title} delay={i * 0.07}>
-                <div className="flex flex-col items-center text-center gap-2">
-                  <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center">
-                    {item.icon}
+                  {/* Text */}
+                  <p className="font-body text-xs sm:text-sm text-charcoal leading-relaxed flex-1 mb-5">
+                    &ldquo;{review.text}&rdquo;
+                  </p>
+                  {/* Author */}
+                  <div className="flex items-center gap-3 pt-3.5 border-t border-beige/60">
+                    <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-obsidian text-xs font-bold font-mono flex-shrink-0">
+                      {review.avatar}
+                    </div>
+                    <div>
+                      <p className="text-xs font-body font-semibold text-obsidian">{review.name}</p>
+                      <p className="text-[10px] font-body text-taupe">{review.location}</p>
+                    </div>
+                    {review.verified && (
+                      <span className="ml-auto text-[9px] font-body font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                        Verified Purchase
+                      </span>
+                    )}
                   </div>
-                  <h3 className="font-body font-semibold text-sm text-obsidian">{item.title}</h3>
-                  <p className="text-xs font-body text-taupe">{item.desc}</p>
+                  <p className="text-[10px] font-body text-gold-dark mt-2 truncate">✦ {review.product}</p>
                 </div>
               </FadeUp>
             ))}
           </div>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          SECTION 15: NEWSLETTER SIGNUP
+      ════════════════════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-24 bg-gradient-hero relative overflow-hidden border-b border-beige/40">
+        <div className="absolute inset-0 bg-pattern-luxury opacity-40 pointer-events-none" />
+        <div className="container-lanan relative z-10">
+          <FadeUp>
+            <div className="max-w-xl mx-auto text-center">
+              <div className="w-14 h-14 rounded-full bg-gold/15 flex items-center justify-center mx-auto mb-6 text-gold">
+                <Heart size={22} />
+              </div>
+              <p className="section-label mb-2">Join the LANAN Circle</p>
+              <h2 className="section-title mb-4">
+                Receive 15% Off Your{' '}
+                <em className="italic text-gold font-serif">First Ritual</em>
+              </h2>
+              <p className="font-body text-taupe text-sm mb-8 leading-relaxed">
+                Subscribe for private invitations to seasonal launches, customized skincare tips, and a welcome privilege.
+              </p>
+
+              {newsletterSubmitted ? (
+                <div className="p-6 rounded-2xl bg-white border border-gold/40 shadow-luxury text-center">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-3">
+                    <Check size={18} />
+                  </div>
+                  <h4 className="font-heading text-xl text-obsidian mb-1">Welcome to LANAN</h4>
+                  <p className="text-xs font-body text-taupe mb-3">
+                    Use code <span className="font-mono font-bold text-gold">LANAN15</span> at checkout for 15% off.
+                  </p>
+                  <Link href="/shop" className="btn-gold text-xs px-6 py-2.5">
+                    Start Shopping
+                  </Link>
+                </div>
+              ) : (
+                <form onSubmit={handleNewsletterSubmit} className="space-y-3.5">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <input
+                      type="email"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      placeholder="Enter your email address"
+                      required
+                      className="input-luxury flex-1 text-sm bg-white"
+                    />
+                    <button type="submit" className="btn-gold whitespace-nowrap text-sm py-3 px-6">
+                      Get 15% Off
+                    </button>
+                  </div>
+                  <label className="flex items-center justify-center gap-2 text-[11px] font-body text-taupe cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={newsletterConsent}
+                      onChange={(e) => setNewsletterConsent(e.target.checked)}
+                      className="rounded border-beige text-gold focus:ring-gold"
+                    />
+                    <span>I agree to receive personalized skincare updates and agree to the Privacy Policy.</span>
+                  </label>
+                </form>
+              )}
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          SECTION 16: TRUST BAR (SECURE PAYMENTS & PROMISES)
+      ════════════════════════════════════════════════════════════ */}
+      <section className="py-12 bg-white">
+        <div className="container-lanan">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              {
+                icon: <ShieldCheck size={22} className="text-gold" />,
+                title: 'Cash on Delivery & UPI',
+                desc: 'Secure payments via UPI, Cards, Netbanking & COD',
+              },
+              {
+                icon: <Truck size={22} className="text-gold" />,
+                title: 'Pan-India Express',
+                desc: 'Complimentary shipping on orders above ₹599',
+              },
+              {
+                icon: <Leaf size={22} className="text-gold" />,
+                title: 'Dermatologist Safe',
+                desc: 'Formulated without harmful sulfates, parabens or harsh scents',
+              },
+              {
+                icon: <RotateCcw size={22} className="text-gold" />,
+                title: '7-Day Return Assistance',
+                desc: 'Seamless support for damaged or incorrect deliveries',
+              },
+            ].map((item, i) => (
+              <FadeUp key={item.title} delay={i * 0.06}>
+                <div className="flex flex-col items-center text-center gap-2 p-3">
+                  <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center mb-1">
+                    {item.icon}
+                  </div>
+                  <h3 className="font-body font-semibold text-sm text-obsidian">{item.title}</h3>
+                  <p className="text-xs font-body text-taupe leading-relaxed">{item.desc}</p>
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }

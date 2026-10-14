@@ -7,6 +7,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   try {
     // Check environment variables
@@ -54,18 +57,23 @@ export async function GET(req: NextRequest) {
             .from('customers')
             .select('full_name, phone, email')
             .eq('id', order.customer_id)
-            .single();
+            .maybeSingle();
           customer = custData;
         } catch {
           // Ignore missing customers table
         }
       }
 
-      const customerObj = customer || (order.customer_name ? {
-        full_name: order.customer_name,
-        email: order.customer_email,
-        phone: order.customer_phone,
-      } : undefined);
+      const shippingAddr = (typeof order.shipping_address === 'object' && order.shipping_address) || {};
+      const fallbackName = order.customer_name || shippingAddr.full_name || 'Customer';
+      const fallbackPhone = order.customer_phone || shippingAddr.phone || order.guest_phone || null;
+      const fallbackEmail = order.customer_email || shippingAddr.email || order.guest_email || null;
+
+      const customerObj = customer || {
+        full_name: fallbackName,
+        email: fallbackEmail,
+        phone: fallbackPhone,
+      };
       
       return {
         ...order,

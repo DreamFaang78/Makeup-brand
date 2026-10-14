@@ -42,26 +42,26 @@ export function PriceTag({
   const sizeStyles = {
     sm: {
       container: 'gap-x-1.5 gap-y-1',
-      base: 'text-[11px] font-mono text-taupe/75 line-through font-normal',
-      sale: 'text-sm font-mono font-bold text-obsidian tracking-tight',
+      base: 'text-[11px] font-sans tabular-nums text-taupe/75 line-through font-normal',
+      sale: 'text-sm font-sans tabular-nums font-bold text-obsidian tracking-tight',
       badge: 'px-1.5 py-0.5 text-[9px]',
     },
     md: {
       container: 'gap-x-2 gap-y-1',
-      base: 'text-xs lg:text-sm font-mono text-taupe/80 line-through font-normal',
-      sale: 'text-base lg:text-lg font-mono font-bold text-obsidian tracking-tight',
+      base: 'text-xs lg:text-sm font-sans tabular-nums text-taupe/80 line-through font-normal',
+      sale: 'text-base lg:text-lg font-sans tabular-nums font-bold text-obsidian tracking-tight',
       badge: 'px-2 py-0.5 text-[10px]',
     },
     lg: {
       container: 'gap-x-2.5 gap-y-1.5',
-      base: 'text-sm lg:text-base font-mono text-taupe/80 line-through font-normal',
-      sale: 'text-xl lg:text-2xl font-mono font-bold text-obsidian tracking-tight',
+      base: 'text-sm lg:text-base font-sans tabular-nums text-taupe/80 line-through font-normal',
+      sale: 'text-xl lg:text-2xl font-sans tabular-nums font-bold text-obsidian tracking-tight',
       badge: 'px-2.5 py-0.5 text-[11px]',
     },
     xl: {
       container: 'gap-x-3.5 gap-y-2',
-      base: 'text-base lg:text-xl font-mono text-taupe/80 line-through font-normal',
-      sale: 'text-3xl lg:text-4xl font-mono font-bold text-obsidian tracking-tight',
+      base: 'text-base lg:text-xl font-sans tabular-nums text-taupe/80 line-through font-normal',
+      sale: 'text-3xl lg:text-4xl font-sans tabular-nums font-bold text-obsidian tracking-tight',
       badge: 'px-3 py-1 text-xs',
     },
   }[size];
@@ -69,7 +69,7 @@ export function PriceTag({
   if (!hasSale) {
     return (
       <div className={cn('inline-flex items-baseline', className)}>
-        <span className={cn('font-mono font-semibold text-obsidian', sizeStyles.sale)}>
+        <span className={cn('font-sans tabular-nums font-bold text-obsidian', sizeStyles.sale)}>
           {formatPrice(displayPrice)}
         </span>
       </div>

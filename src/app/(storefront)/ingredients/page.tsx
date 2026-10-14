@@ -47,7 +47,7 @@ const HERO_INGREDIENTS = [
     story:
       "Think of it less like a moisturiser and more like a magnet. Hyaluronic Acid draws water molecules from the air itself and locks them deep within the skin's layers. A single molecule can hold up to 1,000 times its own weight in water — and you can feel exactly that difference within days. Fine lines soften. That tight, papery feeling disappears. What remains is skin that feels genuinely nourished — not just coated.",
     benefits: ["Plumps fine lines without heaviness", "Works in humid and dry climates alike", "Weightless — layers seamlessly under everything", "Suitable for every skin type, including oily"],
-    foundIn: ["Velvet Hydra Serum", "Cloud Moisturiser"],
+    foundIn: ["LANAN Glutathione Face Serum – 30 ml", "LANAN Face Moisturizer – 50 g"],
     science: "Molecular weight matters here. We use both high and low molecular weight HA — large molecules sit on the surface, small ones penetrate deeper layers.",
   },
   {
@@ -60,21 +60,21 @@ const HERO_INGREDIENTS = [
     story:
       "Niacinamide doesn't announce itself — it just works. Also called Vitamin B3, it handles a surprisingly wide range of skin concerns simultaneously: it nudges your pores to appear smaller, tells your skin to slow down oil production, and quietly fades those stubborn dark spots left behind by old breakouts. The skin barrier — your first defence against the world — gets measurably stronger with continued use. The result is a complexion that looks like it simply takes care of itself.",
     benefits: ["Visibly tightens enlarged pores", "Reduces excess oil without stripping", "Fades post-breakout pigmentation", "Reinforces the skin barrier over time"],
-    foundIn: ["Glass Skin Elixir", "Clarity Toner"],
-    science: "At 5–10% concentration, Niacinamide inhibits melanosome transfer — the process that deposits pigment in the skin, reducing the appearance of dark spots.",
+    foundIn: ["LANAN Face Wash – 100 ml", "LANAN Glutathione Face Toner – 100 ml"],
+    science: "At 1–2% concentration, Niacinamide inhibits melanosome transfer — the process that deposits pigment in the skin, reducing the appearance of dark spots.",
   },
   {
     icon: <Sun size={28} />,
-    name: "Saffron Extract",
-    tagline: "Ancient radiance. Scientifically understood.",
+    name: "Glutathione",
+    tagline: "Master antioxidant radiance. Scientifically proven.",
     benefit: "Radiance & even tone",
     color: "from-yellow-50 to-orange-50",
     accent: "#D4A843",
     story:
-      "Saffron has been pressed into golden skin pastes for centuries across South Asia. Modern science has now named exactly what our grandmothers always sensed: it's a potent antioxidant, a mild skin-brightener, and an anti-inflammatory — all at once. In our formulations, Saffron Extract works at the surface level to tackle dullness and uneven tone, while its free-radical neutralising properties quietly protect against daily environmental stress. The warmth it imparts to the complexion isn't theatrical. It's just your skin, finally unobscured.",
-    benefits: ["Evens out stubborn hyperpigmentation", "Adds a natural, warm luminosity", "Neutralises free radical damage", "Anti-inflammatory — calms reactive skin"],
-    foundIn: ["Saffron Glow Serum", "Radiance Revival Mask"],
-    science: "Safranal and crocin — saffron's active compounds — have been studied for their ability to inhibit tyrosinase, the enzyme responsible for melanin production.",
+      "Glutathione is the master antioxidant for luminous, healthy-looking skin. In our clinical formulations, Glutathione works at the cellular level to tackle dullness, reduce oxidative stress, and reveal a natural, even glow.",
+    benefits: ["Helps even out stubborn hyperpigmentation", "Adds a natural, radiant luminosity", "Neutralises free radical damage", "Gentle on sensitive and daily routines"],
+    foundIn: ["LANAN Glutathione Face Serum – 30 ml", "LANAN Face Wash – 100 ml"],
+    science: "Glutathione directly and indirectly inhibits tyrosinase activity and helps neutralise reactive oxygen species.",
   },
   {
     icon: <Leaf size={28} />,

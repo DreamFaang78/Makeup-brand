@@ -41,27 +41,45 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     let isMounted = true;
-    fetch('/api/products')
-      .then((res) => res.json())
-      .then((data) => {
-        if (!isMounted) return;
-        const catalog: ProductCardData[] = data.success && Array.isArray(data.products) && data.products.length > 0
-          ? data.products
-          : DEMO_PRODUCTS;
 
-        const found = catalog.find((p) => p.slug === slug || p.id === slug) ?? null;
-        setProduct(found);
-        if (found) {
-          setSelectedVariant(found.variants?.[0] ?? null);
-          setAllProducts(catalog.filter((p) => p.id !== found.id).slice(0, 4));
+    async function loadProductData() {
+      try {
+        let currentProduct: ProductCardData | null = null;
+        try {
+          const singleRes = await fetch(`/api/products/${slug}`);
+          const singleData = await singleRes.json();
+          if (singleData.success && singleData.product) {
+            currentProduct = singleData.product;
+          }
+        } catch (err) {
+          console.warn('Failed to fetch product by handle, checking catalog:', err);
         }
-      })
-      .catch((err) => {
+
+        const catalogRes = await fetch('/api/products');
+        const catalogData = await catalogRes.json();
+        const catalog: ProductCardData[] =
+          catalogData.success && Array.isArray(catalogData.products) && catalogData.products.length > 0
+            ? catalogData.products
+            : DEMO_PRODUCTS;
+
+        if (!currentProduct) {
+          currentProduct = catalog.find((p) => p.slug === slug || p.id === slug) ?? null;
+        }
+
+        if (!isMounted) return;
+        setProduct(currentProduct);
+        if (currentProduct) {
+          setSelectedVariant(currentProduct.variants?.[0] ?? null);
+          setAllProducts(catalog.filter((p) => p.id !== currentProduct!.id).slice(0, 4));
+        }
+      } catch (err) {
         console.error('Error fetching product detail:', err);
-      })
-      .finally(() => {
+      } finally {
         if (isMounted) setLoading(false);
-      });
+      }
+    }
+
+    loadProductData();
 
     return () => {
       isMounted = false;
@@ -127,6 +145,26 @@ export default function ProductDetailPage() {
 
   const handleBuyNow = async () => {
     await handleAddToCart();
+    const variantId = selectedVariant?.id;
+    if (variantId) {
+      try {
+        const res = await fetch('/api/shopify/cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'checkout',
+            lines: [{ merchandiseId: variantId, quantity: qty }],
+          }),
+        });
+        const data = await res.json();
+        if (data?.success && data?.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+          return;
+        }
+      } catch (err) {
+        console.warn('Direct checkout handoff failed, redirecting to checkout page:', err);
+      }
+    }
     window.location.href = '/checkout';
   };
 
@@ -161,7 +199,7 @@ export default function ProductDetailPage() {
           {/* ── LEFT: Gallery ── */}
           <div className="space-y-3">
             {/* Main Image */}
-            <div className="relative aspect-square rounded-card overflow-hidden bg-beige/30">
+            <div className="relative aspect-square rounded-card overflow-hidden bg-ivory border border-beige/40 flex items-center justify-center">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeImage}
@@ -169,13 +207,14 @@ export default function ProductDetailPage() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="absolute inset-0"
+                  className="absolute inset-0 flex items-center justify-center p-3"
                 >
                   <Image
-                    src={product.images[activeImage]?.url ?? 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&auto=format&fit=crop'}
+                    src={product.images[activeImage]?.url ?? '/serum-bottle.jpeg'}
                     alt={product.images[activeImage]?.alt_text ?? product.name}
                     fill
-                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-contain p-2"
                     priority
                   />
                 </motion.div>
@@ -212,11 +251,11 @@ export default function ProductDetailPage() {
                     key={img.id}
                     onClick={() => setActiveImage(i)}
                     className={cn(
-                      'flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all',
-                      activeImage === i ? 'border-gold' : 'border-transparent'
+                      'flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all bg-ivory',
+                      activeImage === i ? 'border-gold shadow-xs' : 'border-beige/60 hover:border-gold/50'
                     )}
                   >
-                    <Image src={img.url} alt={img.alt_text} width={64} height={64} className="w-full h-full object-cover" />
+                    <Image src={img.url} alt={img.alt_text || product.name} width={64} height={64} className="w-full h-full object-contain p-1" />
                   </button>
                 ))}
               </div>
@@ -288,14 +327,11 @@ export default function ProductDetailPage() {
             {/* Stock status */}
             {selectedVariant && (
               <p className={cn(
-                'text-xs font-body font-medium',
-                isOutOfStock ? 'text-error-red' : selectedVariant.inventory <= 5 ? 'text-amber-600' : 'text-success-green'
+                'text-xs font-body font-medium flex items-center gap-1.5',
+                isOutOfStock ? 'text-error-red' : 'text-success-green'
               )}>
-                {isOutOfStock
-                  ? 'Out of Stock'
-                  : selectedVariant.inventory <= 5
-                    ? `Only ${selectedVariant.inventory} left in stock`
-                    : 'In Stock'}
+                <span className={cn('w-2 h-2 rounded-full', isOutOfStock ? 'bg-error-red' : 'bg-success-green')} />
+                {isOutOfStock ? 'Currently Unavailable' : 'In Stock & Ready to Ship'}
               </p>
             )}
 
@@ -532,7 +568,7 @@ export default function ProductDetailPage() {
         {/* You May Also Like */}
         <div className="mt-10 pt-10 border-t border-beige">
           <h2 className="font-heading text-2xl text-obsidian mb-6">You May Also Like</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-stretch">
             {allProducts.map((p, i) => (
               <ProductCard key={p.id} product={p} index={i} />
             ))}

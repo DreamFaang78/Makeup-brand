@@ -195,7 +195,7 @@ export default function AIPopup() {
               {/* Left side: Model photo with scanning SVG overlay */}
               <div className="w-full sm:w-44 h-48 sm:h-auto relative bg-beige/30 flex-shrink-0 overflow-hidden">
                 <Image
-                  src="/Hero Banner Model.jpeg"
+                  src="/hero-banner-model.jpeg"
                   alt="AI Skin Scanner"
                   fill
                   sizes="(max-width: 640px) 100vw, 176px"
@@ -287,7 +287,7 @@ export default function AIPopup() {
                   {/* Left Side cover */}
                   <div className="w-full md:w-5/12 bg-ivory relative h-48 md:h-auto min-h-[180px]">
                     <Image
-                      src="/Hero Banner Model.jpeg"
+                      src="/hero-banner-model.jpeg"
                       alt="Skin Scan Guide"
                       fill
                       className="object-cover"
@@ -439,7 +439,7 @@ export default function AIPopup() {
                 <div className="p-8 text-center flex flex-col items-center justify-center min-h-[350px]">
                   <div className="w-28 h-28 rounded-full border-4 border-gold/15 relative flex items-center justify-center mb-6 overflow-hidden bg-beige/10">
                     <Image
-                      src={images['front'] || '/Hero Banner Model.jpeg'}
+                      src={images['front'] || '/hero-banner-model.jpeg'}
                       alt="AI Face Scan"
                       fill
                       className="object-cover opacity-60"

@@ -55,41 +55,33 @@ const MORNING_RITUAL = {
     {
       step: '01',
       action: 'Cleanse',
-      title: 'Purify with Petal Soft Foam',
-      desc: 'Wash away overnight sebum and buildup. Pump 1-2 puffs of cleanser onto damp skin, massage gently in circular motions, and rinse with cool water.',
-      productSlug: 'petal-soft-cleansing-foam',
+      title: 'Purify with LANAN Face Wash',
+      desc: 'Wash away overnight excess oil and impurities with Salicylic Acid 2% and Niacinamide 1%. Massage onto wet face and rinse thoroughly.',
+      productSlug: 'lanan-face-wash',
       duration: '1 Min'
     },
     {
       step: '02',
       action: 'Tone',
-      title: 'Balance with Niacinamide Clarity Toner',
-      desc: 'Splash a small amount onto your palms and gently pat into your skin. This tightens pores, regulates oiliness, and prepares the skin to receive active nutrients.',
-      productSlug: 'niacinamide-clarity-toner',
+      title: 'Balance with Glutathione Face Toner',
+      desc: 'Gently pat into skin to replenish hydration, tighten pores, and prep your complexion for maximum active serum absorption.',
+      productSlug: 'lanan-glutathione-face-toner',
       duration: '30 Sec'
     },
     {
       step: '03',
       action: 'Treat',
-      title: 'Brighten with Radiance Revival Serum',
-      desc: 'Apply 3-4 drops of the serum to your face and neck. Press (do not rub) it into the skin to target hyperpigmentation and reveal a golden, even glow.',
-      productSlug: 'radiance-revival-serum',
+      title: 'Brighten with Glutathione Face Serum',
+      desc: 'Press 2-3 drops into face and neck. Formulated with Glutathione, Vitamin C, Ceramide NP, and Hyaluronic Acid for a healthy radiant glow.',
+      productSlug: 'lanan-glutathione-face-serum',
       duration: '1 Min'
     },
     {
       step: '04',
-      action: 'Hydrate',
-      title: 'Seal with Velvet Hydra Moisturiser',
-      desc: 'Massage a dime-sized amount onto the face to lock in 72-hour moisture. Its lightweight gel-cream formula feels weightless and stays sweat-proof.',
-      productSlug: 'velvet-hydra-moisturiser',
-      duration: '1 Min'
-    },
-    {
-      step: '05',
       action: 'Protect',
-      title: 'Shield with Rose Dew SPF 40',
-      desc: 'Apply a generous amount (two-finger rule) as the final step. Protects against UV rays without leaving a white cast or clogging your pores.',
-      productSlug: 'rose-dew-spf40-sunscreen',
+      title: 'Shield with Sunscreen SPF 50 PA++++',
+      desc: 'Apply generously as your morning protection shield. Broad spectrum UVA/UVB filters absorb effortlessly with zero white cast.',
+      productSlug: 'lanan-sunscreen-spf-50',
       duration: '1 Min'
     }
   ]
@@ -105,85 +97,61 @@ const EVENING_RITUAL = {
   steps: [
     {
       step: '01',
-      action: 'Double Cleanse',
-      title: 'Cleanse with Petal Soft Foam',
-      desc: 'Wash away the day’s pollution, makeup, sweat, and sunscreen. Lather well and rinse with lukewarm water to unclog pores deeply.',
-      productSlug: 'petal-soft-cleansing-foam',
+      action: 'Deep Cleanse',
+      title: 'Cleanse with LANAN Face Wash',
+      desc: 'Gently wash away pollution, sebum, and sunscreen with Salicylic Acid and Niacinamide. Leaves skin clear without stripping moisture.',
+      productSlug: 'lanan-face-wash',
       duration: '2 Mins'
     },
     {
       step: '02',
       action: 'Tone & Refine',
-      title: 'Prep with Niacinamide Clarity Toner',
-      desc: 'Pat gently onto the face and neck. It calms any daytime redness and helps active ingredients in your evening treatments penetrate deeper.',
-      productSlug: 'niacinamide-clarity-toner',
+      title: 'Prep with Glutathione Face Toner',
+      desc: 'Apply toner over clean face and neck. Calms skin, rebalances pH, and delivers a vital boost of antioxidant hydration.',
+      productSlug: 'lanan-glutathione-face-toner',
       duration: '30 Sec'
     },
     {
       step: '03',
-      action: 'Targeted Repair',
-      title: 'Renew with Radiance Revival Serum',
-      desc: 'Press 3-4 drops into dry skin. The concentrated active botanicals work in synergy with overnight repair cycles to fade dark spots and uneven tone.',
-      productSlug: 'radiance-revival-serum',
-      duration: '1 Min'
-    },
-    {
-      step: '04',
-      action: 'Overnight Seal',
-      title: 'Nourish with Midnight Repair Night Cream',
-      desc: 'Smooth a rich layer over the face. It delivers intensive lipids and active anti-aging complexes to repair a compromised skin barrier.',
-      productSlug: 'midnight-repair-night-cream',
-      duration: '1.5 Mins'
-    },
-    {
-      step: '05',
-      action: 'Specialist Care',
-      title: 'Revitalize with Golden Hour Eye Cream',
-      desc: 'Dot gently around the orbital bone using your ring finger. It targets under-eye dark circles, morning puffiness, and fine expression lines.',
-      productSlug: 'golden-hour-eye-cream',
+      action: 'Overnight Glow',
+      title: 'Renew with Glutathione Face Serum',
+      desc: 'Smooth 2-3 drops over cleansed skin. Ceramide NP and Hyaluronic Acid lock in deep overnight moisture while Glutathione boosts radiance.',
+      productSlug: 'lanan-glutathione-face-serum',
       duration: '1 Min'
     }
   ]
 };
 
 const WEEKLY_RITUAL = {
-  title: 'Weekly Sunday Glow Ritual',
+  title: 'Weekly Radiance Renewal Ritual',
   subtitle: 'Indulge, detoxify, and pamper.',
-  description: 'A luxurious weekend ritual that deeply cleanses, extracts impurities, and infuses skin with precious Indian Saffron for a healthy, radiant week ahead.',
+  description: 'A luxurious routine that deeply cleanses, refines texture, and infuses your skin with clinical actives for long-lasting luminosity.',
   colorTheme: 'from-amber-600/10 via-amber-600/5 to-transparent',
   accentColor: '#D4A843',
   icon: <Calendar size={24} className="text-yellow-600" />,
   steps: [
     {
       step: '01',
-      action: 'Cleanse',
-      title: 'Prepare with Petal Soft Foam',
-      desc: 'Begin with a clean canvas. Wash with warm water to open pores for the nourishing mask treatment.',
-      productSlug: 'petal-soft-cleansing-foam',
-      duration: '1 Min'
+      action: 'Purify',
+      title: 'Deep Cleanse with LANAN Face Wash',
+      desc: 'Begin with a warm water cleanse to lift impurities and gently decongest pores.',
+      productSlug: 'lanan-face-wash',
+      duration: '1.5 Mins'
     },
     {
       step: '02',
-      action: 'Weekly Mask',
-      title: 'Indulge in Saffron Glow Face Mask',
-      desc: 'Apply an even layer over the face, avoiding the eye area. Inhale the relaxing aroma and rest for 15 minutes as the active saffron and clay purify and brighten.',
-      productSlug: 'saffron-glow-face-mask',
-      duration: '15 Mins'
+      action: 'Hydrate & Tone',
+      title: 'Infuse with Glutathione Face Toner',
+      desc: 'Layer toner twice (7-skin method inspired) to flood skin cells with antioxidant hydration.',
+      productSlug: 'lanan-glutathione-face-toner',
+      duration: '1 Min'
     },
     {
       step: '03',
-      action: 'Balance',
-      title: 'Refresh with Niacinamide Clarity Toner',
-      desc: 'After rinsing the mask off, pat toner onto your skin to calm and tighten pores immediately.',
-      productSlug: 'niacinamide-clarity-toner',
-      duration: '30 Sec'
-    },
-    {
-      step: '04',
-      action: 'Infuse Hydration',
-      title: 'Deeply Nourish with Velvet Hydra Gel',
-      desc: 'Lock in the saffron glow with a generous layer of moisturiser. Massage gently until fully absorbed.',
-      productSlug: 'velvet-hydra-moisturiser',
+      action: 'Targeted Treatment',
+      title: 'Saturate with Glutathione Face Serum',
+      desc: 'Massage 4-5 drops in upward circular strokes until fully absorbed, boosting skin firmness and natural bounce.',
+      productSlug: 'lanan-glutathione-face-serum',
       duration: '2 Mins'
     }
   ]
@@ -294,8 +262,8 @@ export default function RitualsPage() {
     const matched = getRecommendedProducts();
     if (matched.length > 0) return matched;
 
-    // Fallback: Return Cleanser, Serum, and Moisturiser
-    const fallbackSlugs = ['petal-soft-cleansing-foam', 'radiance-revival-serum', 'velvet-hydra-moisturiser'];
+    // Fallback: Return Cleanser, Serum, and Sunscreen
+    const fallbackSlugs = ['lanan-face-wash', 'lanan-glutathione-face-serum', 'lanan-sunscreen-spf-50'];
     return fallbackSlugs.map((slug) => getProductBySlug(slug)).filter(Boolean) as ProductCardData[];
   };
 
@@ -719,7 +687,7 @@ export default function RitualsPage() {
               { title: 'Climate Engineered', desc: 'Light, sweat-resistant, fast-absorbing formulations suited for Indian humidity.' }
             ].map((feat, idx) => (
               <div key={idx} className="bg-ivory/40 p-5 rounded-2xl border border-beige/60">
-                <span className="text-gold text-xs font-bold font-mono">0{idx + 1} //</span>
+                <span className="text-gold text-xs font-bold font-mono">0{idx + 1} {'//'}</span>
                 <h4 className="font-heading text-base text-obsidian mt-2">{feat.title}</h4>
                 <p className="text-xs font-body text-taupe mt-1.5 leading-relaxed">{feat.desc}</p>
               </div>

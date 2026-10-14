@@ -34,13 +34,26 @@ export default function AdminProductsPage() {
   const [formSku, setFormSku] = useState('');
 
   // Multi-image upload state
-  const [formImages, setFormImages] = useState<string[]>(['/Serum Bottle.jpeg']);
+  const [formImages, setFormImages] = useState<string[]>(['/lanan-face-wash.jpeg']);
+  const [mediaFiles, setMediaFiles] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [customUrlInput, setCustomUrlInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch real list of image files from /public
+  useEffect(() => {
+    fetch('/api/admin/media')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.files)) {
+          setMediaFiles(data.files);
+        }
+      })
+      .catch((err) => console.warn('Could not load public media files:', err));
+  }, []);
 
   // Clear notice after 4 seconds
   useEffect(() => {
@@ -137,7 +150,7 @@ export default function AdminProductsPage() {
     setFormSalePrice('');
     setFormInventory('50');
     setFormSku('');
-    setFormImages(['/Serum Bottle.jpeg']);
+    setFormImages(['/serum-bottle.jpeg']);
     setShowUrlInput(false);
     setCustomUrlInput('');
     setEditingProduct(null);
@@ -161,7 +174,7 @@ export default function AdminProductsPage() {
     // Extract all image URLs from p.images
     const imgUrls = Array.isArray(p.images) && p.images.length > 0
       ? p.images.map((img: any) => (typeof img === 'string' ? img : img.url)).filter(Boolean)
-      : [p.og_image_url || '/Serum Bottle.jpeg'];
+      : [p.og_image_url || '/serum-bottle.jpeg'];
 
     setFormImages(imgUrls);
     setShowUrlInput(false);
@@ -279,7 +292,7 @@ export default function AdminProductsPage() {
       if (uploadedUrls.length > 0) {
         setFormImages((prev) => {
           const cleanPrev =
-            prev.length === 1 && prev[0] === '/Serum Bottle.jpeg' && !editingProduct
+            prev.length === 1 && prev[0] === '/serum-bottle.jpeg' && !editingProduct
               ? []
               : prev;
           return [...cleanPrev, ...uploadedUrls];
@@ -326,7 +339,7 @@ export default function AdminProductsPage() {
     const url = customUrlInput.trim();
     setFormImages(prev => {
       const cleanPrev =
-        prev.length === 1 && prev[0] === '/Serum Bottle.jpeg' && !editingProduct
+        prev.length === 1 && prev[0] === '/serum-bottle.jpeg' && !editingProduct
           ? []
           : prev;
       return [...cleanPrev, url];
@@ -343,7 +356,7 @@ export default function AdminProductsPage() {
     const salePriceNum = formSalePrice ? parseFloat(formSalePrice) : null;
     const invNum = parseInt(formInventory, 10) || 50;
 
-    const finalImages = formImages.length > 0 ? formImages : ['/Serum Bottle.jpeg'];
+    const finalImages = formImages.length > 0 ? formImages : ['/serum-bottle.jpeg'];
 
     try {
       if (editingProduct) {
@@ -692,7 +705,7 @@ export default function AdminProductsPage() {
                     ? Math.min(...variants.map((v: any) => v.inventory ?? 0))
                     : 0;
                   const isActive = variants[0]?.is_active ?? (p.status !== 'draft');
-                  const firstImage = p.images?.[0]?.url || p.og_image_url || '/Serum Bottle.jpeg';
+                  const firstImage = p.images?.[0]?.url || p.og_image_url || '/serum-bottle.jpeg';
                   const isCurrentDeleting = deletingId === p.id;
                   const photoCount = p.images?.length || 1;
 
@@ -873,17 +886,34 @@ export default function AdminProductsPage() {
 
               {/* Modal Body */}
               <form onSubmit={handleSaveProduct} className="p-6 space-y-4 max-h-[78vh] overflow-y-auto">
-                {/* Product Name */}
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-wider font-semibold text-taupe">Product Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formName}
-                    onChange={(e) => setFormName(e.target.value)}
-                    placeholder="e.g. Radiance Revival Serum"
-                    className="input-luxury text-xs py-2"
-                  />
+                {/* Product Name + Live Image Preview */}
+                <div className="flex items-center gap-3.5 p-3 rounded-xl bg-ivory/40 border border-beige/60">
+                  <div className="relative w-14 h-14 rounded-xl border border-gold/40 bg-ivory overflow-hidden flex-shrink-0 flex items-center justify-center shadow-xs">
+                    {formImages[0] ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={formImages[0]}
+                        alt="Selected cover preview"
+                        className="w-full h-full object-contain p-1"
+                      />
+                    ) : (
+                      <span className="text-[8px] text-taupe font-mono text-center">No Photo</span>
+                    )}
+                    <span className="absolute bottom-0 inset-x-0 bg-obsidian/85 text-[7px] text-gold text-center py-0.5 font-bold uppercase tracking-wider">
+                      Cover
+                    </span>
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider font-semibold text-taupe">Product Name *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formName}
+                      onChange={(e) => setFormName(e.target.value)}
+                      placeholder="e.g. LANAN Face Wash – 100 ml"
+                      className="input-luxury text-xs py-2 bg-white"
+                    />
+                  </div>
                 </div>
 
                 {/* Tagline */}
@@ -1143,35 +1173,55 @@ export default function AdminProductsPage() {
                         </button>
                       </div>
 
-                      <div className="space-y-1">
-                        <span className="text-[9px] uppercase tracking-wider text-taupe font-semibold">Or Pick Demo Library Presets:</span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {[
-                            '/Serum Bottle.jpeg',
-                            '/Moisturiser Tube.jpeg',
-                            '/Saffron Face Mask.jpeg',
-                            '/Sunscreen.jpeg',
-                            '/website product cards..jpeg',
-                            '/Product in Hand.jpeg',
-                            '/Bathroom Shelf Mockup.jpeg'
-                          ].map((url) => (
-                            <button
-                              key={url}
-                              type="button"
-                              onClick={() => {
-                                setFormImages(prev => {
-                                  const clean =
-                                    prev.length === 1 && prev[0] === '/Serum Bottle.jpeg' && !editingProduct
-                                      ? []
-                                      : prev;
-                                  return [...clean, url];
-                                });
-                              }}
-                              className="text-[9px] px-2 py-0.5 rounded border border-beige text-taupe bg-white hover:border-gold hover:text-gold transition-colors"
-                            >
-                              + {url.split('/').pop()}
-                            </button>
-                          ))}
+                      <div className="space-y-1.5">
+                        <span className="text-[9px] uppercase tracking-wider text-taupe font-semibold">Pick from Real /public Image Files:</span>
+                        <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-1 bg-white rounded-lg border border-beige/40">
+                          {(mediaFiles.length > 0
+                            ? mediaFiles
+                            : [
+                                '/lanan-face-wash.jpeg',
+                                '/lanan-face-moisturizer.jpeg',
+                                '/lanan-sunscreen-spf-50.jpeg',
+                                '/lanan-glutathione-face-toner.jpeg',
+                                '/lanan-glutathione-face-serum.jpeg',
+                                '/serum-bottle.jpeg',
+                                '/moisturiser-tube.jpeg',
+                                '/sunscreen.jpeg',
+                                '/saffron-face-mask.jpeg',
+                                '/website-product-cards.jpeg',
+                                '/product-in-hand.jpeg',
+                                '/bathroom-shelf-mockup.jpeg',
+                              ]
+                          ).map((url) => {
+                            const isSelected = formImages.includes(url);
+                            return (
+                              <button
+                                key={url}
+                                type="button"
+                                onClick={() => {
+                                  setFormImages((prev) => {
+                                    if (prev.includes(url)) {
+                                      return prev.filter((u) => u !== url);
+                                    }
+                                    const clean =
+                                      prev.length === 1 && (prev[0] === '/serum-bottle.jpeg' || prev[0] === '/lanan-face-wash.jpeg') && !editingProduct
+                                        ? []
+                                        : prev;
+                                    return [...clean, url];
+                                  });
+                                }}
+                                className={`text-[9px] px-2 py-1 rounded-md border flex items-center gap-1.5 transition-all ${
+                                  isSelected
+                                    ? 'border-gold bg-gold/15 text-obsidian font-semibold'
+                                    : 'border-beige text-taupe bg-ivory/40 hover:border-gold hover:text-gold'
+                                }`}
+                              >
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={url} alt="" className="w-3.5 h-3.5 object-contain rounded" />
+                                {url.replace('/', '')}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>

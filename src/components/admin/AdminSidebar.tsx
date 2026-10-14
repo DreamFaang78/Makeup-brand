@@ -35,7 +35,7 @@ export default function AdminSidebar() {
         <div className="flex items-center gap-2.5">
           <div className="relative w-8 h-8">
             <Image
-              src="/lanan logo.png"
+              src="/lanan-logo.png"
               alt="LANAN Logo"
               fill
               sizes="32px"
