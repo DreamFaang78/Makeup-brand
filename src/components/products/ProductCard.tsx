@@ -16,15 +16,18 @@ import PriceTag from '@/components/products/PriceTag';
 import type { ProductCardData } from '@/types/product';
 import { toast } from 'sonner';
 
+import { useWishlistStore } from '@/store/wishlistStore';
+
 interface Props {
   product: ProductCardData;
   index?: number;
 }
 
 export default function ProductCard({ product, index = 0 }: Props) {
-  const [wishlistd, setWishlisted] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
   const { addItem } = useCartStore();
+  const { isInWishlist, toggleItem } = useWishlistStore();
+  const wishlisted = isInWishlist(product.id) || isInWishlist(product.slug);
 
   const image = product.images?.[0];
   const activeVariant = product.variants?.find((v) => v.is_active) ?? product.variants?.[0];
@@ -58,8 +61,8 @@ export default function ProductCard({ product, index = 0 }: Props) {
 
   function handleWishlist(e: React.MouseEvent) {
     e.preventDefault();
-    setWishlisted((w) => !w);
-    toast(wishlistd ? 'Removed from wishlist' : 'Added to wishlist ♡');
+    toggleItem(product.id);
+    toast(wishlisted ? 'Removed from wishlist' : 'Added to wishlist ♡');
   }
 
   const categoryName = typeof product.category === 'string'
@@ -112,11 +115,11 @@ export default function ProductCard({ product, index = 0 }: Props) {
                 'bg-white/90 backdrop-blur-sm shadow-sm',
                 'transition-all duration-200 opacity-0 group-hover:opacity-100',
                 'hover:scale-110',
-                wishlistd ? 'text-error-red opacity-100' : 'text-taupe hover:text-error-red'
+                wishlisted ? 'text-error-red opacity-100' : 'text-taupe hover:text-error-red'
               )}
-              aria-label={wishlistd ? 'Remove from wishlist' : 'Add to wishlist'}
+              aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
             >
-              <Heart size={14} fill={wishlistd ? 'currentColor' : 'none'} />
+              <Heart size={14} fill={wishlisted ? 'currentColor' : 'none'} />
             </button>
 
             {/* Quick Add (desktop hover) */}

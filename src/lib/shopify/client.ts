@@ -19,22 +19,40 @@ export function getShopifyConfig() {
     };
   }
 
-  // Exact hosting variable names
-  const domain = process.env.SHOPIFY_STORE_DOMAIN;
-  const storefrontAccessToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+  // Exact hosting variable names with safe fallbacks and sanitation
+  const rawDomain =
+    process.env.SHOPIFY_STORE_DOMAIN ||
+    process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ||
+    process.env.SHOPIFY_DOMAIN ||
+    'x7ji11-bt.myshopify.com';
+
+  const rawToken =
+    process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN ||
+    process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN ||
+    process.env.SHOPIFY_STOREFRONT_TOKEN ||
+    '';
+
   const apiVersion = process.env.SHOPIFY_API_VERSION || '2026-10';
+
+  const domain = rawDomain
+    .trim()
+    .replace(/^https?:\/\//i, '')
+    .replace(/\/+$/, '')
+    .replace(/['"]/g, '');
+
+  const storefrontAccessToken = rawToken.trim().replace(/['"]/g, '');
 
   const isConfigured = Boolean(
     domain &&
     storefrontAccessToken &&
     !domain.includes('your-shop-name') &&
-    domain.trim() !== '' &&
-    storefrontAccessToken.trim() !== ''
+    domain !== '' &&
+    storefrontAccessToken !== ''
   );
 
   return {
-    domain: domain ? domain.replace(/^https?:\/\//, '').replace(/\/$/, '') : '',
-    storefrontAccessToken: storefrontAccessToken || '',
+    domain,
+    storefrontAccessToken,
     apiVersion,
     isConfigured,
   };

@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { createClient } from '@/utils/supabase/client';
 import { toast } from 'sonner';
 import SearchModal from '@/components/layout/SearchModal';
+import { useWishlistStore } from '@/store/wishlistStore';
 
 const NAV_LINKS = [
   {
@@ -53,6 +54,7 @@ export default function Navbar() {
 
   const { itemCount, toggleCart } = useCartStore();
   const { mobileMenuOpen, toggleMobileMenu, closeMobileMenu, openAuthModal } = useUIStore();
+  const wishlistCount = useWishlistStore((s) => s.items.length);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -271,10 +273,15 @@ export default function Navbar() {
               {/* Wishlist (desktop) */}
               <Link
                 href="/account/wishlist"
-                className="hidden lg:flex w-9 h-9 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold"
-                aria-label="Wishlist"
+                className="relative hidden lg:flex w-9 h-9 items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold"
+                aria-label={`Wishlist (${wishlistCount})`}
               >
                 <Heart size={18} />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-gold text-obsidian text-[10px] font-bold font-mono flex items-center justify-center leading-none">
+                    {wishlistCount > 9 ? '9+' : wishlistCount}
+                  </span>
+                )}
               </Link>
 
               {/* Account Dropdown */}
@@ -537,10 +544,17 @@ export default function Navbar() {
                     </button>
                   )}
                   <Link href="/account/wishlist" onClick={closeMobileMenu}
-                    className="flex items-center gap-3 py-3 px-4 rounded-xl text-sm font-body text-ivory/80 hover:bg-white/5 hover:text-gold transition-all"
+                    className="flex items-center justify-between py-3 px-4 rounded-xl text-sm font-body text-ivory/80 hover:bg-white/5 hover:text-gold transition-all"
                   >
-                    <Heart size={16} />
-                    Wishlist
+                    <div className="flex items-center gap-3">
+                      <Heart size={16} />
+                      <span>Wishlist</span>
+                    </div>
+                    {wishlistCount > 0 && (
+                      <span className="px-2 py-0.5 rounded-full bg-gold/20 text-gold text-xs font-mono font-medium border border-gold/30">
+                        {wishlistCount}
+                      </span>
+                    )}
                   </Link>
                 </div>
 

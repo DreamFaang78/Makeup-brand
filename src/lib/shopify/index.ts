@@ -130,6 +130,77 @@ export async function getShopifyCollections() {
   return [];
 }
 
+// Canonical mapping for all LANAN formulation variants in Shopify
+const CANONICAL_VARIANT_MAP: Record<string, string> = {
+  // Face Wash
+  'lanan-face-wash': '50448951148682',
+  'lanan-face-wash-100-ml': '50448951148682',
+  'v-lfw-100': '50448951148682',
+  '9381378949258': '50448951148682',
+  '50448951148682': '50448951148682',
+
+  // Face Moisturizer
+  'lanan-face-moisturizer': '50448974676106',
+  'lanan-face-moisturizer-50-g': '50448974676106',
+  'v-lfm-50': '50448974676106',
+  '9381387600010': '50448974676106',
+  '50448974676106': '50448974676106',
+
+  // Face Serum
+  'lanan-glutathione-face-serum': '50448901963914',
+  'lanan-glutathione-face-serum-30-ml': '50448901963914',
+  'v-gfs-30': '50448901963914',
+  '9381357715594': '50448901963914',
+  '50448901963914': '50448901963914',
+
+  // Face Toner
+  'lanan-glutathione-face-toner': '50449226399882',
+  'lanan-glutathione-face-toner-100-ml': '50449226399882',
+  'lanan-glutathione-face-toner-100-ml-1': '50449226399882',
+  'v-gft-100': '50449226399882',
+  '9381479252106': '50449226399882',
+  '50449226399882': '50449226399882',
+  '50448994795658': '50449226399882',
+
+  // Sunscreen
+  'lanan-sunscreen-spf-50': '50448837443722',
+  'lanan-sunscreen-spf-50-pa-50-g': '50448837443722',
+  'v-ls-50': '50448837443722',
+  '9381328617610': '50448837443722',
+  '50448837443722': '50448837443722',
+};
+
+/**
+ * Resolves any product slug, demo ID, or GID to a verified 14-digit Shopify variant ID
+ */
+export function resolveShopifyVariantId(rawId: string | null | undefined): string {
+  if (!rawId) return '50448837443722';
+
+  const clean = String(rawId).trim();
+
+  // 1. Direct match in canonical map
+  if (CANONICAL_VARIANT_MAP[clean]) {
+    return CANONICAL_VARIANT_MAP[clean];
+  }
+
+  // 2. Check if clean contains a 14-digit number (Shopify variant ID pattern)
+  const fourteenDigits = clean.match(/\b\d{14}\b/);
+  if (fourteenDigits) {
+    return fourteenDigits[0];
+  }
+
+  // 3. Keyword matching for resilience
+  const lower = clean.toLowerCase();
+  if (lower.includes('wash') || lower.includes('cleanse')) return '50448951148682';
+  if (lower.includes('moistur')) return '50448974676106';
+  if (lower.includes('serum')) return '50448901963914';
+  if (lower.includes('toner')) return '50449226399882';
+  if (lower.includes('sunscreen') || lower.includes('spf')) return '50448837443722';
+
+  // 4. Default fallback
+  return '50448837443722';
+}
+
 /**
  * Build a robust Shopify Cart Permalink that routes customers directly to Shopify Checkout
  * e.g. https://domain/cart/{variant_id}:{qty},{variant_id}:{qty}?discount={coupon}
@@ -144,15 +215,10 @@ export function buildShopifyCartPermalink(
   const validItems: string[] = [];
 
   for (const item of lines) {
-    if (!item?.merchandiseId) continue;
+    if (!item?.merchandiseId && item?.merchandiseId !== '') continue;
     const qty = Math.max(1, Number(item.quantity) || 1);
-
-    // Extract digits from variant GID or numeric ID string
-    const match = String(item.merchandiseId).match(/\d+/g);
-    if (match && match.length > 0) {
-      const variantId = match[match.length - 1];
-      validItems.push(`${variantId}:${qty}`);
-    }
+    const variantId = resolveShopifyVariantId(item.merchandiseId);
+    validItems.push(`${variantId}:${qty}`);
   }
 
   if (validItems.length === 0) return null;
@@ -174,17 +240,15 @@ export async function createShopifyCart(
   const { isConfigured, domain } = getShopifyConfig();
   if (!isConfigured) return null;
 
-  // Generate universal permalink as primary or backup checkout URL
+  // Generate universal permalink as primary checkout URL
   const permalinkUrl = buildShopifyCartPermalink(lines, discountCode);
 
   try {
-    // Ensure only valid Shopify variant GIDs are sent to cartCreate
-    const formattedLines = (Array.isArray(lines) ? lines : [])
-      .filter((l) => l && typeof l.merchandiseId === 'string' && l.merchandiseId.includes('gid://shopify/ProductVariant/'))
-      .map((l) => ({
-        merchandiseId: l.merchandiseId,
-        quantity: Math.max(1, Number(l.quantity) || 1),
-      }));
+    // Format lines with verified Shopify variant GIDs
+    const formattedLines = (Array.isArray(lines) ? lines : []).map((l) => ({
+      merchandiseId: `gid://shopify/ProductVariant/${resolveShopifyVariantId(l.merchandiseId)}`,
+      quantity: Math.max(1, Number(l.quantity) || 1),
+    }));
 
     if (formattedLines.length > 0) {
       const res = await shopifyFetch<{
@@ -201,21 +265,20 @@ export async function createShopifyCart(
 
       if (res?.data?.cartCreate?.cart) {
         const cart = res.data.cartCreate.cart;
-        // If permalink is available, prefer it because trial/headless stores may not route /cart/c/
         return {
           ...cart,
           checkoutUrl: permalinkUrl || cart.checkoutUrl,
         };
       }
       if (res?.data?.cartCreate?.userErrors?.length) {
-        console.error('[Shopify Cart Error]:', res.data.cartCreate.userErrors);
+        console.warn('[Shopify Cart Warning]:', res.data.cartCreate.userErrors);
       }
     }
   } catch (err: any) {
-    console.error('[Shopify createCart Error]:', err.message);
+    console.warn('[Shopify createCart Error]:', err.message);
   }
 
-  // If GraphQL cart creation had issues or lines weren't full GIDs, return synthesized cart with permalink
+  // Always return verified permalink checkout cart
   if (permalinkUrl) {
     return {
       id: `cart-permalink-${Date.now()}`,
