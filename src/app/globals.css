@@ -161,8 +161,11 @@
     max-width: 1280px;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+  }
+  @media (min-width: 380px) {
+    .container-lanan { padding-left: 1rem; padding-right: 1rem; }
   }
   @media (min-width: 640px) {
     .container-lanan { padding-left: 1.5rem; padding-right: 1.5rem; }
@@ -541,6 +544,16 @@
   .animate-ticker { animation: ticker 25s linear infinite; }
   .animate-spin-slow { animation: spin 8s linear infinite; }
   .animate-float { animation: float 3s ease-in-out infinite; }
+
+  .scroll-hidden,
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scroll-hidden::-webkit-scrollbar,
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
