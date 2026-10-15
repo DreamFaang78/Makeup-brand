@@ -9,8 +9,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { getShopifyProductByHandle, getShopifyConfig } from '@/lib/shopify';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export async function GET(
   request: NextRequest,
@@ -27,22 +26,36 @@ export async function GET(
     if (isConfigured) {
       const { product, isLiveShopify } = await getShopifyProductByHandle(slug);
       if (product) {
-        return NextResponse.json({
-          success: true,
-          source: isLiveShopify ? 'shopify' : 'fallback',
-          product,
-        });
+        return NextResponse.json(
+          {
+            success: true,
+            source: isLiveShopify ? 'shopify' : 'fallback',
+            product,
+          },
+          {
+            headers: {
+              'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+            },
+          }
+        );
       }
     }
 
     // Fallback to canonical catalog
     const fallback = DEMO_PRODUCTS.find((p) => p.slug === slug || p.id === slug) || null;
     if (fallback) {
-      return NextResponse.json({
-        success: true,
-        source: 'canonical',
-        product: fallback,
-      });
+      return NextResponse.json(
+        {
+          success: true,
+          source: 'canonical',
+          product: fallback,
+        },
+        {
+          headers: {
+            'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+          },
+        }
+      );
     }
 
     return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });

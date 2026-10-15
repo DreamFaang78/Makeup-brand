@@ -86,6 +86,7 @@ export default function ProductCard({ product, index = 0 }: Props) {
                 alt={product.name}
                 fill
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                loading="lazy"
                 className="object-contain p-1 transition-transform duration-500 ease-out group-hover:scale-105"
               />
             ) : (

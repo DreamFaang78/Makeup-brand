@@ -4,13 +4,14 @@
 // Full featured with filters, sort, grid
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Filter, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import { Filter, SlidersHorizontal, X, ChevronDown, Search } from 'lucide-react';
 import ProductCard from '@/components/products/ProductCard';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 import { cn } from '@/lib/utils';
 import type { SortOption, SkinType, SkinConcern, ProductCardData } from '@/types/product';
+import { trackSearch } from '@/lib/metaPixel';
 
 const CATEGORIES = ['All', 'Cleansers', 'Moisturisers', 'Sunscreen', 'Toners', 'Serums'];
 const SKIN_TYPES: SkinType[] = ['oily', 'dry', 'combination', 'sensitive', 'normal'];
@@ -32,6 +33,24 @@ export default function ShopPage() {
   const [sortBy, setSortBy] = useState<SortOption>('bestselling');
   const [priceMax, setPriceMax] = useState(2000);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const trackedSearchRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('q') || params.get('search');
+      if (q && q.trim()) {
+        const clean = q.trim();
+        setSearchQuery(clean);
+        if (trackedSearchRef.current !== clean) {
+          trackedSearchRef.current = clean;
+          trackSearch(clean);
+        }
+      }
+    } catch (e) {}
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -91,6 +110,18 @@ export default function ShopPage() {
       });
     }
 
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      products = products.filter((p) => {
+        const pName = (p.name || '').toLowerCase();
+        const pDesc = (p.description || '').toLowerCase();
+        const pTag = (p.tagline || '').toLowerCase();
+        const pIng = (p.ingredients || '').toLowerCase();
+        const cat = (typeof p.category === 'string' ? p.category : p.category?.name || '').toLowerCase();
+        return pName.includes(q) || pDesc.includes(q) || pTag.includes(q) || pIng.includes(q) || cat.includes(q);
+      });
+    }
+
     products = products.filter((p) => {
       const price = Number(p.sale_price !== null && p.sale_price !== undefined ? p.sale_price : (p.base_price ?? 0));
       return price <= priceMax;
@@ -105,15 +136,24 @@ export default function ShopPage() {
     }
 
     return products;
-  }, [allProducts, selectedCategory, selectedTypes, selectedConcerns, sortBy, priceMax]);
+  }, [allProducts, selectedCategory, selectedTypes, selectedConcerns, sortBy, priceMax, searchQuery]);
 
-  const activeFilterCount = selectedTypes.length + selectedConcerns.length + (priceMax < 2000 ? 1 : 0) + (selectedCategory !== 'All' ? 1 : 0);
+  const activeFilterCount =
+    selectedTypes.length +
+    selectedConcerns.length +
+    (priceMax < 2000 ? 1 : 0) +
+    (selectedCategory !== 'All' ? 1 : 0) +
+    (searchQuery.trim() ? 1 : 0);
 
   const clearFilters = () => {
     setSelectedCategory('All');
     setSelectedTypes([]);
     setSelectedConcerns([]);
     setPriceMax(2000);
+    setSearchQuery('');
+    if (typeof window !== 'undefined') {
+      window.history.replaceState({}, '', '/shop');
+    }
   };
 
   return (
@@ -267,6 +307,28 @@ export default function ShopPage() {
 
           {/* ── Products Grid ── */}
           <div className="flex-1">
+            {searchQuery && (
+              <div className="flex items-center gap-2 mb-4 bg-white/60 p-2.5 rounded-xl border border-beige/60">
+                <Search size={14} className="text-gold" />
+                <span className="text-xs font-body text-taupe">Search results for:</span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold/15 text-obsidian text-xs font-semibold border border-gold/30">
+                  &ldquo;{searchQuery}&rdquo;
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      if (typeof window !== 'undefined') {
+                        window.history.replaceState({}, '', '/shop');
+                      }
+                    }}
+                    className="text-taupe hover:text-obsidian ml-1 cursor-pointer"
+                    aria-label="Clear search"
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
+              </div>
+            )}
             <AnimatePresence mode="wait">
               {isLoading ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-5">

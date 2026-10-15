@@ -20,6 +20,7 @@ import ProductCard from '@/components/products/ProductCard';
 import PriceTag from '@/components/products/PriceTag';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
+import { trackViewContent, trackInitiateCheckout } from '@/lib/metaPixel';
 
 type TabKey = 'description' | 'ingredients' | 'how-to-use' | 'reviews';
 
@@ -100,6 +101,26 @@ export default function ProductDetailPage() {
       isMounted = false;
     };
   }, [slug]);
+
+  const trackedProductViewRef = useRef<string | null>(null);
+
+  // Meta Pixel ViewContent event
+  useEffect(() => {
+    if (!product || trackedProductViewRef.current === product.id) return;
+    trackedProductViewRef.current = product.id;
+
+    const price = Number(product.sale_price ?? product.base_price ?? 0);
+    const categoryName = typeof product.category === 'string' ? product.category : product.category?.name || 'Skincare';
+
+    trackViewContent({
+      id: product.id || product.slug,
+      name: product.name,
+      price,
+      currency: 'INR',
+      category: categoryName,
+    });
+  }, [product]);
+
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -226,6 +247,21 @@ export default function ProductDetailPage() {
 
   const handleBuyNow = async () => {
     await handleAddToCart();
+    const currentPrice = Number(displayPrice) || 0;
+    trackInitiateCheckout({
+      items: [
+        {
+          id: product.id,
+          name: product.name,
+          price: currentPrice,
+          quantity: qty,
+        },
+      ],
+      value: currentPrice * qty,
+      currency: 'INR',
+      num_items: qty,
+    });
+
     const variantId = selectedVariant?.id;
     if (variantId) {
       try {

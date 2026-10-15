@@ -1,16 +1,35 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Cormorant_Garamond, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import Providers from '@/components/Providers';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import CartDrawer from '@/components/layout/CartDrawer';
-import AIPopup from '@/components/layout/AIPopup';
-import AIChatbot from '@/components/layout/AIChatbot';
-import AuthModal from '@/components/layout/AuthModal';
+import MetaPixel from '@/components/analytics/MetaPixel';
+import ClientOverlays from '@/components/layout/ClientOverlays';
 
-const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
+// Self-host Google font subsets at build time — zero external HTTP roundtrips or render-blocking stylesheets
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+  weight: ['300', '400', '500', '600', '700'],
+});
+
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-cormorant',
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-mono-jb',
+  weight: ['400', '500'],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://lanan.in'),
@@ -48,14 +67,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${inter.variable} ${cormorantGaramond.variable} ${jetbrainsMono.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -91,16 +104,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="font-body bg-ivory text-obsidian antialiased">
+        <MetaPixel />
         <Providers>
           <Navbar />
           <main className="pt-[116px] lg:pt-[128px] min-h-screen">
             {children}
           </main>
           <Footer />
-          <CartDrawer />
-          <AIPopup />
-          <AIChatbot />
-          <AuthModal />
+          <ClientOverlays />
         </Providers>
         <Toaster
           position="bottom-right"

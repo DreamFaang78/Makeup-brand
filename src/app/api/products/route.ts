@@ -10,9 +10,7 @@ import { createClient } from '@supabase/supabase-js';
 import { getShopifyProducts, getShopifyConfig } from '@/lib/shopify';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-export const fetchCache = 'force-no-store';
+export const revalidate = 60;
 
 export async function GET() {
   try {
@@ -22,11 +20,18 @@ export async function GET() {
       try {
         const { products, isLiveShopify } = await getShopifyProducts();
         if (isLiveShopify && products.length > 0) {
-          return NextResponse.json({
-            success: true,
-            source: 'shopify',
-            products,
-          });
+          return NextResponse.json(
+            {
+              success: true,
+              source: 'shopify',
+              products,
+            },
+            {
+              headers: {
+                'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+              },
+            }
+          );
         }
       } catch (shopifyErr: any) {
         console.warn('[API /api/products] Shopify query fallback:', shopifyErr.message);
@@ -135,22 +140,31 @@ export async function GET() {
           };
         });
 
-        return NextResponse.json({ success: true, source: 'supabase', products });
+        return NextResponse.json(
+          { success: true, source: 'supabase', products },
+          { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } }
+        );
       }
     }
 
     // 3. Guaranteed canonical fallback
-    return NextResponse.json({
-      success: true,
-      source: 'canonical',
-      products: DEMO_PRODUCTS,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        source: 'canonical',
+        products: DEMO_PRODUCTS,
+      },
+      { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } }
+    );
   } catch (error: any) {
     console.error('Failed to load products:', error);
-    return NextResponse.json({
-      success: true,
-      source: 'canonical-error-fallback',
-      products: DEMO_PRODUCTS,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        source: 'canonical-error-fallback',
+        products: DEMO_PRODUCTS,
+      },
+      { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60' } }
+    );
   }
 }

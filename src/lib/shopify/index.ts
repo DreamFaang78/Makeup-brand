@@ -48,6 +48,7 @@ export async function getShopifyProducts(options?: {
           sortKey: options?.sortKey || null,
           reverse: options?.reverse || false,
         },
+        revalidate: 60,
       });
 
       if (res?.data?.products?.edges && res.data.products.edges.length > 0) {
@@ -84,6 +85,7 @@ export async function getShopifyProductByHandle(
       const res = await shopifyFetch<{ product: ShopifyProduct | null }>({
         query: GET_PRODUCT_BY_HANDLE_QUERY,
         variables: { handle: queryHandle },
+        revalidate: 60,
       });
 
       if (res?.data?.product) {
@@ -114,6 +116,7 @@ export async function getShopifyCollections() {
       }>({
         query: GET_COLLECTIONS_QUERY,
         variables: { first: 10 },
+        revalidate: 300,
       });
 
       if (res?.data?.collections?.edges) {

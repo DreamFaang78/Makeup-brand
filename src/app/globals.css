@@ -17,9 +17,9 @@
   --color-gold-light: #DFBF7E;
   --color-gold-dark: #A9813D;
   --color-gold-muted: #EED8B5;
-  --color-taupe: #A97867;
-  --color-taupe-light: #C49888;
-  --color-taupe-dark: #7A5344;
+  --color-taupe: #885746;
+  --color-taupe-light: #B28373;
+  --color-taupe-dark: #6C4233;
   --color-ivory: #F7F0E7;
   --color-ivory-dark: #ECE3D7;
   --color-beige: #E6D7C8;
@@ -31,9 +31,9 @@
   --color-error-red: #C0392B;
 
   /* Typography */
-  --font-heading: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', 'Manrope', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-heading: var(--font-cormorant), 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-body: var(--font-inter), 'Inter', 'Manrope', system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Border Radii */
   --radius-card: 20px;
