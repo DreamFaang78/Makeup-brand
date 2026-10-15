@@ -173,19 +173,19 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-20">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3.5 flex-shrink-0" onClick={closeMobileMenu}>
-              <div className="relative w-12 h-12 lg:w-14 lg:h-14 filter drop-shadow-[0_0_12px_rgba(201,164,93,0.65)]">
+            <Link href="/" className="flex items-center gap-2 sm:gap-3.5 flex-shrink-0" onClick={closeMobileMenu}>
+              <div className="relative w-9 h-9 sm:w-11 sm:h-11 lg:w-14 lg:h-14 filter drop-shadow-[0_0_12px_rgba(201,164,93,0.65)]">
                 <Image
                   src="/lanan-logo.png"
                   alt="LANAN Logo"
                   fill
-                  sizes="60px"
+                  sizes="(max-width: 640px) 44px, 60px"
                   className="object-contain"
                   priority
                 />
               </div>
               <span
-                className="font-heading font-bold tracking-[0.25em] text-2xl lg:text-3xl bg-gradient-to-r from-gold-light via-gold to-gold-dark bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(201,164,93,0.45)] transition-all duration-300 hover:brightness-110"
+                className="font-heading font-bold tracking-[0.18em] sm:tracking-[0.25em] text-xl sm:text-2xl lg:text-3xl bg-gradient-to-r from-gold-light via-gold to-gold-dark bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(201,164,93,0.45)] transition-all duration-300 hover:brightness-110"
               >
                 LANAN
               </span>
@@ -249,7 +249,7 @@ export default function Navbar() {
             </nav>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-2 lg:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 flex-shrink-0">
 
               {/* AI Skin Scan CTA — desktop only */}
               <Link
@@ -264,10 +264,10 @@ export default function Navbar() {
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold cursor-pointer"
+                className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold cursor-pointer"
                 aria-label="Search products"
               >
-                <Search size={18} />
+                <Search size={17} />
               </button>
 
               {/* Wishlist (desktop) */}
@@ -352,10 +352,10 @@ export default function Navbar() {
               {/* Cart */}
               <button
                 onClick={toggleCart}
-                className="relative flex items-center gap-2 h-9 px-4 rounded-pill bg-gold text-obsidian hover:bg-gold-light transition-colors duration-200"
+                className="relative flex items-center gap-1.5 sm:gap-2 h-8 sm:h-9 px-3 sm:px-4 rounded-pill bg-gold text-obsidian hover:bg-gold-light transition-colors duration-200 cursor-pointer"
                 aria-label={`Cart with ${itemCount} items`}
               >
-                <ShoppingBag size={15} />
+                <ShoppingBag size={14} className="sm:w-[15px] sm:h-[15px]" />
                 <span className="text-xs font-body font-semibold">{itemCount}</span>
                 {itemCount > 0 && (
                   <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-obsidian rounded-full flex items-center justify-center text-[9px] font-bold text-gold border border-gold/20">
@@ -367,7 +367,7 @@ export default function Navbar() {
               {/* Mobile Menu Toggle */}
               <button
                 onClick={toggleMobileMenu}
-                className="lg:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold"
+                className="lg:hidden w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors text-ivory/90 hover:text-gold cursor-pointer"
                 aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               >
                 {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
