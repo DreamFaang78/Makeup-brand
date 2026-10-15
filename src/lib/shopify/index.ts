@@ -75,9 +75,15 @@ export async function getShopifyProductByHandle(
 
   if (isConfigured) {
     try {
+      const aliasMap: Record<string, string> = {
+        'lanan-glutathione-face-toner-100-ml': 'lanan-glutathione-face-toner-100-ml-1',
+        'lanan-glutathione-face-toner': 'lanan-glutathione-face-toner-100-ml-1',
+      };
+      const queryHandle = aliasMap[handle] || handle;
+
       const res = await shopifyFetch<{ product: ShopifyProduct | null }>({
         query: GET_PRODUCT_BY_HANDLE_QUERY,
-        variables: { handle },
+        variables: { handle: queryHandle },
       });
 
       if (res?.data?.product) {
