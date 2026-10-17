@@ -2,7 +2,7 @@
 // LANAN — Meta Ads Pixel Tracking & Consent Utility
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '';
+export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1159732883048720';
 
 export const CONSENT_STORAGE_KEY = 'lanan_cookie_consent';
 
@@ -17,6 +17,7 @@ declare global {
       callMethod?: (...args: any[]) => void;
     };
     _fbq?: any;
+    __metaPixelFlushing?: boolean;
   }
 }
 
@@ -53,16 +54,27 @@ export function setMarketingConsent(granted: boolean): void {
     console.warn('[Meta Pixel] Failed to persist consent to localStorage:', e);
   }
 
-  if (typeof window.fbq === 'function') {
-    window.fbq('consent', granted ? 'grant' : 'revoke');
-  }
+  callFbq('consent', granted ? 'grant' : 'revoke');
 
   // Dispatch custom window event so listeners (e.g. banner, consent modals) can update
   window.dispatchEvent(new CustomEvent('lanan_consent_changed', { detail: { status } }));
 }
 
+const pendingEventQueue: any[][] = [];
+let isFlushingQueue = false;
+
+function flushPendingQueue(): void {
+  if (typeof window === 'undefined' || typeof window.fbq !== 'function') return;
+  while (pendingEventQueue.length > 0) {
+    const item = pendingEventQueue.shift();
+    if (item) {
+      window.fbq(...item);
+    }
+  }
+}
+
 /**
- * Safe wrapper to invoke fbq commands
+ * Safe wrapper to invoke fbq commands with buffered fallback if script is loading
  */
 function callFbq(...args: any[]): void {
   if (typeof window === 'undefined') return;
@@ -70,9 +82,22 @@ function callFbq(...args: any[]): void {
   if (typeof window.fbq === 'function') {
     window.fbq(...args);
   } else {
-    // If fbq hasn't loaded yet, ensure array queue exists
-    window._fbq = window._fbq || [];
-    window._fbq.push(args);
+    // If fbq hasn't finished evaluating, buffer in pendingEventQueue and flush when ready
+    pendingEventQueue.push(args);
+    if (!isFlushingQueue) {
+      isFlushingQueue = true;
+      const interval = setInterval(() => {
+        if (typeof window.fbq === 'function') {
+          clearInterval(interval);
+          isFlushingQueue = false;
+          flushPendingQueue();
+        }
+      }, 50);
+      setTimeout(() => {
+        clearInterval(interval);
+        isFlushingQueue = false;
+      }, 10000);
+    }
   }
 
   if (process.env.NODE_ENV !== 'production') {
