@@ -85,6 +85,7 @@ const FOOTER_LINKS = {
     { label: 'Shipping Policy', href: '/legal/shipping-policy' },
     { label: 'Return & Refund', href: '/legal/return-refund-policy' },
     { label: 'Privacy Policy', href: '/legal/privacy-policy' },
+    { label: 'Cookie Preferences', href: '#cookie-preferences' },
     { label: 'Terms & Conditions', href: '/legal/terms-and-conditions' },
     { label: 'Cancellation Policy', href: '/legal/cancellation-policy' },
   ],
@@ -176,13 +177,23 @@ export default function Footer() {
               </h3>
               <ul className="space-y-2.5">
                 {links.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-xs font-body text-ivory/50 hover:text-gold transition-colors duration-200"
-                    >
-                      {link.label}
-                    </Link>
+                  <li key={link.label}>
+                    {link.href === '#cookie-preferences' ? (
+                      <button
+                        type="button"
+                        onClick={() => window.dispatchEvent(new CustomEvent('lanan_open_cookie_banner'))}
+                        className="text-xs font-body text-ivory/50 hover:text-gold transition-colors duration-200 text-left cursor-pointer"
+                      >
+                        {link.label}
+                      </button>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-xs font-body text-ivory/50 hover:text-gold transition-colors duration-200"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

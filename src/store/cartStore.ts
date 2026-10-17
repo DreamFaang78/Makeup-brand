@@ -6,6 +6,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { CartItem } from '@/types/order';
+import { trackAddToCart } from '@/lib/metaPixel';
 
 export const FREE_SHIPPING_THRESHOLD = 599;
 export const STANDARD_SHIPPING = 79;
@@ -95,6 +96,16 @@ export const useCartStore = create<CartState>()(
           total,
           freeShippingProgress: progress,
           isOpen: true,
+        });
+
+        // Track Meta Pixel AddToCart event
+        trackAddToCart({
+          id: newItem.product_id,
+          name: newItem.product_name,
+          price: Number(newItem.unit_price) || 0,
+          quantity: Number(newItem.quantity) || 1,
+          currency: 'INR',
+          variant: newItem.variant_name,
         });
       },
 

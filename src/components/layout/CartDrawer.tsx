@@ -14,6 +14,7 @@ import { useCartStore } from '@/store/cartStore';
 import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { trackInitiateCheckout } from '@/lib/metaPixel';
 
 const FREE_SHIPPING_THRESHOLD = 599;
 
@@ -66,6 +67,19 @@ export default function CartDrawer() {
 
   async function handleCheckout() {
     setIsCheckingOut(true);
+
+    trackInitiateCheckout({
+      items: items.map((i) => ({
+        id: i.product_id,
+        name: i.product_name,
+        price: Number(i.unit_price) || 0,
+        quantity: Number(i.quantity) || 1,
+      })),
+      value: Number(total) || Number(subtotal) || 0,
+      currency: 'INR',
+      num_items: items.reduce((s, i) => s + (Number(i.quantity) || 1), 0),
+    });
+
     try {
       const lines = items.map((i) => ({
         merchandiseId: i.variant_id || i.product_id,

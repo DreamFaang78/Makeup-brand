@@ -48,6 +48,7 @@ export async function getShopifyProducts(options?: {
           sortKey: options?.sortKey || null,
           reverse: options?.reverse || false,
         },
+        revalidate: 60,
       });
 
       if (res?.data?.products?.edges && res.data.products.edges.length > 0) {
@@ -75,9 +76,16 @@ export async function getShopifyProductByHandle(
 
   if (isConfigured) {
     try {
+      const aliasMap: Record<string, string> = {
+        'lanan-glutathione-face-toner-100-ml': 'lanan-glutathione-face-toner-100-ml-1',
+        'lanan-glutathione-face-toner': 'lanan-glutathione-face-toner-100-ml-1',
+      };
+      const queryHandle = aliasMap[handle] || handle;
+
       const res = await shopifyFetch<{ product: ShopifyProduct | null }>({
         query: GET_PRODUCT_BY_HANDLE_QUERY,
-        variables: { handle },
+        variables: { handle: queryHandle },
+        revalidate: 60,
       });
 
       if (res?.data?.product) {
@@ -108,6 +116,7 @@ export async function getShopifyCollections() {
       }>({
         query: GET_COLLECTIONS_QUERY,
         variables: { first: 10 },
+        revalidate: 300,
       });
 
       if (res?.data?.collections?.edges) {

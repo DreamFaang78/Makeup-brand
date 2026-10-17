@@ -13,6 +13,7 @@ import { Search, X, ArrowRight, Sparkles } from 'lucide-react';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 import { formatPrice } from '@/lib/utils';
 import type { ProductCardData } from '@/types/product';
+import { trackSearch } from '@/lib/metaPixel';
 
 interface Props {
   isOpen: boolean;
@@ -73,9 +74,11 @@ export default function SearchModal({ isOpen, onClose }: Props) {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    const cleanQuery = query.trim();
+    if (!cleanQuery) return;
+    trackSearch(cleanQuery);
     onClose();
-    router.push(`/shop?q=${encodeURIComponent(query.trim())}`);
+    router.push(`/shop?q=${encodeURIComponent(cleanQuery)}`);
   };
 
   return (

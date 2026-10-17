@@ -4,14 +4,14 @@
 // Full PDP with gallery, variants, tabs, add to cart, reviews
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, ShoppingBag, Zap, ShieldCheck, RefreshCw, Package,
-  MapPin, ChevronDown, Heart, Share2, Minus, Plus, Check, ArrowLeft,
+  MapPin, ChevronDown, ChevronLeft, ChevronRight, Heart, Share2, Minus, Plus, Check, ArrowLeft,
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
@@ -20,6 +20,7 @@ import ProductCard from '@/components/products/ProductCard';
 import PriceTag from '@/components/products/PriceTag';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
+import { trackViewContent, trackInitiateCheckout } from '@/lib/metaPixel';
 
 type TabKey = 'description' | 'ingredients' | 'how-to-use' | 'reviews';
 
@@ -29,6 +30,21 @@ const PRODUCT_TABS: { key: TabKey; label: string }[] = [
   { key: 'how-to-use', label: 'How to Use' },
   { key: 'reviews', label: 'Reviews' },
 ];
+
+const gallerySlideVariants = {
+  enter: (dir: number) => ({
+    opacity: 0,
+    x: dir > 0 ? 20 : dir < 0 ? -20 : 0,
+  }),
+  center: {
+    opacity: 1,
+    x: 0,
+  },
+  exit: (dir: number) => ({
+    opacity: 0,
+    x: dir > 0 ? -20 : dir < 0 ? 20 : 0,
+  }),
+};
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -85,8 +101,94 @@ export default function ProductDetailPage() {
       isMounted = false;
     };
   }, [slug]);
+
+  const trackedProductViewRef = useRef<string | null>(null);
+
+  // Meta Pixel ViewContent event
+  useEffect(() => {
+    if (!product || trackedProductViewRef.current === product.id) return;
+    trackedProductViewRef.current = product.id;
+
+    const price = Number(product.sale_price ?? product.base_price ?? 0);
+    const categoryName = typeof product.category === 'string' ? product.category : product.category?.name || 'Skincare';
+
+    trackViewContent({
+      id: product.id || product.slug,
+      name: product.name,
+      price,
+      currency: 'INR',
+      category: categoryName,
+    });
+  }, [product]);
+
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const thumbnailContainerRef = useRef<HTMLDivElement>(null);
+  const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const totalImages = product?.images?.length ?? 0;
+
+  const handlePrevImage = () => {
+    if (totalImages <= 1) return;
+    setDirection(-1);
+    setActiveImage((prev) => (prev === 0 ? totalImages - 1 : prev - 1));
+  };
+
+  const handleNextImage = () => {
+    if (totalImages <= 1) return;
+    setDirection(1);
+    setActiveImage((prev) => (prev === totalImages - 1 ? 0 : prev + 1));
+  };
+
+  const handleSelectImage = (index: number) => {
+    if (index === activeImage) return;
+    setDirection(index > activeImage ? 1 : -1);
+    setActiveImage(index);
+  };
+
+  // Keep thumbnail strip centered on active thumbnail
+  useEffect(() => {
+    const container = thumbnailContainerRef.current;
+    const activeThumb = thumbnailRefs.current[activeImage];
+    if (container && activeThumb) {
+      const thumbLeft = activeThumb.offsetLeft;
+      const thumbWidth = activeThumb.offsetWidth;
+      const containerWidth = container.clientWidth;
+      const targetScrollLeft = thumbLeft - containerWidth / 2 + thumbWidth / 2;
+      container.scrollTo({
+        left: Math.max(0, targetScrollLeft),
+        behavior: 'smooth',
+      });
+    }
+  }, [activeImage]);
+
+  // Touch swipe gesture handlers (pan-y compliant)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+
+    // Must be predominantly horizontal and at least 35px
+    if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+      if (deltaX < 0) {
+        handleNextImage();
+      } else {
+        handlePrevImage();
+      }
+    }
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
   const [activeTab, setActiveTab] = useState<TabKey>('description');
   const [pincode, setPincode] = useState('');
   const [pincodeResult, setPincodeResult] = useState<string | null>(null);
@@ -145,6 +247,21 @@ export default function ProductDetailPage() {
 
   const handleBuyNow = async () => {
     await handleAddToCart();
+    const currentPrice = Number(displayPrice) || 0;
+    trackInitiateCheckout({
+      items: [
+        {
+          id: product.id,
+          name: product.name,
+          price: currentPrice,
+          quantity: qty,
+        },
+      ],
+      value: currentPrice * qty,
+      currency: 'INR',
+      num_items: qty,
+    });
+
     const variantId = selectedVariant?.id;
     if (variantId) {
       try {
@@ -211,15 +328,35 @@ export default function ProductDetailPage() {
 
           {/* ── LEFT: Gallery ── */}
           <div className="w-full min-w-0 space-y-3 sm:space-y-4">
-            {/* Main Image */}
-            <div className="relative w-full max-w-full aspect-square rounded-card overflow-hidden bg-ivory border border-beige/60 shadow-xs flex items-center justify-center">
-              <AnimatePresence mode="wait">
+            {/* Main Image Container */}
+            <div
+              tabIndex={totalImages > 1 ? 0 : -1}
+              onKeyDown={(e) => {
+                if (totalImages <= 1) return;
+                if (e.key === 'ArrowLeft') {
+                  e.preventDefault();
+                  handlePrevImage();
+                } else if (e.key === 'ArrowRight') {
+                  e.preventDefault();
+                  handleNextImage();
+                }
+              }}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              role="region"
+              aria-roledescription="carousel"
+              aria-label={`${product.name} image gallery`}
+              className="relative w-full max-w-full aspect-square rounded-card overflow-hidden bg-ivory border border-beige/60 shadow-xs flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 touch-pan-y select-none"
+            >
+              <AnimatePresence mode="wait" custom={direction}>
                 <motion.div
                   key={activeImage}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
+                  custom={direction}
+                  variants={gallerySlideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
                   className="absolute inset-0 flex items-center justify-center p-3 sm:p-5"
                 >
                   <Image
@@ -227,13 +364,13 @@ export default function ProductDetailPage() {
                     alt={product.images[activeImage]?.alt_text ?? product.name}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-                    className="object-contain p-2 sm:p-4 select-none"
+                    className="object-contain p-2 sm:p-4 select-none pointer-events-none"
                     priority
                   />
                 </motion.div>
               </AnimatePresence>
 
-              {/* Badges */}
+              {/* Badges - Top Left */}
               <div className="absolute top-3 left-3 sm:top-4 sm:left-4 flex flex-col gap-1.5 z-10 pointer-events-none">
                 {product.is_bestseller && (
                   <span className="badge-gold text-[10px] sm:text-xs shadow-xs">Bestseller</span>
@@ -245,7 +382,7 @@ export default function ProductDetailPage() {
                 )}
               </div>
 
-              {/* Actions */}
+              {/* Actions (Wishlist & Share) - Top Right */}
               <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex flex-col gap-2 z-10">
                 <button
                   type="button"
@@ -278,18 +415,54 @@ export default function ProductDetailPage() {
                 </button>
               </div>
 
-              {/* Mobile Image Index Indicator */}
-              {product.images.length > 1 && (
-                <div className="absolute bottom-3 right-3 sm:hidden bg-obsidian/75 backdrop-blur-sm px-2.5 py-1 rounded-pill text-[10px] font-mono font-medium text-ivory border border-gold/20 z-10">
-                  {activeImage + 1} / {product.images.length}
-                </div>
+              {/* Sliding Arrow Controls & Counter (Only when multiple images) */}
+              {totalImages > 1 && (
+                <>
+                  {/* Previous Arrow Button - Bottom Left */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePrevImage();
+                    }}
+                    className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-white/95 hover:bg-white text-obsidian hover:text-gold border border-beige/80 shadow-sm hover:shadow-md backdrop-blur-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 touch-manipulation group"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={20} className="sm:w-[22px] sm:h-[22px] -translate-x-0.5 transition-colors group-hover:text-gold" strokeWidth={1.75} />
+                  </button>
+
+                  {/* Image Counter Pill - Bottom Center */}
+                  <div
+                    aria-live="polite"
+                    aria-atomic="true"
+                    className="absolute bottom-3 left-1/2 -translate-x-1/2 sm:bottom-4 z-20 bg-obsidian/80 backdrop-blur-sm px-3 py-1 rounded-pill text-[10px] sm:text-[11px] font-mono font-medium text-ivory border border-gold/25 shadow-xs pointer-events-none select-none tracking-wider whitespace-nowrap"
+                  >
+                    <span>{activeImage + 1}</span>
+                    <span className="opacity-60 mx-1">/</span>
+                    <span>{totalImages}</span>
+                  </div>
+
+                  {/* Next Arrow Button - Bottom Right */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNextImage();
+                    }}
+                    className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-white/95 hover:bg-white text-obsidian hover:text-gold border border-beige/80 shadow-sm hover:shadow-md backdrop-blur-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 touch-manipulation group"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={20} className="sm:w-[22px] sm:h-[22px] translate-x-0.5 transition-colors group-hover:text-gold" strokeWidth={1.75} />
+                  </button>
+                </>
               )}
             </div>
 
             {/* Thumbnails */}
-            {product.images.length > 1 && (
+            {totalImages > 1 && (
               <div className="relative w-full max-w-full min-w-0">
                 <div
+                  ref={thumbnailContainerRef}
                   className="flex items-center gap-2 sm:gap-2.5 overflow-x-auto w-full max-w-full py-1 px-0.5 scrollbar-none scroll-hidden scroll-smooth"
                   style={{
                     WebkitOverflowScrolling: 'touch',
@@ -300,15 +473,16 @@ export default function ProductDetailPage() {
                   {product.images.map((img, i) => (
                     <button
                       key={img.id || i}
+                      ref={(el) => { thumbnailRefs.current[i] = el; }}
                       type="button"
-                      onClick={() => setActiveImage(i)}
+                      onClick={() => handleSelectImage(i)}
                       className={cn(
-                        'flex-shrink-0 relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 transition-all duration-200 bg-ivory focus:outline-none cursor-pointer',
+                        'flex-shrink-0 relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 transition-all duration-200 bg-ivory focus:outline-none focus-visible:ring-2 focus-visible:ring-gold cursor-pointer',
                         activeImage === i
                           ? 'border-gold shadow-xs ring-2 ring-gold/20 scale-102'
                           : 'border-beige/70 hover:border-gold/50 opacity-80 hover:opacity-100'
                       )}
-                      aria-label={`View product image ${i + 1}`}
+                      aria-label={`View product image ${i + 1} of ${totalImages}`}
                       aria-pressed={activeImage === i}
                     >
                       <Image

@@ -7,8 +7,7 @@
 import { NextResponse } from 'next/server';
 import { getShopifyCollections, getShopifyConfig } from '@/lib/shopify';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 300;
 
 export async function GET() {
   try {
@@ -22,11 +21,18 @@ export async function GET() {
     }
 
     const collections = await getShopifyCollections();
-    return NextResponse.json({
-      success: true,
-      source: 'shopify',
-      collections,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        source: 'shopify',
+        collections,
+      },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      }
+    );
   } catch (err: any) {
     console.error('[API /api/shopify/collections Error]:', err.message);
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });

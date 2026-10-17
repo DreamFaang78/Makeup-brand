@@ -10,12 +10,12 @@ import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
 import {
   ArrowRight, Star, ShieldCheck, Leaf, Truck, Sparkles,
-  Droplets, FlaskConical, Sun, Wind, Heart, ChevronLeft, ChevronRight,
-  Camera, CheckCircle2, RotateCcw, Play, Check,
+  Droplets, FlaskConical, Sun, Wind, Heart,
+  Camera, CheckCircle2, RotateCcw, Check,
 } from 'lucide-react';
 import ProductCard from '@/components/products/ProductCard';
+import LazyRitualVideo from '@/components/media/LazyRitualVideo';
 import { DEMO_PRODUCTS, DEMO_REVIEWS } from '@/lib/data/products';
-import { formatPrice, cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
 
@@ -30,13 +30,13 @@ function FadeUp({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
+  const inView = useInView(ref, { once: true, margin: '-20px' });
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.5, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
     >
       {children}
@@ -240,127 +240,115 @@ export default function HomePage() {
         <div className="container-lanan relative z-10 py-12 lg:py-16">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
 
-            {/* Left Column: Editorial Headline & Actions */}
+            {/* Left Column: Editorial Headline & Actions - Immediate SSR Render for Instant FCP & LCP */}
             <div className="lg:col-span-7 text-center lg:text-left">
-              <FadeUp>
-                <div className="inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-gold/30 rounded-pill px-4 py-1.5 mb-6 shadow-xs">
-                  <Sparkles size={13} className="text-gold" />
-                  <span className="text-gold-dark text-xs font-body font-semibold tracking-widest uppercase">
-                    Luxury Skincare Rituals
-                  </span>
-                </div>
-              </FadeUp>
+              <div className="inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-gold/30 rounded-pill px-4 py-1.5 mb-6 shadow-xs">
+                <Sparkles size={13} className="text-gold" />
+                <span className="text-gold-dark text-xs font-body font-semibold tracking-widest uppercase">
+                  Luxury Skincare Rituals
+                </span>
+              </div>
 
-              <FadeUp delay={0.1}>
-                <h1 className="font-heading font-light text-obsidian mb-6 leading-[1.08] tracking-tight">
-                  Luxury Skincare,{' '}
-                  <em className="italic text-taupe font-serif">Crafted for</em>
-                  <br />
-                  <span className="text-gradient-gold">Your Everyday</span>
-                  <br />
-                  <em className="italic text-obsidian font-serif">Indian Skin</em> Ritual
-                </h1>
-              </FadeUp>
+              <h1 className="font-heading font-light text-obsidian mb-6 leading-[1.08] tracking-tight">
+                Luxury Skincare,{' '}
+                <em className="italic text-taupe font-serif">Crafted for</em>
+                <br />
+                <span className="text-gradient-gold">Your Everyday</span>
+                <br />
+                <em className="italic text-obsidian font-serif">Indian Skin</em> Ritual
+              </h1>
 
-              <FadeUp delay={0.2}>
-                <p className="font-body text-taupe text-base lg:text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
-                  Formulated with high-potency botanicals and dermatologist-proven actives to heal,
-                  hydrate, and protect in Indian heat and humidity. Gentle luxury for everyday confidence.
-                </p>
-              </FadeUp>
+              <p className="font-body text-taupe text-base lg:text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+                Formulated with high-potency botanicals and dermatologist-proven actives to heal,
+                hydrate, and protect in Indian heat and humidity. Gentle luxury for everyday confidence.
+              </p>
 
               {/* Action Buttons */}
-              <FadeUp delay={0.3}>
-                <div className="flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start">
-                  <Link href="/shop" className="btn-gold text-sm px-8 py-4">
-                    Shop LANAN
-                    <ArrowRight size={16} />
-                  </Link>
-                  <Link href="/rituals" className="btn-outline-gold text-sm px-8 py-4">
-                    Explore Our Ritual
-                  </Link>
-                </div>
-              </FadeUp>
+              <div className="flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start">
+                <Link href="/shop" className="btn-gold text-sm px-8 py-4">
+                  Shop LANAN
+                  <ArrowRight size={16} />
+                </Link>
+                <Link href="/rituals" className="btn-outline-gold text-sm px-8 py-4">
+                  Explore Our Ritual
+                </Link>
+              </div>
 
               {/* Trust Indicators */}
-              <FadeUp delay={0.4}>
-                <div className="mt-8 pt-6 border-t border-beige/60 flex flex-wrap gap-6 justify-center lg:justify-start">
-                  {[
-                    { icon: <ShieldCheck size={15} />, text: '100% Cruelty-Free' },
-                    { icon: <Truck size={15} />, text: 'Free Shipping Above ₹599' },
-                    { icon: <Leaf size={15} />, text: 'Dermatologist Tested' },
-                  ].map((badge) => (
-                    <div key={badge.text} className="flex items-center gap-2 text-taupe text-xs font-body">
-                      <span className="text-gold">{badge.icon}</span>
-                      <span>{badge.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </FadeUp>
+              <div className="mt-8 pt-6 border-t border-beige/60 flex flex-wrap gap-6 justify-center lg:justify-start">
+                {[
+                  { icon: <ShieldCheck size={15} />, text: '100% Cruelty-Free' },
+                  { icon: <Truck size={15} />, text: 'Free Shipping Above ₹599' },
+                  { icon: <Leaf size={15} />, text: 'Dermatologist Tested' },
+                ].map((badge) => (
+                  <div key={badge.text} className="flex items-center gap-2 text-taupe text-xs font-body">
+                    <span className="text-gold">{badge.icon}</span>
+                    <span>{badge.text}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Right Column: Hero Visual with Real Product Artwork & Floating Card */}
             <div className="lg:col-span-5 relative">
-              <FadeUp delay={0.2}>
-                <div className="relative aspect-[4/5] rounded-card overflow-hidden shadow-luxury border-4 border-white bg-white group">
-                  <Image
-                    src="/luxury-skincare-crafted-for-your-everyday-ritual.jpeg"
-                    alt="LANAN Everyday Luxury Skincare Ritual"
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 45vw"
-                    className="object-cover group-hover:scale-102 transition-transform duration-700"
-                  />
+              <div className="relative aspect-[4/5] rounded-card overflow-hidden shadow-luxury border-4 border-white bg-white group">
+                <Image
+                  src="/luxury-skincare-crafted-for-your-everyday-ritual.jpeg"
+                  alt="LANAN Everyday Luxury Skincare Ritual"
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 45vw"
+                  className="object-cover group-hover:scale-102 transition-transform duration-700"
+                />
 
-                  {/* Warm Gradient Overlay at base */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 via-transparent to-transparent pointer-events-none" />
+                {/* Warm Gradient Overlay at base */}
+                <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 via-transparent to-transparent pointer-events-none" />
 
-                  {/* Floating Product Badge */}
-                  <motion.div
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute top-4 -right-2 sm:right-4 bg-white/95 backdrop-blur-md rounded-card p-3 shadow-luxury border border-gold/25"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-lg overflow-hidden bg-ivory flex-shrink-0 border border-beige/40">
-                        <Image
-                          src="/lanan-glutathione-face-serum.jpeg"
-                          alt="LANAN Glutathione Face Serum"
-                          width={36}
-                          height={36}
-                          className="w-full h-full object-contain p-0.5"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-[11px] font-body font-semibold text-obsidian">Glutathione Serum</p>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <span className="text-[10px] font-mono text-taupe/60 line-through">₹899</span>
-                          <span className="text-[11px] font-mono font-bold text-obsidian">₹737</span>
-                          <span className="text-[9px] font-body font-bold px-1.5 py-0.5 rounded-full bg-[#5B1924] text-[#F7F0E7]">
-                            SAVE 18%
-                          </span>
-                        </div>
-                      </div>
+                {/* Floating Product Badge */}
+                <motion.div
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute top-4 -right-2 sm:right-4 bg-white/95 backdrop-blur-md rounded-card p-3 shadow-luxury border border-gold/25"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-lg overflow-hidden bg-ivory flex-shrink-0 border border-beige/40">
+                      <Image
+                        src="/lanan-glutathione-face-serum.jpeg"
+                        alt="LANAN Glutathione Face Serum"
+                        width={36}
+                        height={36}
+                        className="w-full h-full object-contain p-0.5"
+                      />
                     </div>
-                  </motion.div>
-
-                  {/* Bottom caption pill */}
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="bg-obsidian/85 backdrop-blur-md rounded-xl p-3 border border-gold/25 flex items-center justify-between text-ivory">
-                      <div>
-                        <p className="text-[10px] font-body uppercase tracking-widest text-gold">The Radiant Ritual</p>
-                        <p className="text-xs font-heading">Glutathione, Niacinamide & SPF 50</p>
+                    <div>
+                      <p className="text-[11px] font-body font-semibold text-obsidian">Glutathione Serum</p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-[10px] font-mono text-taupe/60 line-through">₹899</span>
+                        <span className="text-[11px] font-mono font-bold text-obsidian">₹737</span>
+                        <span className="text-[9px] font-body font-bold px-1.5 py-0.5 rounded-full bg-[#5B1924] text-[#F7F0E7]">
+                          SAVE 18%
+                        </span>
                       </div>
-                      <Link
-                        href="/shop"
-                        className="text-[11px] font-body text-gold hover:underline flex items-center gap-1"
-                      >
-                        Discover <ArrowRight size={12} />
-                      </Link>
                     </div>
                   </div>
+                </motion.div>
+
+                {/* Bottom caption pill */}
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-obsidian/85 backdrop-blur-md rounded-xl p-3 border border-gold/25 flex items-center justify-between text-ivory">
+                    <div>
+                      <p className="text-[10px] font-body uppercase tracking-widest text-gold">The Radiant Ritual</p>
+                      <p className="text-xs font-heading">Glutathione, Niacinamide & SPF 50</p>
+                    </div>
+                    <Link
+                      href="/shop"
+                      className="text-[11px] font-body text-gold hover:underline flex items-center gap-1"
+                    >
+                      Discover <ArrowRight size={12} />
+                    </Link>
+                  </div>
                 </div>
-              </FadeUp>
+              </div>
             </div>
 
           </div>
@@ -611,7 +599,14 @@ export default function HomePage() {
                         >
                           {slot.img ? (
                             <>
-                              <Image src={slot.img} alt={slot.label} fill className="object-cover opacity-75" />
+                              <Image
+                                src={slot.img}
+                                alt={slot.label}
+                                fill
+                                sizes="(max-width: 640px) 140px, 160px"
+                                loading="lazy"
+                                className="object-cover opacity-75"
+                              />
                               <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center shadow-xs">
                                 <Check size={11} className="text-white" />
                               </div>
@@ -777,7 +772,7 @@ export default function HomePage() {
                         ✦
                       </div>
                       <div>
-                        <h4 className="font-body font-semibold text-sm text-obsidian">{feat.title}</h4>
+                        <h3 className="font-body font-semibold text-sm text-obsidian">{feat.title}</h3>
                         <p className="font-body text-xs text-taupe mt-0.5">{feat.desc}</p>
                       </div>
                     </div>
@@ -788,19 +783,7 @@ export default function HomePage() {
 
             <div className="lg:col-span-7">
               <FadeUp delay={0.2}>
-                <div className="relative aspect-video rounded-card overflow-hidden shadow-luxury border-4 border-white bg-obsidian group">
-                  <video
-                    src="/skincare-ritual.mp4"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    controls
-                    preload="metadata"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian/30 via-transparent to-transparent pointer-events-none" />
-                </div>
+                <LazyRitualVideo />
               </FadeUp>
             </div>
 
@@ -1159,7 +1142,7 @@ export default function HomePage() {
                   <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto mb-3">
                     <Check size={18} />
                   </div>
-                  <h4 className="font-heading text-xl text-obsidian mb-1">Welcome to LANAN</h4>
+                  <h3 className="font-heading text-xl text-obsidian mb-1">Welcome to LANAN</h3>
                   <p className="text-xs font-body text-taupe mb-3">
                     Use code <span className="font-mono font-bold text-gold">LANAN15</span> at checkout for 15% off.
                   </p>

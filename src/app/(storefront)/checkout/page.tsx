@@ -25,6 +25,7 @@ import { useCartStore } from '@/store/cartStore';
 import { useCheckoutStore } from '@/store/checkoutStore';
 import { formatPrice, INDIAN_STATES, cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { trackInitiateCheckout } from '@/lib/metaPixel';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -297,6 +298,18 @@ export default function CheckoutPage() {
       toast.error('Your cart is empty');
       return;
     }
+
+    trackInitiateCheckout({
+      items: items.map((i) => ({
+        id: i.product_id,
+        name: i.product_name,
+        price: Number(i.unit_price) || 0,
+        quantity: Number(i.quantity) || 1,
+      })),
+      value: Number(total) || 0,
+      currency: 'INR',
+      num_items: items.reduce((s, i) => s + (Number(i.quantity) || 1), 0),
+    });
 
     setLoading(true);
 
