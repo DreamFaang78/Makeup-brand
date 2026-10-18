@@ -31,7 +31,7 @@ export default function AboutPage() {
       </section>
 
       {/* Story Section */}
-      <section className="py-section bg-white">
+      <section className="py-section bg-white overflow-hidden">
         <div className="container-lanan">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -57,18 +57,19 @@ export default function AboutPage() {
                 </p>
               </div>
             </div>
-            <div className="relative">
-              <div className="aspect-square rounded-card overflow-hidden">
+            <div className="relative max-w-lg mx-auto lg:max-w-none w-full">
+              <div className="aspect-square rounded-card overflow-hidden bg-[#FAF6F0] border border-gold/20 shadow-sm relative">
                 <Image
-                  src="/bathroom-shelf-mockup.jpeg"
-                  alt="LANAN skincare products"
-                  width={600}
-                  height={600}
-                  className="w-full h-full object-cover"
+                  src="/images/lanan-complete-skincare-kit.png"
+                  alt="LANAN Complete Skincare Kit featuring Face Wash, Face Toner, Glutathione Face Serum, and Face Moisturizer"
+                  width={1254}
+                  height={1254}
+                  className="w-full h-full object-contain"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 />
               </div>
-              <div className="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-gold/50 rounded-tr-card" />
-              <div className="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-gold/50 rounded-bl-card" />
+              <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-20 sm:w-24 h-20 sm:h-24 border-t-2 border-r-2 border-gold/50 rounded-tr-card pointer-events-none" />
+              <div className="absolute -bottom-3 -left-3 sm:-bottom-4 sm:-left-4 w-20 sm:w-24 h-20 sm:h-24 border-b-2 border-l-2 border-gold/50 rounded-bl-card pointer-events-none" />
             </div>
           </div>
         </div>
