@@ -7,7 +7,7 @@
 import { useEffect, useRef, Suspense } from 'react';
 import Script from 'next/script';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { META_PIXEL_ID, trackPageView } from '@/lib/metaPixel';
+import { META_PIXEL_ID, trackPageView, hasMarketingConsent } from '@/lib/metaPixel';
 
 /**
  * Route-change PageView listener wrapped in Suspense for App Router
@@ -19,6 +19,7 @@ function MetaPixelPageViewListener() {
 
   useEffect(() => {
     if (!META_PIXEL_ID) return;
+    if (!hasMarketingConsent()) return;
 
     const queryString = searchParams?.toString();
     const url = queryString ? `${pathname}?${queryString}` : pathname;
@@ -28,6 +29,22 @@ function MetaPixelPageViewListener() {
     lastUrlRef.current = url;
 
     trackPageView(url);
+  }, [pathname, searchParams]);
+
+  // Synchronize when user grants consent dynamically via modal
+  useEffect(() => {
+    const handleConsent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ status: string }>;
+      if (customEvent.detail?.status === 'granted') {
+        const queryString = searchParams?.toString();
+        const url = queryString ? `${pathname}?${queryString}` : pathname;
+        lastUrlRef.current = url;
+        trackPageView(url);
+      }
+    };
+
+    window.addEventListener('lanan_consent_changed', handleConsent);
+    return () => window.removeEventListener('lanan_consent_changed', handleConsent);
   }, [pathname, searchParams]);
 
   return null;
@@ -55,12 +72,14 @@ export default function MetaPixel() {
             
             try {
               var consent = localStorage.getItem('lanan_cookie_consent');
-              if (consent === 'denied') {
-                fbq('consent', 'revoke');
-              } else if (consent === 'granted') {
+              if (consent === 'granted') {
                 fbq('consent', 'grant');
+              } else {
+                fbq('consent', 'revoke');
               }
-            } catch (e) {}
+            } catch (e) {
+              fbq('consent', 'revoke');
+            }
 
             fbq('init', '${META_PIXEL_ID}');
           `,

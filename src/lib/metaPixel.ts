@@ -5,8 +5,16 @@
 export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1159732883048720';
 
 export const CONSENT_STORAGE_KEY = 'lanan_cookie_consent';
+export const PREFERENCES_STORAGE_KEY = 'lanan_cookie_preferences';
 
 export type ConsentStatus = 'granted' | 'denied' | 'undecided';
+
+export interface CookiePreferences {
+  essential: boolean;
+  analytics: boolean;
+  marketing: boolean;
+  updatedAt?: string;
+}
 
 declare global {
   interface Window {
@@ -40,6 +48,54 @@ export function getMarketingConsent(): ConsentStatus {
  */
 export function hasMarketingConsent(): boolean {
   return getMarketingConsent() === 'granted';
+}
+
+/**
+ * Returns stored granular cookie preferences or defaults
+ */
+export function getCookiePreferences(): CookiePreferences {
+  if (typeof window === 'undefined') {
+    return { essential: true, analytics: false, marketing: false };
+  }
+  try {
+    const raw = localStorage.getItem(PREFERENCES_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        essential: true, // Always required
+        analytics: Boolean(parsed.analytics),
+        marketing: Boolean(parsed.marketing),
+        updatedAt: parsed.updatedAt,
+      };
+    }
+  } catch {}
+
+  const legacy = getMarketingConsent();
+  if (legacy === 'granted') {
+    return { essential: true, analytics: true, marketing: true };
+  }
+  return { essential: true, analytics: false, marketing: false };
+}
+
+/**
+ * Persist granular preferences and sync with Meta Pixel consent state
+ */
+export function saveCookiePreferences(prefs: { analytics: boolean; marketing: boolean }): void {
+  if (typeof window === 'undefined') return;
+  const preferences: CookiePreferences = {
+    essential: true,
+    analytics: Boolean(prefs.analytics),
+    marketing: Boolean(prefs.marketing),
+    updatedAt: new Date().toISOString(),
+  };
+
+  try {
+    localStorage.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(preferences));
+  } catch (e) {
+    console.warn('[Cookie Preferences] Failed to persist preferences:', e);
+  }
+
+  setMarketingConsent(preferences.marketing);
 }
 
 /**
@@ -79,6 +135,12 @@ function flushPendingQueue(): void {
 function callFbq(...args: any[]): void {
   if (typeof window === 'undefined') return;
 
+  const isConsentCall = args[0] === 'consent';
+  // Block non-consent tracking commands if user has not granted marketing consent
+  if (!isConsentCall && !hasMarketingConsent()) {
+    return;
+  }
+
   if (typeof window.fbq === 'function') {
     window.fbq(...args);
   } else {
@@ -113,6 +175,7 @@ let lastTrackedTimestamp = 0;
  */
 export function trackPageView(url?: string): void {
   if (!META_PIXEL_ID) return;
+  if (!hasMarketingConsent()) return;
 
   const currentPath = url || (typeof window !== 'undefined' ? window.location.pathname + window.location.search : '');
   const now = Date.now();
