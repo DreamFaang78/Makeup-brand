@@ -88,7 +88,7 @@ export const INDIAN_STATES = [
 export const BRAND = {
   name: 'LANAN',
   fullName: 'Ma Tara Neelsarashwati',
-  phone: '7630888521',
+  phone: '9235170198',
   email: 'hello@lanan.in',
   supportEmail: 'support@lanan.in',
   address: 'Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020',

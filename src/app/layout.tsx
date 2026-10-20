@@ -81,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               logo: 'https://lanan.in/logo.png',
               contactPoint: {
                 '@type': 'ContactPoint',
-                telephone: '+91-7630888521',
+                telephone: '+91-9235170198',
                 contactType: 'customer service',
                 areaServed: 'IN',
                 availableLanguage: ['English', 'Hindi'],

@@ -113,7 +113,7 @@ export default function AboutPage() {
             <p className="font-body text-xs text-taupe">
               Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki<br />
               Kanpur, Uttar Pradesh - 208020, India<br />
-              Phone: +91 7630888521 | Email: hello@lanan.in
+              Phone: +91 9235170198 | Email: hello@lanan.in | support@lanan.in
             </p>
           </div>
         </div>

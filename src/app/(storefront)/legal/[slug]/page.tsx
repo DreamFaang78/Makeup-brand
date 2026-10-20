@@ -158,7 +158,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'Address Accuracy & Address Changes',
         content: [
           'Customers are solely responsible for ensuring that the shipping address, contact phone number, landmark, and 6-digit PIN code provided during checkout are complete and accurate.',
-          'Address Modifications: You may request an address correction only if your order has NOT yet been packed and dispatched. To request a modification, contact our concierge immediately via WhatsApp or phone at +91 7630888521 or email support@lanan.in.',
+          'Address Modifications: You may request an address correction only if your order has NOT yet been packed and dispatched. To request a modification, contact our concierge immediately via WhatsApp or phone at +91 9235170198 or email support@lanan.in.',
           'Once a package is handed over to the courier partner and an AWB is issued, the destination address cannot be modified in transit.',
         ],
       },
@@ -201,7 +201,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         content: [
           'For any questions regarding order dispatch, transit updates, or delivery assistance, our dedicated concierge team is at your service:',
           'Email: support@lanan.in | hello@lanan.in',
-          'Phone / WhatsApp: +91 7630888521 (Monday to Saturday, 10:00 AM – 6:00 PM IST)',
+          'Phone / WhatsApp: +91 9235170198 (Monday to Saturday, 10:00 AM – 6:00 PM IST)',
           'Registered Business Address: Ma Tara Neelsarashwati (LANAN), Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India.',
         ],
       },
@@ -217,11 +217,11 @@ const POLICIES: Record<string, PolicyDocument> = {
     lastUpdated: 'October 2026',
     effectiveDate: '1 October 2026',
     summary:
-      'LANAN provides a 7-day return window for unopened and sealed skincare products, and immediate resolution for damaged or incorrect deliveries. Cash on Delivery refunds are processed via secure bank transfer (NEFT) or UPI.',
+      'LANAN provides a 1-day return window from verified delivery for unopened and sealed skincare products, with mandatory unboxing video proof. Cash on Delivery refunds are processed via secure bank transfer (NEFT) or UPI.',
     intro:
       'Your satisfaction and skin well-being are paramount to LANAN. Because our products are high-performance skincare formulations designed for direct application to the skin, we uphold transparent, hygiene-compliant return standards under Indian consumer protection laws.',
     flaggedNotice:
-      'Owner Policy Note: Standard return window is 7 days from delivery date for unopened products; transit damage or defective packaging must be reported within 48 hours. Reverse pickup is arranged where courier reverse logistics is operational.',
+      'Owner Policy Note: Standard return window is 1 calendar day (24 hours) from verified delivery for unopened, unused products; mandatory continuous unboxing video proof is required for transit damage, defects, or incorrect items. Reverse pickup is arranged where courier reverse logistics is operational.',
     sections: [
       {
         id: 'return-overview',
@@ -237,7 +237,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '02',
         title: 'Products Eligible for Return',
         content: [
-          'A return or replacement request may be initiated within seven (7) days of delivery under the following verifiable conditions:',
+          'A return or replacement request must be initiated within one (1) calendar day (24 hours) of verified courier delivery under the following verifiable conditions:',
           '1. Damaged in Transit: Products delivered with broken glass containers, shattered droppers, leaked bottles, or damaged outer packaging.',
           '2. Manufacturing Defect: Non-functional dispensers, pump mechanisms that fail to dispense, or compromised factory seals.',
           '3. Incorrect Product Delivered: Product formula, variant, or size mismatching your verified order confirmation.',
@@ -257,7 +257,7 @@ const POLICIES: Record<string, PolicyDocument> = {
             items: [
               'Opened or Used Skincare: Skincare formulations (including serums, cleansers, toners, moisturisers, and sunscreens) that have had their factory seal broken, pump primed, cap opened, or formula sampled cannot be returned for hygiene and public safety reasons.',
               'Tampered Packaging: Products returned without their original outer carton, batch code, MRP sticker, or security seal.',
-              'Late Submissions: Return requests submitted after the expiration of the 7-day delivery window.',
+              'Late Submissions: Return requests submitted after the expiration of the 1-day (24-hour) delivery window.',
               'Complimentary or Promotional Items: Free trial samples, promotional gifts, or clearance items marked as "Final Sale".',
             ],
           },
@@ -284,10 +284,10 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'How Customers Request a Return (Step-by-Step)',
         content: [
           'To initiate a return or replacement, follow this streamlined process:',
-          'Step 1: Send an email to support@lanan.in or message our WhatsApp concierge at +91 7630888521 within the eligible timeline.',
+          'Step 1: Send an email to support@lanan.in or message our WhatsApp concierge at +91 9235170198 within the eligible timeline.',
           'Step 2: Use the subject line: "Return Request - [Your Order Number]" (e.g. Return Request - LAN2605ABC).',
           'Step 3: State the reason for return and specify whether you prefer a replacement or refund.',
-          'Step 4: Attach the photographic evidence detailed in Section 06 below.',
+          'Step 4: Attach the photographic and video evidence detailed in Section 06 below.',
           'Step 5: Our quality concierge team will review your request and reply with return approval instructions within 24 to 48 business hours.',
         ],
       },
@@ -298,7 +298,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         content: [
           'To prevent fraudulent claims and ensure swift approval, the following documentation must be provided with your request:',
           '1. Photographs of the outer cardboard delivery box showing the printed courier shipping label and AWB number.',
-          '2. High-resolution photographs or a continuous unboxing video showing the specific damage, defect, or incorrect item received.',
+          '2. Mandatory Continuous Unboxing Video: A clear, unbroken, unedited videograph showing the parcel from before the package seal is cut through the inspection of the damaged, defective, or incorrect item. Unboxing video proof is mandatory for transit damage or missing item claims.',
           '3. Clear photograph of the bottom or back of the product container displaying the Batch Number and Expiry Date.',
         ],
       },
@@ -353,7 +353,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'Shipping Charges & Legitimate Deductions',
         content: [
           'Damaged, Defective or Incorrect Shipments: 100% full refund is issued, including any standard shipping charge paid at the time of purchase.',
-          'Voluntary Return of Unopened Items: If an unopened, sealed item is returned voluntarily within the 7-day window, the original shipping charge (₹79 for orders under ₹599) is non-refundable, as it covers third-party courier dispatch expenses already incurred.',
+          'Voluntary Return of Unopened Items: If an unopened, sealed item is returned voluntarily within the 1-day window, the original shipping charge (₹79 for orders under ₹599) is non-refundable, as it covers third-party courier dispatch expenses already incurred.',
         ],
       },
       {
@@ -363,7 +363,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         content: [
           'For any assistance regarding an ongoing return, replacement, or refund status:',
           'Email: support@lanan.in | hello@lanan.in',
-          'Phone / WhatsApp: +91 7630888521 (Monday to Saturday, 10:00 AM – 6:00 PM IST)',
+          'Phone / WhatsApp: +91 9235170198 (Monday to Saturday, 10:00 AM – 6:00 PM IST)',
           'Registered Address: Ma Tara Neelsarashwati (LANAN), Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India.',
         ],
       },
@@ -581,7 +581,7 @@ const POLICIES: Record<string, PolicyDocument> = {
           'Legal Entity: Ma Tara Neelsarashwati (Brand: LANAN)',
           'Registered Office: Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India',
           'Email: hello@lanan.in | support@lanan.in',
-          'Telephone: +91 7630888521 (Mon–Sat, 10:00 AM – 6:00 PM IST)',
+          'Telephone: +91 9235170198 (Mon–Sat, 10:00 AM – 6:00 PM IST)',
           'Turnaround: All grievances are acknowledged within 48 business hours and resolved within 30 days as prescribed by law.',
         ],
       },
@@ -783,7 +783,7 @@ const POLICIES: Record<string, PolicyDocument> = {
           'Legal Registered Entity: Ma Tara Neelsarashwati (Brand: LANAN)',
           'Registered Office Address: Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India',
           'Official Support Email: support@lanan.in | Corporate Inquiries: hello@lanan.in',
-          'Phone / WhatsApp: +91 7630888521 (Mon–Sat, 10:00 AM – 6:00 PM IST)',
+          'Phone / WhatsApp: +91 9235170198 (Mon–Sat, 10:00 AM – 6:00 PM IST)',
         ],
       },
     ],
@@ -798,11 +798,11 @@ const POLICIES: Record<string, PolicyDocument> = {
     lastUpdated: 'October 2026',
     effectiveDate: '1 October 2026',
     summary:
-      'Orders can be cancelled free of charge prior to fulfillment and courier dispatch. Dispatched orders in transit cannot be intercepted and must follow our Return Policy.',
+      'Orders can be cancelled free of charge within 24 hours of placement provided the order has not been dispatched/assigned an AWB. Dispatched orders in transit cannot be intercepted and must follow our Return Policy.',
     intro:
       'We understand that beauty rituals and shopping plans can change. LANAN provides an honest, customer-centric cancellation workflow designed to accommodate changes before orders leave our fulfillment center.',
     flaggedNotice:
-      'Operational Cutoff Note: Orders typically enter packaging within 12–24 hours of placement. Cancellation requests must be submitted before courier AWB generation to qualify for pre-dispatch cancellation.',
+      'Operational 24-Hour Cutoff Note: Orders are eligible for cancellation within 24 hours of placement, provided courier packaging and Air Waybill (AWB) generation have not occurred. Once an AWB is issued and handed to the logistics carrier, orders are in transit and cannot be cancelled.',
     sections: [
       {
         id: 'cancellation-overview',
@@ -818,9 +818,9 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '02',
         title: 'Customer Cancellation Requests Before Dispatch',
         content: [
-          'You may cancel your order free of charge at any time before it has been packed and handed over to our logistics partner (typically within 12 to 24 hours of placing the order).',
-          'Prepaid Orders: If a prepaid order is cancelled prior to dispatch, a 100% full refund is initiated immediately with zero cancellation penalties.',
-          'Cash on Delivery (COD) Orders: COD orders can be cancelled prior to dispatch at zero cost.',
+          'You may cancel your order free of charge within twenty-four (24) hours of placing the order, provided the parcel has not yet been assigned a courier Air Waybill (AWB) and handed over to our logistics partner.',
+          'Prepaid Orders: If a prepaid order is cancelled prior to dispatch within the 24-hour window, a 100% full refund is initiated immediately with zero cancellation penalties.',
+          'Cash on Delivery (COD) Orders: COD orders can be cancelled prior to dispatch within the 24-hour window at zero cost.',
         ],
       },
       {
@@ -893,7 +893,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'How to Submit a Cancellation Request (Step-by-Step)',
         content: [
           'To request a cancellation before dispatch:',
-          'Option A (Fastest — WhatsApp / Phone): Message or call our concierge at +91 7630888521 with your Order ID and cancellation request.',
+          'Option A (Fastest — WhatsApp / Phone): Message or call our concierge at +91 9235170198 with your Order ID and cancellation request.',
           'Option B (Email): Send an email to support@lanan.in with the subject line: "Order Cancellation - [Your Order ID]". State your Order ID and reason for cancellation.',
           'Our team will verify the dispatch status immediately and confirm cancellation if the parcel has not yet left the hub.',
         ],
@@ -905,7 +905,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         content: [
           'For immediate assistance with any ongoing order:',
           'Email: support@lanan.in | hello@lanan.in',
-          'Phone / WhatsApp: +91 7630888521 (Mon–Sat, 10:00 AM – 6:00 PM IST)',
+          'Phone / WhatsApp: +91 9235170198 (Mon–Sat, 10:00 AM – 6:00 PM IST)',
           'Registered Office: Ma Tara Neelsarashwati (LANAN), Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India.',
         ],
       },
