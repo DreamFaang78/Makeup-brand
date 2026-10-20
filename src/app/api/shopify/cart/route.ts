@@ -10,6 +10,7 @@ import {
   addLinesToShopifyCart,
   getShopifyCart,
   buildShopifyCartPermalink,
+  validateShopifyDiscountCode,
   getShopifyConfig,
 } from '@/lib/shopify';
 
@@ -24,6 +25,14 @@ export async function POST(request: NextRequest) {
         success: false,
         isConfigured: false,
         message: 'Shopify Storefront API credentials are not yet configured in .env.local.',
+      });
+    }
+
+    if (action === 'validate_discount') {
+      const result = await validateShopifyDiscountCode(lines || [], discountCode || '');
+      return NextResponse.json({
+        success: true,
+        ...result,
       });
     }
 

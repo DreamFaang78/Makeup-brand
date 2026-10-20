@@ -24,7 +24,7 @@ export function getShopifyConfig() {
     process.env.SHOPIFY_STORE_DOMAIN ||
     process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ||
     process.env.SHOPIFY_DOMAIN ||
-    'x7ji11-bt.myshopify.com';
+    'lvlanan.myshopify.com';
 
   const rawToken =
     process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN ||

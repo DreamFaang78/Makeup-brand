@@ -42,27 +42,43 @@ export default function CartDrawer() {
   }, [isOpen]);
 
   async function handleApplyCoupon() {
-    if (!couponInput.trim()) return;
-    setCouponLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-
-    // Demo coupons
-    const DEMO_COUPONS: Record<string, number> = {
-      'LANAN10': subtotal * 0.1,
-      'WELCOME20': subtotal * 0.2,
-      'FLAT100': 100,
-      'FIRSTORDER': 150,
-    };
-
-    const discount = DEMO_COUPONS[couponInput.toUpperCase()];
-    if (discount) {
-      applyCoupon(couponInput.toUpperCase(), Math.round(discount));
-      setCouponInput('');
-      toast.success(`Coupon applied! You saved ${formatPrice(Math.round(discount))}`);
-    } else {
-      toast.error('Invalid coupon code');
+    const trimmed = couponInput.trim();
+    if (!trimmed) {
+      toast.error('Please enter a coupon code');
+      return;
     }
-    setCouponLoading(false);
+    setCouponLoading(true);
+
+    try {
+      const lines = items.map((i) => ({
+        merchandiseId: i.variant_id || i.product_id,
+        quantity: i.quantity,
+      }));
+
+      const res = await fetch('/api/shopify/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'validate_discount',
+          lines,
+          discountCode: trimmed,
+        }),
+      });
+
+      const data = await res.json();
+      if (data?.valid) {
+        applyCoupon(data.code, data.discountAmount);
+        setCouponInput('');
+        toast.success(data.message || `Coupon applied! You saved ${formatPrice(data.discountAmount)}`);
+      } else {
+        toast.error(data?.message || 'Invalid or ineligible coupon code.');
+      }
+    } catch (err: any) {
+      console.error('[CartDrawer] Apply coupon error:', err);
+      toast.error('Could not verify coupon code. Please try again.');
+    } finally {
+      setCouponLoading(false);
+    }
   }
 
   async function handleCheckout() {

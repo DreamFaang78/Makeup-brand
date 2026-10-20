@@ -20,12 +20,16 @@ import {
   ShoppingBag,
   AlertCircle,
   Clock,
+  Tag,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useCheckoutStore } from '@/store/checkoutStore';
 import { formatPrice, INDIAN_STATES, cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { trackInitiateCheckout } from '@/lib/metaPixel';
+import { trackInitiateCheckout, trackPurchase } from '@/lib/metaPixel';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -81,8 +85,18 @@ function StepIndicator({ currentStep }: { currentStep: string }) {
 }
 
 /* ── Order Summary Sidebar ── */
-function OrderSummary() {
-  const { items, couponDiscount, recalculate } = useCartStore();
+function OrderSummary({ isMobile = false }: { isMobile?: boolean }) {
+  const {
+    items,
+    couponCode,
+    couponDiscount,
+    applyCoupon,
+    removeCoupon,
+    recalculate,
+  } = useCartStore();
+
+  const [couponInput, setCouponInput] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
 
   useEffect(() => {
     recalculate();
@@ -102,8 +116,51 @@ function OrderSummary() {
   const gstAmount = subtotal > 0 ? Math.round((discounted - discounted / 1.18) * 100) / 100 : 0;
   const total = discounted + shippingCharge;
 
+  const handleApplyCoupon = async () => {
+    const trimmed = couponInput.trim();
+    if (!trimmed) {
+      toast.error('Please enter a coupon code');
+      return;
+    }
+    setCouponLoading(true);
+
+    try {
+      const lines = items.map((i) => ({
+        merchandiseId: i.variant_id || i.product_id,
+        quantity: i.quantity,
+      }));
+
+      const res = await fetch('/api/shopify/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'validate_discount',
+          lines,
+          discountCode: trimmed,
+        }),
+      });
+
+      const data = await res.json();
+      if (data?.valid) {
+        applyCoupon(data.code, data.discountAmount);
+        setCouponInput('');
+        toast.success(data.message || `Coupon applied! Saved ${formatPrice(data.discountAmount)}`);
+      } else {
+        toast.error(data?.message || 'Invalid or ineligible coupon code.');
+      }
+    } catch (err: any) {
+      console.error('[Checkout] Apply coupon error:', err);
+      toast.error('Could not verify coupon code. Please try again.');
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
   return (
-    <div className="bg-ivory rounded-card p-5 sticky top-28 border border-beige/60 shadow-xs">
+    <div className={cn(
+      "bg-ivory rounded-card p-5 border border-beige/60 shadow-xs",
+      !isMobile && "sticky top-28"
+    )}>
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-lg text-obsidian font-medium">Order Summary</h3>
         <span className="text-xs font-body text-taupe font-medium">
@@ -141,6 +198,65 @@ function OrderSummary() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Coupon entry & active coupon display */}
+      <div className="my-3 pt-3 border-t border-beige/60">
+        {couponCode ? (
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-success-green/10 border border-success-green/30 text-success-green">
+            <div className="flex items-center gap-2 min-w-0">
+              <Tag size={14} className="shrink-0" />
+              <div className="min-w-0">
+                <span className="text-xs font-body font-semibold tracking-wide uppercase truncate block">
+                  {couponCode}
+                </span>
+                <span className="text-[10px] text-success-green/80">
+                  Saved {formatPrice(discount)}
+                </span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                removeCoupon();
+                toast.info('Coupon removed');
+              }}
+              className="text-xs text-taupe hover:text-error-red font-medium underline shrink-0 cursor-pointer"
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Coupon / Promo code"
+              value={couponInput}
+              onChange={(e) => setCouponInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleApplyCoupon();
+                }
+              }}
+              className="input-luxury flex-1 text-xs py-2 uppercase placeholder:normal-case font-mono"
+            />
+            <button
+              type="button"
+              onClick={handleApplyCoupon}
+              disabled={couponLoading || !couponInput.trim()}
+              className="btn-gold text-xs px-3.5 py-2 whitespace-nowrap cursor-pointer disabled:opacity-50"
+            >
+              {couponLoading ? (
+                <span className="flex items-center gap-1">
+                  <Loader2 size={12} className="animate-spin" /> Verifying
+                </span>
+              ) : (
+                'Apply'
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Calculations */}
@@ -226,6 +342,18 @@ export default function CheckoutPage() {
     pincode: string;
   } | null>(null);
 
+  const [showMobileSummary, setShowMobileSummary] = useState(false);
+
+  useEffect(() => {
+    if (confirmedOrder) {
+      trackPurchase({
+        orderId: confirmedOrder.number,
+        value: confirmedOrder.total,
+        currency: 'INR',
+      });
+    }
+  }, [confirmedOrder]);
+
   // Recalculate on mount
   useEffect(() => {
     recalculate();
@@ -261,13 +389,17 @@ export default function CheckoutPage() {
   });
 
   const handleContactNext = () => {
-    const cleanedPhone = phoneInput.replace(/\D/g, '');
-    if (cleanedPhone.length !== 10) {
-      toast.error('Please enter a valid 10-digit mobile number');
-      return;
-    }
     if (!nameInput.trim()) {
       toast.error('Please enter your full name');
+      return;
+    }
+    const cleanedPhone = phoneInput.replace(/\D/g, '');
+    if (cleanedPhone.length > 0 && cleanedPhone.length !== 10) {
+      toast.error('Please enter a valid 10-digit mobile number, or leave it blank');
+      return;
+    }
+    if (emailInput.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.trim())) {
+      toast.error('Please enter a valid email address');
       return;
     }
     setContact({ phone: cleanedPhone, name: nameInput.trim(), email: emailInput.trim() });
@@ -458,6 +590,39 @@ export default function CheckoutPage() {
           </div>
         </div>
 
+        {/* Mobile Collapsible Order Summary */}
+        <div className="lg:hidden mb-6 max-w-5xl mx-auto">
+          <button
+            type="button"
+            onClick={() => setShowMobileSummary((s) => !s)}
+            className="w-full flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-white border border-beige/60 shadow-xs cursor-pointer text-left"
+          >
+            <div className="flex items-center gap-2 text-xs font-body font-semibold text-obsidian">
+              <ShoppingBag size={15} className="text-gold flex-shrink-0" />
+              <span>{showMobileSummary ? 'Hide order summary' : 'Show order summary & coupon'}</span>
+              <span className="text-[11px] text-taupe font-normal">
+                ({items.reduce((acc, i) => acc + (i.quantity || 1), 0)} items)
+              </span>
+              {showMobileSummary ? <ChevronUp size={14} className="text-taupe" /> : <ChevronDown size={14} className="text-taupe" />}
+            </div>
+            <span className="font-sans tabular-nums font-bold text-obsidian text-sm">
+              {formatPrice(total)}
+            </span>
+          </button>
+          <AnimatePresence>
+            {showMobileSummary && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden mt-2"
+              >
+                <OrderSummary isMobile />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
         {/* Step Indicator */}
         <div className="flex justify-center mb-8">
           <StepIndicator currentStep={step} />
@@ -496,7 +661,7 @@ export default function CheckoutPage() {
 
                     <div>
                       <label className="text-xs font-body font-medium text-obsidian block mb-1.5">
-                        Mobile Number <span className="text-error-red">*</span>
+                        Mobile Number <span className="text-taupe font-normal">(optional)</span>
                       </label>
                       <div className="flex gap-2">
                         <div className="flex items-center px-3 rounded-xl border border-beige bg-ivory text-xs font-body font-medium text-taupe flex-shrink-0">

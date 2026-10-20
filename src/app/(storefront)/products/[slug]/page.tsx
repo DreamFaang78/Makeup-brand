@@ -11,7 +11,7 @@ import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, ShoppingBag, Zap, ShieldCheck, RefreshCw, Package,
-  MapPin, ChevronDown, ChevronLeft, ChevronRight, Heart, Share2, Minus, Plus, Check, ArrowLeft,
+  MapPin, ChevronDown, ChevronLeft, ChevronRight, Heart, Share2, Minus, Plus, Check, ArrowLeft, Sparkles,
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
@@ -124,6 +124,50 @@ export default function ProductDetailPage() {
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [direction, setDirection] = useState(0);
+
+  // User-submitted review state
+  const [reviewsList, setReviewsList] = useState<Array<{
+    name: string;
+    location: string;
+    rating: number;
+    title?: string;
+    text: string;
+    verified: boolean;
+  }>>([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [newReview, setNewReview] = useState({
+    name: '',
+    location: '',
+    rating: 5,
+    title: '',
+    text: '',
+  });
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
+  const handleReviewSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newReview.name.trim() || !newReview.text.trim()) {
+      toast.error('Please enter your name and review message.');
+      return;
+    }
+    setIsSubmittingReview(true);
+    setTimeout(() => {
+      const added = {
+        name: newReview.name.trim(),
+        location: newReview.location.trim() || 'Verified Customer',
+        rating: newReview.rating,
+        title: newReview.title.trim(),
+        text: newReview.text.trim(),
+        verified: true,
+      };
+      setReviewsList((prev) => [added, ...prev]);
+      setNewReview({ name: '', location: '', rating: 5, title: '', text: '' });
+      setShowReviewForm(false);
+      setIsSubmittingReview(false);
+      toast.success('Thank you! Your review has been submitted.');
+    }, 400);
+  };
+
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const touchStartX = useRef<number | null>(null);
@@ -519,15 +563,44 @@ export default function ProductDetailPage() {
             )}
 
             {/* Rating */}
-            <div className="flex flex-wrap items-center gap-2.5">
-              <div className="flex items-center gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={13} className={i < Math.round(product.rating_avg) ? 'text-gold fill-gold' : 'text-beige fill-beige'} />
-                ))}
-              </div>
-              <span className="text-xs sm:text-sm font-body font-semibold text-obsidian">{product.rating_avg}</span>
-              <span className="text-xs font-body text-taupe">({product.rating_count} reviews)</span>
-            </div>
+            {(() => {
+              const count = reviewsList.length > 0 ? reviewsList.length : product.rating_count;
+              const avg = reviewsList.length > 0
+                ? Number((reviewsList.reduce((acc, r) => acc + r.rating, 0) / reviewsList.length).toFixed(1))
+                : product.rating_avg;
+
+              return count > 0 ? (
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} size={13} className={i < Math.round(avg) ? 'text-gold fill-gold' : 'text-beige fill-beige'} />
+                    ))}
+                  </div>
+                  <span className="text-xs sm:text-sm font-body font-semibold text-obsidian">{avg}</span>
+                  <span className="text-xs font-body text-taupe">({count} {count === 1 ? 'review' : 'reviews'})</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-xs font-body text-taupe">
+                  <div className="flex items-center gap-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} size={12} className="text-beige fill-beige/40" />
+                    ))}
+                  </div>
+                  <span className="text-taupe">No reviews yet</span>
+                  <span className="text-gold/60">•</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTab('reviews');
+                      setShowReviewForm(true);
+                    }}
+                    className="text-gold hover:underline font-medium cursor-pointer"
+                  >
+                    Be the first to review
+                  </button>
+                </div>
+              );
+            })()}
 
             {/* Price with Original -> Sale -> SAVE % loop animation */}
             <div className="py-1">
@@ -548,7 +621,13 @@ export default function ProductDetailPage() {
                     <button
                       key={v.id}
                       type="button"
-                      onClick={() => setSelectedVariant(v)}
+                      onClick={() => {
+                        setSelectedVariant(v);
+                        if (v.image_url) {
+                          const imgIdx = product.images.findIndex((img) => img.url === v.image_url);
+                          if (imgIdx !== -1) setActiveImage(imgIdx);
+                        }
+                      }}
                       className={cn(
                         'px-3.5 py-2 rounded-xl border text-xs font-body font-medium transition-all cursor-pointer',
                         selectedVariant?.id === v.id
@@ -778,48 +857,172 @@ export default function ProductDetailPage() {
 
               {activeTab === 'reviews' && (
                 <motion.div key="rev" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="min-w-0">
-                  <div className="flex items-center gap-6 mb-6 sm:mb-8">
-                    <div className="text-center">
-                      <p className="font-heading text-4xl sm:text-5xl font-light">{product.rating_avg}</p>
-                      <div className="flex gap-0.5 justify-center mt-1">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star key={i} size={12} className={i < Math.round(product.rating_avg) ? 'text-gold fill-gold' : 'text-beige fill-beige'} />
-                        ))}
-                      </div>
-                      <p className="text-xs font-body text-taupe mt-1">{product.rating_count} reviews</p>
+                  <div className="flex items-center justify-between mb-6 flex-wrap gap-4 pb-4 border-b border-beige/60">
+                    <div>
+                      <h3 className="font-heading text-xl text-obsidian">Customer Reviews</h3>
+                      <p className="text-xs font-body text-taupe mt-0.5">Verified feedback from our skincare community</p>
                     </div>
+                    {!showReviewForm && (
+                      <button
+                        type="button"
+                        onClick={() => setShowReviewForm(true)}
+                        className="btn-gold text-xs px-4 py-2 cursor-pointer shadow-xs"
+                      >
+                        Write a Review
+                      </button>
+                    )}
                   </div>
 
-                  <div className="space-y-4 sm:space-y-5">
-                    {[
-                      { name: 'Priya S.', location: 'Mumbai', rating: 5, text: 'Absolutely love this product! My skin feels so much better after just 2 weeks. The texture is light and absorbs quickly.', verified: true },
-                      { name: 'Anjali R.', location: 'Bangalore', rating: 4, text: 'Great product for the price. I can see visible improvement in my skin tone. Will definitely repurchase!', verified: true },
-                      { name: 'Kavita M.', location: 'Delhi', rating: 5, text: 'LANAN products are just amazing. This is my second purchase and I am very happy with the results.', verified: false },
-                    ].map((review, i) => (
-                      <div key={i} className="p-4 sm:p-5 rounded-xl border border-beige/70 bg-white">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-gold flex items-center justify-center text-obsidian text-xs font-bold font-mono flex-shrink-0">
-                              {review.name[0]}
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-xs font-body font-semibold truncate">{review.name}</p>
-                              <p className="text-[10px] text-taupe">{review.location}</p>
-                            </div>
+                  {showReviewForm && (
+                    <form onSubmit={handleReviewSubmit} className="mb-8 p-5 sm:p-6 rounded-2xl border border-gold/30 bg-gold/5 shadow-xs">
+                      <h4 className="font-heading text-lg text-obsidian mb-1">Write a Review</h4>
+                      <p className="text-xs font-body text-taupe mb-4">Share your feedback to help others discover their skincare ritual.</p>
+
+                      <div className="space-y-4 font-body">
+                        <div>
+                          <label className="text-xs text-obsidian font-semibold block mb-1.5">Rating *</label>
+                          <div className="flex gap-1.5 items-center">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                type="button"
+                                onClick={() => setNewReview((r) => ({ ...r, rating: star }))}
+                                className="p-1 cursor-pointer hover:scale-110 transition-transform"
+                                aria-label={`Rate ${star} star`}
+                              >
+                                <Star
+                                  size={22}
+                                  className={star <= newReview.rating ? 'text-gold fill-gold' : 'text-beige fill-beige/40'}
+                                />
+                              </button>
+                            ))}
+                            <span className="text-xs font-mono font-semibold text-gold ml-2">
+                              {newReview.rating} / 5 Stars
+                            </span>
                           </div>
-                          {review.verified && (
-                            <span className="text-[9px] bg-success-green/10 text-success-green px-2 py-0.5 rounded-full font-semibold flex-shrink-0">Verified</span>
-                          )}
                         </div>
-                        <div className="flex gap-0.5 mb-2">
-                          {Array.from({ length: 5 }).map((_, j) => (
-                            <Star key={j} size={11} className={j < review.rating ? 'text-gold fill-gold' : 'text-beige fill-beige'} />
-                          ))}
+
+                        <div className="grid sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-xs text-obsidian font-medium block mb-1">Your Name *</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="e.g. Aditi Sharma"
+                              value={newReview.name}
+                              onChange={(e) => setNewReview((r) => ({ ...r, name: e.target.value }))}
+                              className="input-luxury text-xs"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs text-obsidian font-medium block mb-1">City / Region</label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Mumbai, Maharashtra"
+                              value={newReview.location}
+                              onChange={(e) => setNewReview((r) => ({ ...r, location: e.target.value }))}
+                              className="input-luxury text-xs"
+                            />
+                          </div>
                         </div>
-                        <p className="text-xs font-body text-charcoal leading-relaxed">{review.text}</p>
+
+                        <div>
+                          <label className="text-xs text-obsidian font-medium block mb-1">Review Title</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Visible glow in two weeks!"
+                            value={newReview.title}
+                            onChange={(e) => setNewReview((r) => ({ ...r, title: e.target.value }))}
+                            className="input-luxury text-xs"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs text-obsidian font-medium block mb-1">Your Review *</label>
+                          <textarea
+                            required
+                            rows={3}
+                            placeholder="Tell us about the texture, absorption, how it feels on your skin, and results..."
+                            value={newReview.text}
+                            onChange={(e) => setNewReview((r) => ({ ...r, text: e.target.value }))}
+                            className="input-luxury text-xs resize-none"
+                          />
+                        </div>
+
+                        <div className="flex gap-3 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => setShowReviewForm(false)}
+                            className="btn-outline-gold text-xs px-4 py-2 cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            disabled={isSubmittingReview}
+                            className="btn-gold text-xs px-6 py-2 cursor-pointer"
+                          >
+                            {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
+                          </button>
+                        </div>
                       </div>
-                    ))}
-                  </div>
+                    </form>
+                  )}
+
+                  {reviewsList.length === 0 ? (
+                    <div className="text-center py-12 px-6 rounded-2xl border border-beige/60 bg-ivory/30">
+                      <div className="w-12 h-12 rounded-full bg-gold/15 text-gold flex items-center justify-center mx-auto mb-3">
+                        <Sparkles size={20} />
+                      </div>
+                      <h4 className="font-heading text-lg text-obsidian mb-1">No Customer Reviews Yet</h4>
+                      <p className="text-xs font-body text-taupe max-w-sm mx-auto mb-5 leading-relaxed">
+                        Be the first to share your experience with this formulation. Your honest feedback helps others find the right skincare ritual.
+                      </p>
+                      {!showReviewForm && (
+                        <button
+                          type="button"
+                          onClick={() => setShowReviewForm(true)}
+                          className="btn-gold text-xs px-5 py-2.5 cursor-pointer shadow-xs"
+                        >
+                          Write the First Review
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {reviewsList.map((rev, i) => (
+                        <div key={i} className="p-4 sm:p-5 rounded-xl border border-beige/70 bg-white">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-obsidian text-xs font-bold font-mono">
+                                {rev.name[0]}
+                              </div>
+                              <div>
+                                <p className="text-xs font-body font-semibold">{rev.name}</p>
+                                <p className="text-[10px] text-taupe">{rev.location}</p>
+                              </div>
+                            </div>
+                            {rev.verified && (
+                              <span className="text-[9px] bg-success-green/10 text-success-green px-2 py-0.5 rounded-full font-semibold">
+                                Verified
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex gap-0.5 mb-2">
+                            {Array.from({ length: 5 }).map((_, j) => (
+                              <Star
+                                key={j}
+                                size={11}
+                                className={j < rev.rating ? 'text-gold fill-gold' : 'text-beige fill-beige'}
+                              />
+                            ))}
+                          </div>
+                          {rev.title && <p className="text-xs font-body font-bold text-obsidian mb-1">{rev.title}</p>}
+                          <p className="text-xs font-body text-charcoal leading-relaxed">{rev.text}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

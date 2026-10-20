@@ -4,7 +4,7 @@ This document details the complete end-to-end Meta Ads Pixel integration for LAN
 
 - **Meta Pixel ID:** `1159732883048720`
 - **Headless Storefront:** `https://www.lvbrilanan.in/` (Next.js 16 App Router)
-- **Checkout & Order Processing:** Shopify Hosted Checkout (`https://x7ji11-bt.myshopify.com/`)
+- **Checkout & Order Processing:** Shopify Hosted Checkout (`https://lvlanan.myshopify.com/`)
 
 ---
 
@@ -38,7 +38,7 @@ To track genuine `Purchase` events when customers finish placing their orders on
 
 ### Step-by-Step Installation:
 
-1. Open **Shopify Admin** (`https://admin.shopify.com/store/x7ji11-bt`).
+1. Open **Shopify Admin** (`https://admin.shopify.com/store/lvlanan`).
 2. Go to **Settings** (bottom-left gear icon) → **Customer Events**.
 3. Click **Add custom pixel**.
 4. Name the pixel: `Meta Pixel - Headless Checkout`.

@@ -230,7 +230,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-2">
             <span className="text-xs font-body text-ivory/30 mr-1">Accepted Payments:</span>
-            {['UPI', 'RuPay', 'Visa', 'MC', 'EMI'].map((p) => (
+            {['COD', 'UPI', 'RuPay', 'Visa', 'Mastercard'].map((p) => (
               <div
                 key={p}
                 className="px-2 py-1 rounded bg-white/10 border border-ivory/15 text-[9px] font-mono font-medium text-ivory/50"

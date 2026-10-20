@@ -12,6 +12,7 @@ const AIPopup = dynamic(() => import('@/components/layout/AIPopup'), { ssr: fals
 const AIChatbot = dynamic(() => import('@/components/layout/AIChatbot'), { ssr: false });
 const AuthModal = dynamic(() => import('@/components/layout/AuthModal'), { ssr: false });
 const CookieConsent = dynamic(() => import('@/components/layout/CookieConsent'), { ssr: false });
+const WhatsAppButton = dynamic(() => import('@/components/layout/WhatsAppButton'), { ssr: false });
 
 export default function ClientOverlays() {
   return (
@@ -19,6 +20,7 @@ export default function ClientOverlays() {
       <CartDrawer />
       <AIPopup />
       <AIChatbot />
+      <WhatsAppButton />
       <AuthModal />
       <CookieConsent />
     </>

@@ -20,6 +20,7 @@ export interface ProductVariant {
   inventory: number;
   is_active: boolean;
   sort_order: number;
+  image_url?: string | null;
 }
 
 export interface Category {

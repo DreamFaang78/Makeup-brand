@@ -291,9 +291,45 @@ export function trackInitiateCheckout(params: {
 }
 
 /**
+ * Purchase — ONLY fired after genuine completed order with verified order ID and value
+ */
+export function trackPurchase(params: {
+  orderId: string | number;
+  value: number;
+  currency?: string;
+  items?: Array<{
+    id: string | number;
+    name?: string;
+    price: number;
+    quantity?: number;
+  }>;
+}): void {
+  if (!META_PIXEL_ID) return;
+
+  const contentIds = (params.items || [])
+    .map((item) => String(item.id || ''))
+    .filter(Boolean);
+
+  const numItems = (params.items || []).reduce(
+    (sum, item) => sum + (Number(item.quantity) || 1),
+    0
+  );
+
+  callFbq('track', 'Purchase', {
+    content_ids: contentIds.length > 0 ? contentIds : undefined,
+    content_type: 'product',
+    value: Number(params.value) || 0,
+    currency: params.currency || 'INR',
+    num_items: Math.max(1, numItems),
+    order_id: String(params.orderId),
+  });
+}
+
+/**
  * Custom tracking function for any specific business events
  */
 export function trackCustomEvent(eventName: string, params?: Record<string, any>): void {
   if (!META_PIXEL_ID) return;
   callFbq('trackCustom', eventName, params);
 }
+

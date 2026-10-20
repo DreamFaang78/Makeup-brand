@@ -30,8 +30,15 @@ export async function POST(req: NextRequest) {
     } = body;
 
     // Basic validation
-    if (!customer?.phone || !customer?.name) {
-      return NextResponse.json({ error: 'Customer name and phone number are required' }, { status: 400 });
+    if (!customer?.name) {
+      return NextResponse.json({ error: 'Customer name is required' }, { status: 400 });
+    }
+
+    if (customer?.phone) {
+      const cleanPhone = String(customer.phone).replace(/\D/g, '');
+      if (cleanPhone.length > 0 && cleanPhone.length !== 10) {
+        return NextResponse.json({ error: 'Please enter a valid 10-digit mobile number' }, { status: 400 });
+      }
     }
 
     if (!shipping_address?.line1 || !shipping_address?.city || !shipping_address?.pincode) {
@@ -76,6 +83,10 @@ export async function POST(req: NextRequest) {
     const [firstName, ...lastNameParts] = (customer.name || '').trim().split(' ');
     const lastName = lastNameParts.join(' ') || firstName;
 
+    const formattedPhone = customer.phone
+      ? (customer.phone.startsWith('+') ? customer.phone : `+91${customer.phone.replace(/\D/g, '')}`)
+      : undefined;
+
     const shopifyOrderPayload = {
       order: {
         line_items: lineItems,
@@ -83,7 +94,7 @@ export async function POST(req: NextRequest) {
           first_name: firstName,
           last_name: lastName,
           email: customer.email || undefined,
-          phone: customer.phone,
+          phone: formattedPhone,
         },
         shipping_address: {
           first_name: firstName,
@@ -94,7 +105,7 @@ export async function POST(req: NextRequest) {
           province: shipping_address.state || 'Uttar Pradesh',
           zip: shipping_address.pincode,
           country: 'India',
-          phone: customer.phone,
+          phone: formattedPhone,
         },
         billing_address: {
           first_name: firstName,
@@ -105,7 +116,7 @@ export async function POST(req: NextRequest) {
           province: billing_address?.state || shipping_address.state || 'Uttar Pradesh',
           zip: billing_address?.pincode || shipping_address.pincode,
           country: 'India',
-          phone: customer.phone,
+          phone: formattedPhone,
         },
         financial_status: payment_method === 'cod' ? 'pending' : 'authorized',
         gateway: payment_method === 'cod' ? 'Cash on Delivery (COD)' : 'Online Payment',

@@ -162,6 +162,7 @@ export function normalizeShopifyProduct(sp: ShopifyProduct): ProductCardData {
       inventory: v.quantityAvailable ?? (v.availableForSale ? 50 : 0),
       is_active: v.availableForSale,
       sort_order: idx,
+      image_url: v.image?.url || null,
     };
   });
 
@@ -207,8 +208,8 @@ export function normalizeShopifyProduct(sp: ShopifyProduct): ProductCardData {
     how_to_use: howToUse,
     base_price: basePrice,
     sale_price: salePrice,
-    rating_avg: 4.8,
-    rating_count: 50,
+    rating_avg: 0,
+    rating_count: 0,
     is_bestseller: isBestseller,
     skin_types: ['all', 'normal', 'combination'],
     skin_concerns: ['hydration', 'brightening'],

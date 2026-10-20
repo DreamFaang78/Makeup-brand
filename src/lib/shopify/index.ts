@@ -269,6 +269,7 @@ export async function createShopifyCart(
         query: CREATE_CART_MUTATION,
         variables: {
           lines: formattedLines,
+          discountCodes: discountCode?.trim() ? [discountCode.trim()] : [],
         },
       });
 
@@ -424,3 +425,105 @@ export async function getShopifyCart(cartId: string): Promise<ShopifyCart | null
     return null;
   }
 }
+
+/**
+ * Validates a discount code using the real Shopify Storefront API
+ * Returns authoritative validation status, discount amount, and clear message.
+ */
+export async function validateShopifyDiscountCode(
+  lines: Array<{ merchandiseId: string; quantity: number }>,
+  code: string
+): Promise<{
+  valid: boolean;
+  code: string;
+  discountAmount: number;
+  message: string;
+}> {
+  const { isConfigured } = getShopifyConfig();
+  const trimmed = (code || '').trim();
+  if (!trimmed) {
+    return { valid: false, code: '', discountAmount: 0, message: 'Please enter a coupon code.' };
+  }
+
+  if (!isConfigured) {
+    return {
+      valid: false,
+      code: trimmed,
+      discountAmount: 0,
+      message: 'Shopify Storefront API credentials are required to validate real coupons.',
+    };
+  }
+
+  try {
+    const formattedLines = (Array.isArray(lines) ? lines : []).map((l) => ({
+      merchandiseId: `gid://shopify/ProductVariant/${resolveShopifyVariantId(l.merchandiseId)}`,
+      quantity: Math.max(1, Number(l.quantity) || 1),
+    }));
+
+    if (formattedLines.length === 0) {
+      return { valid: false, code: trimmed, discountAmount: 0, message: 'Please add items to your cart before applying a coupon.' };
+    }
+
+    const res = await shopifyFetch<{
+      cartCreate: {
+        cart: ShopifyCart | null;
+        userErrors: Array<{ field: string; message: string }>;
+      };
+    }>({
+      query: CREATE_CART_MUTATION,
+      variables: {
+        lines: formattedLines,
+        discountCodes: [trimmed],
+      },
+    });
+
+    const userErrors = res?.data?.cartCreate?.userErrors || [];
+    if (userErrors.length > 0) {
+      return {
+        valid: false,
+        code: trimmed,
+        discountAmount: 0,
+        message: userErrors[0].message || 'Coupon code is invalid or not applicable.',
+      };
+    }
+
+    const cart = res?.data?.cartCreate?.cart;
+    if (!cart) {
+      return { valid: false, code: trimmed, discountAmount: 0, message: 'Unable to connect to Shopify checkout service.' };
+    }
+
+    // Inspect discountCodes on the returned cart
+    const matched = (cart.discountCodes || []).find(
+      (d) => d.code.toUpperCase() === trimmed.toUpperCase()
+    );
+
+    if (!matched || !matched.applicable) {
+      return {
+        valid: false,
+        code: trimmed,
+        discountAmount: 0,
+        message: 'This coupon code is invalid, expired, or does not apply to the items in your cart.',
+      };
+    }
+
+    const subtotal = parseFloat(cart.cost?.subtotalAmount?.amount || '0');
+    const total = parseFloat(cart.cost?.totalAmount?.amount || '0');
+    const discountAmount = Math.max(0, Math.round(subtotal - total));
+
+    return {
+      valid: true,
+      code: trimmed,
+      discountAmount,
+      message: `Coupon "${trimmed}" applied successfully!`,
+    };
+  } catch (err: any) {
+    console.error('[Shopify validateShopifyDiscountCode Error]:', err.message);
+    return {
+      valid: false,
+      code: trimmed,
+      discountAmount: 0,
+      message: 'Could not verify coupon code with Shopify. Please try again.',
+    };
+  }
+}
+
