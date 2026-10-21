@@ -5,13 +5,13 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, Phone, Mail, Heart } from 'lucide-react';
+import { MapPin, Phone, Mail } from 'lucide-react';
 import { BRAND } from '@/lib/utils';
 
-// ── Inline SVG Social Icons (lucide-react v0.469+ removed brand icons) ──────
+// ── Inline SVG Social Icons (Zero-overhead, accessible brand vectors) ───────
 function SvgInstagram() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
       <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
       <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
@@ -21,45 +21,25 @@ function SvgInstagram() {
 
 function SvgFacebook() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
+function SvgX() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
     </svg>
   );
 }
 
 function SvgYoutube() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
-      <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" />
-    </svg>
-  );
-}
-
-function SvgLinkedin() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-      <rect x="2" y="9" width="4" height="12" />
-      <circle cx="4" cy="4" r="2" />
-    </svg>
-  );
-}
-
-function SvgTwitter() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
-      <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
-    </svg>
-  );
-}
-
-function SvgMail() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-      <polyline points="22,6 12,13 2,6" />
+      <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" />
     </svg>
   );
 }
@@ -92,12 +72,34 @@ const FOOTER_LINKS = {
 };
 
 const SOCIAL = [
-  { href: BRAND.socialLinks.instagram, label: 'Instagram', Icon: SvgInstagram },
-  { href: BRAND.socialLinks.facebook, label: 'Facebook', Icon: SvgFacebook },
-  { href: BRAND.socialLinks.twitter, label: 'Twitter (X)', Icon: SvgTwitter },
-  { href: BRAND.socialLinks.linkedin, label: 'LinkedIn', Icon: SvgLinkedin },
-  { href: BRAND.socialLinks.youtube, label: 'YouTube', Icon: SvgYoutube },
-  { href: BRAND.socialLinks.marketingEmail, label: 'Email Marketing', Icon: SvgMail },
+  {
+    name: 'Instagram',
+    href: BRAND.socialLinks.instagram,
+    ariaLabel: 'Visit LANAN on Instagram',
+    tooltip: 'Instagram',
+    Icon: SvgInstagram,
+  },
+  {
+    name: 'Facebook',
+    href: BRAND.socialLinks.facebook,
+    ariaLabel: 'Visit LANAN on Facebook',
+    tooltip: 'Facebook',
+    Icon: SvgFacebook,
+  },
+  {
+    name: 'X',
+    href: BRAND.socialLinks.twitter,
+    ariaLabel: 'Visit LANAN on X (formerly Twitter)',
+    tooltip: 'X (formerly Twitter)',
+    Icon: SvgX,
+  },
+  {
+    name: 'YouTube',
+    href: BRAND.socialLinks.youtube,
+    ariaLabel: 'Visit LANAN on YouTube',
+    tooltip: 'YouTube',
+    Icon: SvgYoutube,
+  },
 ];
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -131,15 +133,17 @@ export default function Footer() {
             </p>
 
             {/* Social icons */}
-            <div className="flex items-center gap-3 mb-8">
-              {SOCIAL.map(({ href, label, Icon }) => (
+            <div className="flex items-center gap-3 mb-8" role="list" aria-label="Official LANAN Social Media Profiles">
+              {SOCIAL.map(({ name, href, ariaLabel, tooltip, Icon }) => (
                 <a
-                  key={label}
+                  key={name}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={label}
-                  className="w-9 h-9 rounded-full border border-ivory/20 flex items-center justify-center text-ivory/60 hover:text-gold hover:border-gold transition-all duration-200"
+                  aria-label={ariaLabel}
+                  title={tooltip}
+                  role="listitem"
+                  className="w-9 h-9 rounded-full border border-ivory/20 flex items-center justify-center text-ivory/60 hover:text-gold hover:border-gold hover:bg-gold/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian active:scale-95 transition-all duration-200"
                 >
                   <Icon />
                 </a>

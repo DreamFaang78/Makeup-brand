@@ -7,6 +7,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import MetaPixel from '@/components/analytics/MetaPixel';
 import ClientOverlays from '@/components/layout/ClientOverlays';
+import { BRAND } from '@/lib/utils';
 
 // Self-host Google font subsets at build time — zero external HTTP roundtrips or render-blocking stylesheets
 const inter = Inter({
@@ -95,9 +96,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 addressCountry: 'IN',
               },
               sameAs: [
-                'https://instagram.com/lanan.in',
-                'https://www.facebook.com/people/Lanan-Skin-Care/61593584686254/',
-                'https://www.facebook.com/share/193HQx1gQa/',
+                BRAND.socialLinks.instagram,
+                BRAND.socialLinks.facebook,
+                BRAND.socialLinks.twitter,
+                BRAND.socialLinks.youtube,
               ],
             }),
           }}
