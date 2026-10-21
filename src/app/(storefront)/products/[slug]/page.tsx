@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
-import { formatPrice, discountPercent, cn } from '@/lib/utils';
+import { formatPrice, calculateProductPrice, cn } from '@/lib/utils';
 import ProductCard from '@/components/products/ProductCard';
 import PriceTag from '@/components/products/PriceTag';
 import { toast } from 'sonner';
@@ -264,10 +264,13 @@ export default function ProductDetailPage() {
     );
   }
 
-  const displayPrice = selectedVariant?.sale_price ?? selectedVariant?.price ?? product.sale_price ?? product.base_price;
-  const originalPrice = selectedVariant?.price ?? product.base_price;
-  const hasSale = displayPrice < originalPrice;
-  const discount = hasSale ? discountPercent(originalPrice, displayPrice) : 0;
+  const rawBase = selectedVariant?.price ?? product.base_price;
+  const rawSale = selectedVariant?.sale_price ?? product.sale_price;
+  const pricing = calculateProductPrice(rawBase, rawSale);
+  const displayPrice = pricing.discountedPrice;
+  const originalPrice = pricing.originalPrice;
+  const hasSale = pricing.hasDiscount;
+  const discount = pricing.discountPercent;
   const isOutOfStock = selectedVariant ? selectedVariant.inventory <= 0 : false;
 
   const handleAddToCart = async () => {
@@ -602,12 +605,14 @@ export default function ProductDetailPage() {
               );
             })()}
 
-            {/* Price with Original -> Sale -> SAVE % loop animation */}
+            {/* Price Area: ₹755 ₹899 SAVE 16% */}
             <div className="py-1">
               <PriceTag
                 basePrice={originalPrice}
-                salePrice={hasSale ? displayPrice : null}
+                salePrice={displayPrice}
                 size="lg"
+                showBadge={true}
+                showSavingsDetails={true}
                 animate={true}
               />
             </div>
@@ -638,9 +643,12 @@ export default function ProductDetailPage() {
                       disabled={v.inventory <= 0}
                     >
                       {v.name}
-                      {v.sale_price && (
-                        <span className="ml-1 text-gold font-mono">{formatPrice(v.sale_price)}</span>
-                      )}
+                      {(() => {
+                        const vPricing = calculateProductPrice(v.price, v.sale_price);
+                        return (
+                          <span className="ml-1 text-gold font-mono">{formatPrice(vPricing.discountedPrice)}</span>
+                        );
+                      })()}
                     </button>
                   ))}
                 </div>

@@ -323,10 +323,10 @@ export default function HomePage() {
                     <div>
                       <p className="text-[11px] font-body font-semibold text-obsidian">Glutathione Serum</p>
                       <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-[11px] font-mono font-bold text-obsidian">₹755</span>
                         <span className="text-[10px] font-mono text-taupe/60 line-through">₹899</span>
-                        <span className="text-[11px] font-mono font-bold text-obsidian">₹737</span>
                         <span className="text-[9px] font-body font-bold px-1.5 py-0.5 rounded-full bg-[#5B1924] text-[#F7F0E7]">
-                          SAVE 18%
+                          SAVE 16%
                         </span>
                       </div>
                     </div>

@@ -58,7 +58,7 @@ LANAN Skincare Catalog:
    - Purpose: Everyday Moisture. Healthy-Looking Glow.
    - Note: Coming soon / available on request.
 3. [LANAN Sunscreen SPF 50 PA++++ – 50 g](/products/lanan-sunscreen-spf-50)
-   - Price: ₹737 (Sale Price, 18% off base ₹899)
+   - Price: ₹755 (Sale Price, 16% off base ₹899)
    - Category: Sunscreen | SKU: LSP-50
    - Purpose: Broad-spectrum daily UVA/UVB protection, high PA++++ defense, lightweight feel.
 4. [LANAN Glutathione Face Toner – 100 ml](/products/lanan-glutathione-face-toner)
@@ -67,7 +67,7 @@ LANAN Skincare Catalog:
    - Purpose: Refresh. Hydrate. Reveal Your Natural Glow.
    - Key ingredients: Glutathione, hydrating humectants.
 5. [LANAN Glutathione Face Serum – 30 ml](/products/lanan-glutathione-face-serum)
-   - Price: ₹737 (Sale Price, 18% off base ₹899)
+   - Price: ₹755 (Sale Price, 16% off base ₹899)
    - Category: Serums | SKU: LGS-30
    - Purpose: Deep Hydration, Brighter-Looking Skin, Radiant Glow.
    - Key ingredients: Glutathione, Vitamin C, Ceramide NP, Hyaluronic Acid. Paraben free, sulphate free, cruelty free. Suitable for all skin types.

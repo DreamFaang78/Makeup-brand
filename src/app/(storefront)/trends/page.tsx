@@ -14,8 +14,8 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
-import { formatPrice } from '@/lib/utils';
 import { PriceTag } from '@/components/products/PriceTag';
+import { calculateProductPrice } from '@/lib/pricing';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
 
@@ -91,14 +91,18 @@ export default function TrendsPage() {
 
   const handleAddToCart = (product: ProductCardData) => {
     const primaryVariant = product.variants[0];
+    const pricing = calculateProductPrice({
+      basePrice: primaryVariant?.price ?? product.base_price,
+      salePrice: primaryVariant?.price ?? product.sale_price,
+    });
     addItem({
       product_id: product.id,
       variant_id: primaryVariant?.id || null,
       product_name: product.name,
       product_slug: product.slug,
       variant_name: primaryVariant?.name || null,
-      unit_price: primaryVariant?.price ?? product.sale_price ?? product.base_price,
-      base_price: primaryVariant?.price ?? product.base_price,
+      unit_price: pricing.discountedPrice,
+      base_price: pricing.originalPrice,
       quantity: 1,
       image_url: product.images[0]?.url || '',
     });

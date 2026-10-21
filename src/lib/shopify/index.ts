@@ -20,6 +20,7 @@ import {
   normalizeShopifyProduct,
 } from './types';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
+import { PROMOTION_CONFIG } from '@/lib/pricing';
 import type { ProductCardData } from '@/types/product';
 
 export * from './types';
@@ -233,8 +234,9 @@ export function buildShopifyCartPermalink(
   if (validItems.length === 0) return null;
 
   let url = `https://${domain}/cart/${validItems.join(',')}`;
-  if (discountCode && discountCode.trim()) {
-    url += `?discount=${encodeURIComponent(discountCode.trim())}`;
+  const effectiveDiscount = (discountCode && discountCode.trim()) || PROMOTION_CONFIG.discountCode;
+  if (effectiveDiscount) {
+    url += `?discount=${encodeURIComponent(effectiveDiscount)}`;
   }
   return url;
 }
@@ -246,7 +248,7 @@ export async function createShopifyCart(
   lines: Array<{ merchandiseId: string; quantity: number }>,
   discountCode?: string | null
 ): Promise<ShopifyCart | null> {
-  const { isConfigured, domain } = getShopifyConfig();
+  const { isConfigured } = getShopifyConfig();
   if (!isConfigured) return null;
 
   // Generate universal permalink as primary checkout URL
@@ -259,6 +261,8 @@ export async function createShopifyCart(
       quantity: Math.max(1, Number(l.quantity) || 1),
     }));
 
+    const appliedDiscount = (discountCode && discountCode.trim()) || PROMOTION_CONFIG.discountCode;
+
     if (formattedLines.length > 0) {
       const res = await shopifyFetch<{
         cartCreate: {
@@ -269,7 +273,7 @@ export async function createShopifyCart(
         query: CREATE_CART_MUTATION,
         variables: {
           lines: formattedLines,
-          discountCodes: discountCode?.trim() ? [discountCode.trim()] : [],
+          discountCodes: appliedDiscount ? [appliedDiscount] : [],
         },
       });
 

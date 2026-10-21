@@ -9,7 +9,8 @@ import Image from 'next/image';
 import { Heart, ShoppingBag, Trash2, ArrowRight, Sparkles } from 'lucide-react';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useCartStore } from '@/store/cartStore';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, calculateProductPrice } from '@/lib/utils';
+import PriceTag from '@/components/products/PriceTag';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 import type { ProductCardData } from '@/types/product';
 import { toast } from 'sonner';
@@ -38,8 +39,10 @@ export default function WishlistPage() {
 
   const handleAddToCart = (product: ProductCardData) => {
     const activeVariant = product.variants?.find((v) => v.is_active) ?? product.variants?.[0];
-    const originalPrice = product.base_price || activeVariant?.price || 0;
-    const displayPrice = product.sale_price ?? activeVariant?.sale_price ?? activeVariant?.price ?? product.base_price ?? 0;
+    const pricing = calculateProductPrice(
+      product.base_price || activeVariant?.price,
+      product.sale_price ?? activeVariant?.sale_price
+    );
     const image = product.images?.[0];
 
     addItem({
@@ -49,8 +52,8 @@ export default function WishlistPage() {
       product_slug: product.slug,
       variant_name: activeVariant?.name ?? null,
       image_url: image?.url ?? '',
-      unit_price: displayPrice,
-      base_price: originalPrice,
+      unit_price: pricing.discountedPrice,
+      base_price: pricing.originalPrice,
       quantity: 1,
     });
     toast.success(`${product.name} added to your bag!`);
@@ -174,15 +177,13 @@ export default function WishlistPage() {
                             {product.tagline}
                           </p>
                         )}
-                        <div className="mt-3 flex items-baseline gap-2">
-                          <span className="font-mono text-base font-semibold text-obsidian">
-                            {formatPrice(displayPrice)}
-                          </span>
-                          {originalPrice > displayPrice && (
-                            <span className="font-mono text-xs text-taupe/60 line-through">
-                              {formatPrice(originalPrice)}
-                            </span>
-                          )}
+                        <div className="mt-3">
+                          <PriceTag
+                            basePrice={product.base_price}
+                            salePrice={product.sale_price}
+                            size="sm"
+                            animate={true}
+                          />
                         </div>
                       </div>
 
