@@ -2,7 +2,11 @@
 // LANAN — Central Pricing & 16% Discount Engine
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { formatPrice } from './utils';
+/** Format price as Indian Rupees */
+export function formatPrice(amount: number | string | null | undefined): string {
+  const numeric = typeof amount === 'number' && !isNaN(amount) ? amount : Number(amount) || 0;
+  return `₹${Math.round(numeric).toLocaleString('en-IN')}`;
+}
 
 /**
  * Storewide promotion configuration.

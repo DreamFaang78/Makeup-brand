@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { ProductCardData, ProductVariant } from '@/types/product';
+import { calculateProductPrice } from '@/lib/pricing';
 
 export interface ShopifyMoney {
   amount: string;
@@ -150,15 +151,21 @@ export function normalizeShopifyProduct(sp: ShopifyProduct): ProductCardData {
     const v = vEdge.node;
     const priceNum = Math.round(parseFloat(v.price.amount) || 0);
     const compareNum = v.compareAtPrice ? Math.round(parseFloat(v.compareAtPrice.amount) || 0) : null;
-    const hasDiscount = compareNum !== null && compareNum > priceNum;
+    const hasShopifyDiscount = compareNum !== null && compareNum > priceNum;
+
+    // Apply LANAN pricing policy (16% discount, anti-stacking)
+    const vPricing = calculateProductPrice(
+      hasShopifyDiscount ? compareNum : priceNum,
+      hasShopifyDiscount ? priceNum : null
+    );
 
     return {
       id: v.id,
       product_id: sp.id,
       name: v.title || 'Standard',
       sku: v.sku || `SKU-${sp.handle}`,
-      price: hasDiscount ? compareNum : priceNum,
-      sale_price: hasDiscount ? priceNum : null,
+      price: vPricing.originalPrice,
+      sale_price: vPricing.hasDiscount ? vPricing.discountedPrice : null,
       inventory: v.quantityAvailable ?? (v.availableForSale ? 50 : 0),
       is_active: v.availableForSale,
       sort_order: idx,
@@ -173,8 +180,12 @@ export function normalizeShopifyProduct(sp: ShopifyProduct): ProductCardData {
     : null;
 
   const hasCompareAt = minCompare !== null && minCompare > minPrice;
-  const basePrice = hasCompareAt ? minCompare : (firstVariant ? firstVariant.price : minPrice);
-  const salePrice = hasCompareAt ? minPrice : (firstVariant?.sale_price ?? null);
+  const rawBase = hasCompareAt ? minCompare : (firstVariant ? firstVariant.price : minPrice);
+  const rawSale = hasCompareAt ? minPrice : (firstVariant?.sale_price ?? null);
+  const prodPricing = calculateProductPrice(rawBase, rawSale);
+
+  const basePrice = prodPricing.originalPrice;
+  const salePrice = prodPricing.hasDiscount ? prodPricing.discountedPrice : null;
 
   const tags = sp.tags || [];
   const isBestseller = tags.some((t) => t.toLowerCase().includes('bestseller'));

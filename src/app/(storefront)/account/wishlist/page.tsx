@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { Heart, ShoppingBag, Trash2, ArrowRight, Sparkles } from 'lucide-react';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useCartStore } from '@/store/cartStore';
-import { formatPrice, calculateProductPrice } from '@/lib/utils';
+import { calculateProductPrice } from '@/lib/utils';
 import PriceTag from '@/components/products/PriceTag';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
 import type { ProductCardData } from '@/types/product';
@@ -125,8 +125,6 @@ export default function WishlistPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {wishlistedProducts.map((product) => {
                 const img = product.images?.[0]?.url || '/images/products/facewash.png';
-                const originalPrice = product.base_price;
-                const displayPrice = product.sale_price ?? product.base_price;
 
                 return (
                   <div

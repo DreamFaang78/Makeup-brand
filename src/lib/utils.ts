@@ -12,11 +12,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Format price as Indian Rupees */
-export function formatPrice(amount: number | string | null | undefined): string {
-  const numeric = typeof amount === 'number' && !isNaN(amount) ? amount : Number(amount) || 0;
-  return `₹${Math.round(numeric).toLocaleString('en-IN')}`;
-}
+
 
 /** Format price raw (without symbol) */
 export function formatPriceRaw(amount: number | string | null | undefined): string {

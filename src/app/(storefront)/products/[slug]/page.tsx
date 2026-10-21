@@ -11,7 +11,7 @@ import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Star, ShoppingBag, Zap, ShieldCheck, RefreshCw, Package,
-  MapPin, ChevronDown, ChevronLeft, ChevronRight, Heart, Share2, Minus, Plus, Check, ArrowLeft, Sparkles,
+  MapPin, ChevronLeft, ChevronRight, Heart, Share2, Minus, Plus, Check, ArrowLeft, Sparkles,
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
