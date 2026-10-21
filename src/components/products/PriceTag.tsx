@@ -1,19 +1,20 @@
 'use client';
 // ─────────────────────────────────────────────────────────────────────────────
 // LANAN — Luxury Price Display Component
-// Consistent hierarchy: ~~Original~~ -> Bold Sale -> SAVE X% badge
-// With continuous loop pulse/glow animation (1.2s active, 2.0s rest)
+// Visual hierarchy: [Discounted Price] -> [~~Original Price~~] -> [SAVE 16% Badge]
+// Designed for luxury skincare aesthetics: obsidian black, warm ivory, champagne gold & burgundy.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React from 'react';
-import { formatPrice } from '@/lib/utils';
-import { cn } from '@/lib/utils';
+import { calculateProductPrice } from '@/lib/pricing';
+import { formatPrice, cn } from '@/lib/utils';
 
 export interface PriceTagProps {
   basePrice?: number | null;
   salePrice?: number | null;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   showBadge?: boolean;
+  showSavingsDetails?: boolean;
   animate?: boolean;
   className?: string;
   badgeClassName?: string;
@@ -24,88 +25,99 @@ export function PriceTag({
   salePrice,
   size = 'md',
   showBadge = true,
+  showSavingsDetails = false,
   animate = true,
   className,
   badgeClassName,
 }: PriceTagProps) {
-  const base = typeof basePrice === 'number' && !isNaN(basePrice) ? basePrice : 0;
-  const sale = typeof salePrice === 'number' && !isNaN(salePrice) ? salePrice : null;
+  const pricing = calculateProductPrice(basePrice, salePrice);
 
-  // Strict pricing logic:
-  // Only valid sale if sale is strictly lower than base and both are positive numbers
-  const hasSale = Boolean(sale !== null && sale > 0 && base > 0 && sale < base);
-  const displayPrice = hasSale ? (sale as number) : (sale && sale > 0 ? sale : base);
-  const originalPrice = base;
-  const discount = hasSale && base > 0 ? Math.round(((base - (sale as number)) / base) * 100) : 0;
-
-  // Size variations
+  // Size styling tokens
   const sizeStyles = {
     sm: {
       container: 'gap-x-1.5 gap-y-1',
-      base: 'text-[11px] font-sans tabular-nums text-taupe/75 line-through font-normal',
       sale: 'text-sm font-sans tabular-nums font-bold text-obsidian tracking-tight',
+      base: 'text-[11px] font-sans tabular-nums text-taupe/70 line-through font-normal',
       badge: 'px-1.5 py-0.5 text-[9px]',
+      details: 'text-[10px]',
     },
     md: {
       container: 'gap-x-2 gap-y-1',
-      base: 'text-xs lg:text-sm font-sans tabular-nums text-taupe/80 line-through font-normal',
-      sale: 'text-base lg:text-lg font-sans tabular-nums font-bold text-obsidian tracking-tight',
+      sale: 'text-base sm:text-lg font-sans tabular-nums font-bold text-obsidian tracking-tight',
+      base: 'text-xs sm:text-sm font-sans tabular-nums text-taupe/70 line-through font-normal',
       badge: 'px-2 py-0.5 text-[10px]',
+      details: 'text-[11px]',
     },
     lg: {
-      container: 'gap-x-2.5 gap-y-1.5',
-      base: 'text-sm lg:text-base font-sans tabular-nums text-taupe/80 line-through font-normal',
-      sale: 'text-xl lg:text-2xl font-sans tabular-nums font-bold text-obsidian tracking-tight',
-      badge: 'px-2.5 py-0.5 text-[11px]',
+      container: 'gap-x-3 gap-y-1.5',
+      sale: 'text-2xl sm:text-3xl lg:text-4xl font-sans tabular-nums font-bold text-obsidian tracking-tight',
+      base: 'text-sm sm:text-base lg:text-lg font-sans tabular-nums text-taupe/70 line-through font-normal',
+      badge: 'px-2.5 py-0.5 sm:px-3 sm:py-1 text-[11px] sm:text-xs',
+      details: 'text-xs',
     },
     xl: {
       container: 'gap-x-3.5 gap-y-2',
-      base: 'text-base lg:text-xl font-sans tabular-nums text-taupe/80 line-through font-normal',
-      sale: 'text-3xl lg:text-4xl font-sans tabular-nums font-bold text-obsidian tracking-tight',
+      sale: 'text-3xl sm:text-4xl lg:text-5xl font-sans tabular-nums font-bold text-obsidian tracking-tight',
+      base: 'text-base sm:text-lg lg:text-xl font-sans tabular-nums text-taupe/70 line-through font-normal',
       badge: 'px-3 py-1 text-xs',
+      details: 'text-xs sm:text-sm',
     },
   }[size];
 
-  if (!hasSale) {
+  if (!pricing.hasDiscount) {
     return (
-      <div className={cn('inline-flex items-baseline', className)}>
+      <div className={cn('inline-flex flex-col', className)}>
         <span className={cn('font-sans tabular-nums font-bold text-obsidian', sizeStyles.sale)}>
-          {formatPrice(displayPrice)}
+          {formatPrice(pricing.discountedPrice || pricing.originalPrice)}
         </span>
       </div>
     );
   }
 
   return (
-    <div className={cn('inline-flex items-baseline flex-wrap', sizeStyles.container, className)}>
-      {/* 1. Base / Original Price (Strikethrough) */}
-      <span className={sizeStyles.base}>
-        {formatPrice(originalPrice)}
-      </span>
-
-      {/* 2. Sale Price (Prominent, Bold, with soft gold glow loop) */}
-      <span
-        className={cn(
-          sizeStyles.sale,
-          animate && 'lanan-sale-price-glow'
-        )}
-      >
-        {formatPrice(displayPrice)}
-      </span>
-
-      {/* 3. Discount Badge (SAVE X%, Luxury Burgundy + Gold border with gentle scale loop) */}
-      {showBadge && discount > 0 && (
+    <div className={cn('inline-flex flex-col', className)}>
+      {/* Primary Price Row: Prominent Discounted -> Strikethrough Original -> SAVE 16% */}
+      <div className={cn('inline-flex items-baseline flex-wrap', sizeStyles.container)}>
+        {/* 1. Large, bold discounted price (Most visually prominent) */}
         <span
           className={cn(
-            'inline-flex items-center rounded-full font-body font-bold uppercase tracking-wider',
-            'bg-[#5B1924] text-[#F7F1EA] border border-[#C9A96E]/40 shadow-xs',
-            sizeStyles.badge,
-            animate && 'lanan-sale-badge-pulse',
-            badgeClassName
+            sizeStyles.sale,
+            animate && 'lanan-sale-price-glow'
           )}
         >
-          SAVE {discount}%
+          {pricing.formattedDiscounted}
         </span>
+
+        {/* 2. Original price smaller and crossed out */}
+        <span className={sizeStyles.base}>
+          {pricing.formattedOriginal}
+        </span>
+
+        {/* 3. Luxury Burgundy & Champagne Gold Savings Badge */}
+        {showBadge && pricing.discountPercent > 0 && (
+          <span
+            className={cn(
+              'inline-flex items-center rounded-full font-body font-bold uppercase tracking-wider',
+              'bg-[#5B1924] text-[#F7F1EA] border border-[#C9A45D]/40 shadow-xs select-none',
+              sizeStyles.badge,
+              animate && 'lanan-sale-badge-pulse',
+              badgeClassName
+            )}
+          >
+            {pricing.badgeText}
+          </span>
+        )}
+      </div>
+
+      {/* Optional: Helpful luxury tax & savings line (used on PDP) */}
+      {showSavingsDetails && pricing.savings > 0 && (
+        <p className={cn('font-body text-taupe flex items-center gap-1.5 mt-1 sm:mt-1.5', sizeStyles.details)}>
+          <span>Inclusive of all taxes</span>
+          <span className="text-gold/60">•</span>
+          <span className="text-success-green font-semibold">
+            You save {pricing.formattedSavings} ({pricing.discountPercent}% off)
+          </span>
+        </p>
       )}
     </div>
   );

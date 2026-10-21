@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, Star, Eye } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
-import { discountPercent, cn } from '@/lib/utils';
+import { cn, calculateProductPrice } from '@/lib/utils';
 import PriceTag from '@/components/products/PriceTag';
 import type { ProductCardData } from '@/types/product';
 import { toast } from 'sonner';
@@ -32,12 +32,13 @@ export default function ProductCard({ product, index = 0 }: Props) {
   const image = product.images?.[0];
   const activeVariant = product.variants?.find((v) => v.is_active) ?? product.variants?.[0];
 
-  const originalPrice = product.base_price || activeVariant?.price || 0;
-  const displayPrice = product.sale_price ?? activeVariant?.sale_price ?? activeVariant?.price ?? product.base_price ?? 0;
-  const hasSale = Boolean(displayPrice && originalPrice && displayPrice < originalPrice);
-  const discount = hasSale ? discountPercent(originalPrice, displayPrice) : 0;
+  const pricing = calculateProductPrice(
+    product.base_price || activeVariant?.price,
+    product.sale_price ?? activeVariant?.sale_price
+  );
+  const originalPrice = pricing.originalPrice;
+  const displayPrice = pricing.discountedPrice;
   const isOutOfStock = activeVariant ? activeVariant.inventory <= 0 : false;
-  const isLowStock = activeVariant ? activeVariant.inventory <= 5 && activeVariant.inventory > 0 : false;
 
   async function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
@@ -95,13 +96,10 @@ export default function ProductCard({ product, index = 0 }: Props) {
               </div>
             )}
 
-            {/* Badges */}
+            {/* Status / Bestseller Badge */}
             <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10 pointer-events-none">
               {product.is_bestseller && (
                 <span className="badge-gold shadow-xs">Bestseller</span>
-              )}
-              {hasSale && !isOutOfStock && (
-                <span className="badge-sale lanan-sale-badge-pulse shadow-xs">SAVE {discount}%</span>
               )}
               {isOutOfStock && (
                 <span className="badge-oos shadow-xs">Out of Stock</span>
@@ -189,11 +187,11 @@ export default function ProductCard({ product, index = 0 }: Props) {
               </div>
             )}
 
-            {/* Price with Original -> Sale -> SAVE %: Pinned to Bottom */}
+            {/* Price with Discounted -> Original -> SAVE %: Pinned to Bottom */}
             <div className="mt-auto pt-2.5 border-t border-beige/40">
               <PriceTag
                 basePrice={originalPrice}
-                salePrice={hasSale ? displayPrice : null}
+                salePrice={displayPrice}
                 size="md"
                 animate={true}
               />

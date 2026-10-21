@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, ArrowRight, Sparkles } from 'lucide-react';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
-import { formatPrice } from '@/lib/utils';
+import PriceTag from '@/components/products/PriceTag';
 import type { ProductCardData } from '@/types/product';
 import { trackSearch } from '@/lib/metaPixel';
 
@@ -208,14 +208,12 @@ export default function SearchModal({ isOpen, onClose }: Props) {
                         </p>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <p className="text-xs font-mono font-bold text-obsidian">
-                          {formatPrice(item.sale_price ?? item.base_price)}
-                        </p>
-                        {item.sale_price && item.base_price && item.sale_price < item.base_price && (
-                          <p className="text-[10px] font-mono text-taupe/60 line-through">
-                            {formatPrice(item.base_price)}
-                          </p>
-                        )}
+                        <PriceTag
+                          basePrice={item.base_price}
+                          salePrice={item.sale_price}
+                          size="sm"
+                          showBadge={true}
+                        />
                       </div>
                     </Link>
                   ))}

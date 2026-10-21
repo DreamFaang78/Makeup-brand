@@ -17,7 +17,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
-import { formatPrice, cn } from '@/lib/utils';
+import { calculateProductPrice, cn } from '@/lib/utils';
 import { PriceTag } from '@/components/products/PriceTag';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
@@ -191,14 +191,18 @@ export default function RitualsPage() {
 
   const handleAddToCart = (product: ProductCardData) => {
     const primaryVariant = product.variants[0];
+    const pricing = calculateProductPrice(
+      primaryVariant?.price ?? product.base_price,
+      primaryVariant?.sale_price ?? product.sale_price
+    );
     addItem({
       product_id: product.id,
       variant_id: primaryVariant?.id || null,
       product_name: product.name,
       product_slug: product.slug,
       variant_name: primaryVariant?.name || null,
-      unit_price: primaryVariant?.price ?? product.sale_price ?? product.base_price,
-      base_price: primaryVariant?.price ?? product.base_price,
+      unit_price: pricing.discountedPrice,
+      base_price: pricing.originalPrice,
       quantity: 1,
       image_url: product.images[0]?.url || '',
     });
@@ -275,14 +279,18 @@ export default function RitualsPage() {
 
     recommendedSet.forEach((product) => {
       const primaryVariant = product.variants[0];
+      const pricing = calculateProductPrice(
+        primaryVariant?.price ?? product.base_price,
+        primaryVariant?.sale_price ?? product.sale_price
+      );
       addItem({
         product_id: product.id,
         variant_id: primaryVariant?.id || null,
         product_name: product.name,
         product_slug: product.slug,
         variant_name: primaryVariant?.name || null,
-        unit_price: primaryVariant?.price ?? product.sale_price ?? product.base_price,
-        base_price: primaryVariant?.price ?? product.base_price,
+        unit_price: pricing.discountedPrice,
+        base_price: pricing.originalPrice,
         quantity: 1,
         image_url: product.images[0]?.url || '',
       });

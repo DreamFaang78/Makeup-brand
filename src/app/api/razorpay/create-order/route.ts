@@ -12,12 +12,12 @@ const CANONICAL_PRICES: Record<string, number> = {
   'LFW-100': 503,
   'lanan-face-moisturizer': 419,
   'LFM-50': 419,
-  'lanan-sunscreen-spf-50': 737,
-  'LSP-50': 737,
+  'lanan-sunscreen-spf-50': 755,
+  'LSP-50': 755,
   'lanan-glutathione-face-toner': 419,
   'LGT-100': 419,
-  'lanan-glutathione-face-serum': 737,
-  'LGS-30': 737,
+  'lanan-glutathione-face-serum': 755,
+  'LGS-30': 755,
 };
 
 export async function POST(req: NextRequest) {
