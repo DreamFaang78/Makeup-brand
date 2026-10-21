@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import ProductCard from '@/components/products/ProductCard';
 import LazyRitualVideo from '@/components/media/LazyRitualVideo';
+import HeroVideo from '@/components/media/HeroVideo';
 import { DEMO_PRODUCTS, DEMO_REVIEWS } from '@/lib/data/products';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
@@ -291,64 +292,7 @@ export default function HomePage() {
 
             {/* Right Column: Hero Visual with Real Product Artwork & Floating Card */}
             <div className="lg:col-span-5 relative">
-              <div className="relative aspect-[4/5] rounded-card overflow-hidden shadow-luxury border-4 border-white bg-white group">
-                <Image
-                  src="/luxury-skincare-crafted-for-your-everyday-ritual.jpeg"
-                  alt="LANAN Everyday Luxury Skincare Ritual"
-                  fill
-                  priority
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 45vw"
-                  className="object-cover group-hover:scale-102 transition-transform duration-700"
-                />
-
-                {/* Warm Gradient Overlay at base */}
-                <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 via-transparent to-transparent pointer-events-none" />
-
-                {/* Floating Product Badge */}
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute top-4 -right-2 sm:right-4 bg-white/95 backdrop-blur-md rounded-card p-3 shadow-luxury border border-gold/25"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-lg overflow-hidden bg-ivory flex-shrink-0 border border-beige/40">
-                      <Image
-                        src="/lanan-glutathione-face-serum.jpeg"
-                        alt="LANAN Glutathione Face Serum"
-                        width={36}
-                        height={36}
-                        className="w-full h-full object-contain p-0.5"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-body font-semibold text-obsidian">Glutathione Serum</p>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="text-[11px] font-mono font-bold text-obsidian">₹755</span>
-                        <span className="text-[10px] font-mono text-taupe/60 line-through">₹899</span>
-                        <span className="text-[9px] font-body font-bold px-1.5 py-0.5 rounded-full bg-[#5B1924] text-[#F7F0E7]">
-                          SAVE 16%
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Bottom caption pill */}
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-obsidian/85 backdrop-blur-md rounded-xl p-3 border border-gold/25 flex items-center justify-between text-ivory">
-                    <div>
-                      <p className="text-[10px] font-body uppercase tracking-widest text-gold">The Radiant Ritual</p>
-                      <p className="text-xs font-heading">Glutathione, Niacinamide & SPF 50</p>
-                    </div>
-                    <Link
-                      href="/shop"
-                      className="text-[11px] font-body text-gold hover:underline flex items-center gap-1"
-                    >
-                      Discover <ArrowRight size={12} />
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <HeroVideo />
             </div>
 
           </div>
@@ -1205,8 +1149,8 @@ export default function HomePage() {
               },
               {
                 icon: <RotateCcw size={22} className="text-gold" />,
-                title: '7-Day Return Assistance',
-                desc: 'Seamless support for damaged or incorrect deliveries',
+                title: '24-Hour Return Assistance',
+                desc: 'Swift support for damaged, defective, or incorrect deliveries',
               },
             ].map((item, i) => (
               <FadeUp key={item.title} delay={i * 0.06}>

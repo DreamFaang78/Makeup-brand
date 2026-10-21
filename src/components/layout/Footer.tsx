@@ -63,7 +63,7 @@ const FOOTER_LINKS = {
   ],
   Support: [
     { label: 'Shipping Policy', href: '/legal/shipping-policy' },
-    { label: 'Return & Refund', href: '/legal/return-refund-policy' },
+    { label: 'Return & Refund Policy', href: '/legal/return-refund-policy' },
     { label: 'Privacy Policy', href: '/legal/privacy-policy' },
     { label: 'Cookie Preferences', href: '#cookie-preferences' },
     { label: 'Terms & Conditions', href: '/legal/terms-and-conditions' },

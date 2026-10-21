@@ -42,7 +42,8 @@ LANAN Brand Policies:
 - Shipping: Free shipping on orders above ₹599. For orders below ₹599, a flat standard shipping fee of ₹79 is applied. We ship across India.
 - Delivery timelines: Orders are processed in 24 hours and delivered in 3-5 business days.
 - Payments: Cash on Delivery (COD) and secure online prepaid payments via Razorpay (UPI, Credit/Debit cards, Net Banking).
-- Returns & Refunds: We offer a 1-day return policy from delivery for unopened, unused products in original packaging with mandatory unboxing video proof. Refunds are processed in 5-7 business days.
+- Returns & Refunds: Customers can request returns, replacements, or refunds within 24 hours of verified courier delivery for transit damage, defective pumps, leakage, or incorrect products with mandatory continuous unboxing video evidence. Refunds are credited to original payment source (or NEFT/UPI for COD) in 5-7 business days.
+- Cancellations: Orders can be cancelled free of charge within 24 hours of placement provided the order has not been dispatched/assigned an AWB. Dispatched orders in transit cannot be cancelled.
 - Contact Support: Support Phone +91-9235170198, Support Email support@lanan.in | hello@lanan.in.
 - AI Skin Analysis: Recommend users try the skin scan feature or go to [/skin-analysis](/skin-analysis) to get an automated analysis.
 

@@ -189,8 +189,8 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '09',
         title: 'Incorrect, Damaged or Missing Shipments',
         content: [
-          'All LANAN parcels are secured with custom tamper-evident security tape. If you notice that the outer cardboard box is crushed, punctured, damp, or the security seal is broken upon arrival, please photograph the parcel before accepting or opening it.',
-          'Any transit damage, product leakage, or item discrepancy must be reported to support@lanan.in within 48 hours of delivery along with unboxing photographs.',
+          'All LANAN parcels are secured with custom tamper-evident security tape. If you notice that the outer cardboard box is crushed, punctured, damp, or the security seal is broken upon arrival, please record a video of the parcel before accepting or opening it.',
+          'Any transit damage, product leakage, or item discrepancy must be reported to support@lanan.in within 24 hours of delivery along with continuous unboxing video evidence.',
           'For complete replacement and refund steps, please consult our Return & Refund Policy.',
         ],
       },
@@ -217,31 +217,33 @@ const POLICIES: Record<string, PolicyDocument> = {
     lastUpdated: 'October 2026',
     effectiveDate: '1 October 2026',
     summary:
-      'LANAN provides a 1-day return window from verified delivery for unopened and sealed skincare products, with mandatory unboxing video proof. Cash on Delivery refunds are processed via secure bank transfer (NEFT) or UPI.',
+      'LANAN provides an approved 24-hour return-request window from verified courier delivery for transit damage, mechanical pump defects, leakage, or incorrect products, supported by mandatory continuous unboxing video evidence. Approved refunds are credited to the original payment source (5–7 business days) or via direct bank transfer (NEFT) / UPI for Cash on Delivery.',
     intro:
-      'Your satisfaction and skin well-being are paramount to LANAN. Because our products are high-performance skincare formulations designed for direct application to the skin, we uphold transparent, hygiene-compliant return standards under Indian consumer protection laws.',
+      'Your satisfaction, formulation integrity, and skin well-being are paramount to LANAN. Because our products are high-performance luxury skincare formulations designed for direct application to the skin, we uphold transparent, hygiene-compliant return and refund standards governed by Indian consumer protection laws.',
     flaggedNotice:
-      'Owner Policy Note: Standard return window is 1 calendar day (24 hours) from verified delivery for unopened, unused products; mandatory continuous unboxing video proof is required for transit damage, defects, or incorrect items. Reverse pickup is arranged where courier reverse logistics is operational.',
+      'Approved 24-Hour Policy Window: All return, replacement, or refund requests must be initiated within 24 hours of verified courier delivery (as recorded by carrier tracking timestamps). Continuous, unedited unboxing video evidence is mandatory for all claims involving transit damage, manufacturing/pump defects, leakage, or incorrect items. Reverse courier pickup is arranged at zero cost for all verified claims.',
     sections: [
       {
         id: 'return-overview',
         number: '01',
         title: 'Return & Refund Overview',
         content: [
-          'This Return & Refund Policy applies to all purchases made directly on the LANAN website (lanan.in / lvbrilanan.in).',
-          'We take pride in the efficacy and luxury of our formulations. If you encounter any genuine issue with your order — including transit damage, manufacturing defects, or wrong items — we provide swift replacements or full refunds under the conditions detailed below.',
+          'This Return & Refund Policy applies to all purchases made directly on the official LANAN website (lanan.in / lvbrilanan.in).',
+          'We take pride in the efficacy, safety, and luxury of our formulations. If you encounter any genuine issue with your order — including transit damage, container leakage, defective pump mechanisms, or incorrect items — we provide swift replacements or full refunds under the conditions detailed below.',
         ],
       },
       {
         id: 'eligible-products',
         number: '02',
-        title: 'Products Eligible for Return',
+        title: 'Products Eligible for Return, Replacement or Refund',
         content: [
-          'A return or replacement request must be initiated within one (1) calendar day (24 hours) of verified courier delivery under the following verifiable conditions:',
-          '1. Damaged in Transit: Products delivered with broken glass containers, shattered droppers, leaked bottles, or damaged outer packaging.',
-          '2. Manufacturing Defect: Non-functional dispensers, pump mechanisms that fail to dispense, or compromised factory seals.',
+          'A return, replacement, or refund request must be initiated within twenty-four (24) hours of verified courier delivery under the following verifiable conditions:',
+          '1. Damaged in Transit: Products delivered with broken glass bottles, shattered droppers, container cracks, fluid leakage, or compromised outer packaging.',
+          '2. Manufacturing or Mechanical Defect: Non-functional dispensers, pump mechanisms that fail to prime or dispense, or defective container seals upon arrival.',
           '3. Incorrect Product Delivered: Product formula, variant, or size mismatching your verified order confirmation.',
-          '4. Unopened & Unused Items: Products in original, untampered packaging with the outer shrink wrap, hologram, and batch labels completely intact.',
+          '4. Missing Items: Parcels delivered with one or more confirmed items missing from the sealed carton.',
+          '5. Voluntary Change of Mind (Sealed Items Only): Requests initiated within 24 hours of delivery strictly for items where the tamper-evident factory seal, protective shrink wrap, and carton remain completely untampered and intact. Due to cosmetic hygiene and safety standards, opened skincare formulations cannot be accepted for change of mind.',
+          'Commencement of 24-Hour Window: The 24-hour request window commences at the exact delivery timestamp recorded by our logistics partner\'s electronic tracking scan (e.g. Blue Dart, Delhivery, or India Post).',
         ],
       },
       {
@@ -249,33 +251,34 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '03',
         title: 'Products That Cannot Be Returned (Skincare Hygiene & Safety Rules)',
         content: [
-          'Due to strict consumer health guidelines, cosmetic safety regulations, and formulation integrity under Indian law, the following items are strictly non-returnable and non-refundable:',
+          'Due to strict consumer health guidelines, cosmetic safety regulations, and formulation integrity under Indian law, the following restrictions apply:',
         ],
         subsections: [
           {
             title: 'Hygiene & Product Safety Restrictions',
             items: [
-              'Opened or Used Skincare: Skincare formulations (including serums, cleansers, toners, moisturisers, and sunscreens) that have had their factory seal broken, pump primed, cap opened, or formula sampled cannot be returned for hygiene and public safety reasons.',
-              'Tampered Packaging: Products returned without their original outer carton, batch code, MRP sticker, or security seal.',
-              'Late Submissions: Return requests submitted after the expiration of the 1-day (24-hour) delivery window.',
-              'Complimentary or Promotional Items: Free trial samples, promotional gifts, or clearance items marked as "Final Sale".',
+              'Opened or Sampled Skincare for Change of Mind: Skincare formulations (including serums, cleansers, toners, moisturisers, and sunscreens) that have had their factory seal broken, pump primed, cap opened, or formula tested cannot be returned for ordinary change of mind, personal scent preference, or subjective texture dislike once delivered in sound condition.',
+              'Damage & Defect Protection: The above hygiene restriction does not disqualify claims where the product arrived damaged, broken, leaking, or with a non-functional pump, provided the claim is initiated within 24 hours with continuous unboxing video evidence.',
+              'Tampered Packaging: Products returned without their original outer carton, batch code, MRP label, or security seal.',
+              'Late Submissions: Return or damage claims submitted after the expiration of the approved 24-hour delivery window.',
+              'Complimentary Items: Free promotional gifts or trial samples marked as non-saleable.',
             ],
           },
         ],
         callout: {
           type: 'warning',
           title: 'Skin Compatibility & Patch Testing',
-          text: 'Because individual skin chemistry varies, an individual skin reaction or personal dislike of a botanical aroma or texture does not qualify as a manufacturing defect. Full ingredient lists are provided on every product page. We strongly recommend performing a 24-hour patch test before full facial application.',
+          text: 'Because individual skin chemistry varies, an individual skin reaction or personal dislike of a botanical aroma does not qualify as a manufacturing defect. Full ingredient lists are provided on every product page. We strongly recommend performing a 24-hour patch test before full facial application.',
         },
       },
       {
         id: 'damaged-defective-items',
         number: '04',
-        title: 'Damaged, Defective, Incorrect or Missing Items Protocol',
+        title: 'Damaged, Defective, Leaking or Missing Items Protocol',
         content: [
-          'If your shipment arrives damaged, leaked, or missing an item, you must notify LANAN within 48 hours of delivery.',
-          'Timely notification is essential because courier transit damage insurance claims must be filed within 48 hours of delivery scan.',
-          'Upon verification, LANAN will dispatch a brand-new replacement parcel at zero additional charge. If the item is out of stock, a 100% full refund will be processed immediately.',
+          'If your shipment arrives damaged, leaking, defective, or missing an item, you must notify LANAN within twenty-four (24) hours of courier delivery.',
+          'Timely notification is essential because courier transit insurance claims and logistics discrepancy audits must be logged within 24 hours of the electronic delivery scan.',
+          'Upon verification of your unboxing video evidence, LANAN will dispatch a brand-new replacement parcel at zero additional cost to you. If the item is temporarily out of stock, a 100% full refund will be processed immediately.',
         ],
       },
       {
@@ -283,31 +286,32 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '05',
         title: 'How Customers Request a Return (Step-by-Step)',
         content: [
-          'To initiate a return or replacement, follow this streamlined process:',
-          'Step 1: Send an email to support@lanan.in or message our WhatsApp concierge at +91 9235170198 within the eligible timeline.',
-          'Step 2: Use the subject line: "Return Request - [Your Order Number]" (e.g. Return Request - LAN2605ABC).',
-          'Step 3: State the reason for return and specify whether you prefer a replacement or refund.',
-          'Step 4: Attach the photographic and video evidence detailed in Section 06 below.',
-          'Step 5: Our quality concierge team will review your request and reply with return approval instructions within 24 to 48 business hours.',
+          'To initiate an eligible return or replacement, follow this streamlined process:',
+          'Step 1: Contact our concierge desk within 24 hours of courier delivery via WhatsApp (+91 9235170198), email (support@lanan.in | hello@lanan.in), or by submitting the online Concierge Support Form at lanan.in/contact.',
+          'Step 2: Use the subject line: "Return Request - [Your Order ID]" (e.g. Return Request - LAN2610ABC).',
+          'Step 3: State your Customer Name, Order ID, Delivery Date/Time, affected product, and whether you prefer a replacement or refund.',
+          'Step 4: Provide the mandatory continuous unboxing video recording detailed in Section 06 below.',
+          'Step 5: Our concierge and quality assurance team will review your submission and respond with return authorization instructions within 24 to 48 business hours. Please note that submitting a request does not constitute automatic approval until verified by our quality desk.',
         ],
       },
       {
         id: 'evidence-required',
         number: '06',
-        title: 'Evidence & Documentation Required',
+        title: 'Mandatory Video Evidence Standard',
         content: [
-          'To prevent fraudulent claims and ensure swift approval, the following documentation must be provided with your request:',
-          '1. Photographs of the outer cardboard delivery box showing the printed courier shipping label and AWB number.',
-          '2. Mandatory Continuous Unboxing Video: A clear, unbroken, unedited videograph showing the parcel from before the package seal is cut through the inspection of the damaged, defective, or incorrect item. Unboxing video proof is mandatory for transit damage or missing item claims.',
-          '3. Clear photograph of the bottom or back of the product container displaying the Batch Number and Expiry Date.',
+          'To ensure swift and fair verification, the following video evidence must accompany every return, replacement, or refund claim:',
+          '1. Mandatory Continuous Unboxing Video Recording: A clear, unbroken, unedited video recording starting before the courier outer cardboard package is opened or cut. The video recording must clearly show the package in its delivered condition, the printed courier shipping label, and the Air Waybill (AWB) consignment tracking number.',
+          '2. Unbroken Unboxing Capture: The video recording must document the cutting of the tamper-evident security tape, opening of the box, and unpacking of the inner items in one continuous sequence without pauses, cuts, or off-camera handling.',
+          '3. Clear Demonstration of Issue: A close-up view within the video recording capturing the specific damage, fluid leakage, defective pump mechanism (demonstrating the failure to dispense), or mismatched product label, as well as the batch number and expiry date printed on the container.',
+          '4. Submitting Video Evidence: Video recordings may be sent directly via WhatsApp to +91 9235170198, attached to your email to support@lanan.in, or shared via a private cloud drive link (Google Drive, OneDrive, or iCloud). Video files are kept strictly confidential and are never shared publicly.',
         ],
       },
       {
         id: 'reverse-pickup',
         number: '07',
-        title: 'Return Collection & Shipping Instructions',
+        title: 'Return Collection & Reverse Logistics Instructions',
         content: [
-          'Reverse Pickup: Once your return is approved, LANAN will schedule a courier reverse pickup from your delivery address at no cost to you for damaged or incorrect deliveries.',
+          'Reverse Pickup: Once your return is approved, LANAN will schedule a courier reverse pickup from your delivery address at no cost to you for damaged, defective, or incorrect deliveries.',
           'Packing the Return: Secure the product in its original outer carton and ensure it is safely padded to prevent additional breakage during transit.',
           'Self-Ship Guidelines: If reverse courier pickup is temporarily unserviceable in your postal PIN code, our team will authorize you to dispatch the parcel via a reputable courier service (e.g. India Post Speed Post, Blue Dart, or Delhivery). Upon inspection at our warehouse, LANAN will reimburse your courier expense up to standard courier rates.',
         ],
@@ -315,7 +319,7 @@ const POLICIES: Record<string, PolicyDocument> = {
       {
         id: 'inspection-approval',
         number: '08',
-        title: 'Quality Inspection & Approval Procedure',
+        title: 'Quality Inspection & Claim Resolution',
         content: [
           'Returned items typically arrive at our fulfillment facility within 5 to 7 business days of pickup.',
           'Our quality control team inspects the returned parcel within 48 hours of arrival to verify that the item matches the approved claim and packaging conditions.',
@@ -325,11 +329,11 @@ const POLICIES: Record<string, PolicyDocument> = {
       {
         id: 'refund-timelines',
         number: '09',
-        title: 'Refund Timelines & Original Payment Method',
+        title: 'Refund Timelines & Original Payment Source',
         content: [
-          'Refunds are processed promptly upon claim approval:',
-          'Prepaid Online Orders: Refunds are credited back to the original source payment method (UPI, Debit/Credit Card, Net Banking) within 5 to 7 business days. Depending on your issuing bank, the credit may take 2 to 3 additional days to appear on your account statement.',
-          'Processing Fees: LANAN does not deduct any payment processing penalty for approved refunds.',
+          'Refunds are processed promptly upon claim verification or inspection approval:',
+          'Prepaid Online Orders: Refunds are credited back to the original source payment method (UPI, Debit/Credit Card, Net Banking via Razorpay / Shopify-hosted gateway) within 5 to 7 business days. Depending on your issuing bank, the credit may take 2 to 3 additional days to appear on your account statement.',
+          'Zero Processing Fees: LANAN does not deduct any payment processing penalty or administrative fee for approved refunds.',
         ],
       },
       {
@@ -337,34 +341,44 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '10',
         title: 'Cash on Delivery (COD) Refund Procedure',
         content: [
-          'Because Cash on Delivery (COD) payments are collected in physical cash or carrier-facilitated doorstep UPI by the logistics executive, funds cannot be returned in cash at your doorstep.',
+          'Because Cash on Delivery (COD) payments are collected in physical cash or carrier-facilitated doorstep UPI by logistics personnel, funds cannot be returned in cash at your doorstep.',
           'COD Refund Flow: For approved COD returns, refunds are transferred directly into your verified Indian bank account via NEFT/IMPS or verified UPI ID.',
           'Banking Information Required: Our support team will request the following details via official email from support@lanan.in:',
           '- Account Holder Full Name (matching the order name)',
           '- Bank Name & Branch',
           '- Bank Account Number',
           '- Bank IFSC Code, OR Verified UPI ID (e.g. name@okhdfcbank)',
-          'Timeline: COD bank transfers are initiated within 48 hours of receiving verified banking details and typically credit within 3 to 5 business days.',
+          'Timeline: COD bank transfers are initiated within 48 business hours of receiving verified banking details and typically credit within 3 to 5 business days.',
         ],
       },
       {
         id: 'shipping-deductions',
         number: '11',
-        title: 'Shipping Charges & Legitimate Deductions',
+        title: 'Shipping Charges & Fee Policies',
         content: [
-          'Damaged, Defective or Incorrect Shipments: 100% full refund is issued, including any standard shipping charge paid at the time of purchase.',
-          'Voluntary Return of Unopened Items: If an unopened, sealed item is returned voluntarily within the 1-day window, the original shipping charge (₹79 for orders under ₹599) is non-refundable, as it covers third-party courier dispatch expenses already incurred.',
+          'Damaged, Defective, Leaking or Incorrect Shipments: 100% full refund is issued, including any standard shipping charge paid at the time of purchase. Reverse pickup is arranged at zero cost to you.',
+          'Voluntary Return of Sealed Items: If an untampered, sealed item is returned voluntarily within the 24-hour window, the original shipping charge (₹79 for orders under ₹599) is non-refundable, as it covers third-party courier dispatch expenses already incurred.',
+        ],
+      },
+      {
+        id: 'consumer-rights-safeguards',
+        number: '12',
+        title: 'Statutory Consumer Protection Safeguards',
+        content: [
+          'LANAN is committed to fair trade, transparency, and consumer satisfaction under Indian law.',
+          'Nothing in this Return & Refund Policy excludes, restricts, or modifies any statutory consumer guarantees, warranty obligations, or consumer rights that cannot legally be excluded under the Consumer Protection Act, 2019, the Consumer Protection (E-Commerce) Rules, 2020, or applicable Indian law.',
+          'If you believe your consumer rights have not been addressed in accordance with statutory requirements, you may contact our designated Grievance Officer at grievance@lanan.in.',
         ],
       },
       {
         id: 'contact-refund',
-        number: '12',
-        title: 'Contact Information for Refund Assistance',
+        number: '13',
+        title: 'Contact Information for Return & Refund Assistance',
         content: [
           'For any assistance regarding an ongoing return, replacement, or refund status:',
           'Email: support@lanan.in | hello@lanan.in',
           'Phone / WhatsApp: +91 9235170198 (Monday to Saturday, 10:00 AM – 6:00 PM IST)',
-          'Registered Address: Ma Tara Neelsarashwati (LANAN), Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India.',
+          'Registered Business Address: Ma Tara Neelsarashwati (LANAN), Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India.',
         ],
       },
     ],
@@ -704,8 +718,8 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '10',
         title: 'Returns, Refunds & Cancellations',
         content: [
-          'All return, replacement, refund, and cancellation requests are governed strictly by our Return & Refund Policy and Cancellation Policy.',
-          'Skincare products that have been unsealed, opened, or used cannot be returned for hygiene and cosmetic safety reasons, except where verified transit damage or manufacturing defect is reported within 48 hours of delivery.',
+          'All return, replacement, refund, and cancellation requests are governed strictly by our dedicated Return & Refund Policy and Cancellation Policy.',
+          'Return requests for transit damage, mechanical pump defects, leakage, or incorrect products must be initiated within 24 hours of verified courier delivery accompanied by mandatory continuous unboxing video evidence. For cosmetic hygiene and safety reasons, products cannot be returned for change-of-mind once opened.',
         ],
       },
       {
@@ -798,39 +812,40 @@ const POLICIES: Record<string, PolicyDocument> = {
     lastUpdated: 'October 2026',
     effectiveDate: '1 October 2026',
     summary:
-      'Orders can be cancelled free of charge within 24 hours of placement provided the order has not been dispatched/assigned an AWB. Dispatched orders in transit cannot be intercepted and must follow our Return Policy.',
+      'Orders placed on LANAN can be cancelled free of charge within 24 hours of placement provided the order has not yet been dispatched/assigned an Air Waybill (AWB). Dispatched orders in transit cannot be recalled and must follow our Return & Refund Policy. Prepaid cancellations are refunded 100% to the original source.',
     intro:
       'We understand that beauty rituals and shopping plans can change. LANAN provides an honest, customer-centric cancellation workflow designed to accommodate changes before orders leave our fulfillment center.',
     flaggedNotice:
-      'Operational 24-Hour Cutoff Note: Orders are eligible for cancellation within 24 hours of placement, provided courier packaging and Air Waybill (AWB) generation have not occurred. Once an AWB is issued and handed to the logistics carrier, orders are in transit and cannot be cancelled.',
+      'Operational 24-Hour Cutoff Note: Orders are eligible for cancellation within 24 hours of placement, provided fulfillment packaging and courier Air Waybill (AWB) generation have not yet occurred. Once an AWB is issued and handed to the logistics carrier, orders are in transit and cannot be recalled.',
     sections: [
       {
         id: 'cancellation-overview',
         number: '01',
         title: 'Cancellation Policy Overview',
         content: [
-          'This Cancellation Policy governs the conditions under which an order placed on lanan.in may be cancelled by either the customer or LANAN.',
+          'This Cancellation Policy governs the conditions under which an order placed on lanan.in / lvbrilanan.in may be cancelled by either the customer or LANAN.',
           'We strive to dispatch orders rapidly; therefore, the window for pre-dispatch cancellation is time-sensitive. Please review the cutoffs and procedures below.',
         ],
       },
       {
         id: 'pre-dispatch-cancellation',
         number: '02',
-        title: 'Customer Cancellation Requests Before Dispatch',
+        title: 'Customer Cancellation Requests Before Dispatch (The 24-Hour Window)',
         content: [
           'You may cancel your order free of charge within twenty-four (24) hours of placing the order, provided the parcel has not yet been assigned a courier Air Waybill (AWB) and handed over to our logistics partner.',
-          'Prepaid Orders: If a prepaid order is cancelled prior to dispatch within the 24-hour window, a 100% full refund is initiated immediately with zero cancellation penalties.',
+          'Commencement of 24-Hour Period: The 24-hour cancellation window begins at the exact order confirmation timestamp generated when your order is placed on our website.',
+          'Prepaid Orders: If a prepaid order is cancelled prior to dispatch within the 24-hour window, a 100% full refund is initiated immediately with zero cancellation penalties or deductions.',
           'Cash on Delivery (COD) Orders: COD orders can be cancelled prior to dispatch within the 24-hour window at zero cost.',
         ],
       },
       {
         id: 'post-dispatch-cancellation',
         number: '03',
-        title: 'Requests After Dispatch (In Transit)',
+        title: 'Requests After Dispatch (Orders in Transit)',
         content: [
           'Once an order has been packaged, assigned an Air Waybill (AWB) consignment tracking number, and handed to the logistics carrier, it is in physical transit and cannot be recalled or cancelled in our system.',
-          'For COD Shipments: If you no longer wish to receive the parcel, you may decline the delivery when the courier executive arrives at your doorstep.',
-          'For Prepaid Shipments: You may either refuse the delivery at your doorstep or accept the parcel and initiate a return of unopened items under our Return & Refund Policy.',
+          'For COD Shipments: If you no longer wish to receive the parcel, you may decline delivery when the courier executive arrives at your doorstep.',
+          'For Prepaid Shipments: You may either decline delivery at your doorstep for return-to-origin (RTO), or receive the shipment and follow our Return & Refund Policy if damaged or defective.',
         ],
       },
       {
@@ -839,23 +854,46 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'Orders Already Delivered',
         content: [
           'Delivered orders cannot be cancelled under any circumstances.',
-          'If you have received your order and wish to return an eligible, unopened skincare item, or if the product was received damaged in transit, please follow the guidelines in our Return & Refund Policy.',
+          'If you have received your order and wish to report transit damage, defective pumps, leakage, or incorrect products, please follow the guidelines in our Return & Refund Policy within 24 hours of delivery.',
         ],
       },
       {
-        id: 'promotional-orders',
+        id: 'how-to-cancel-guide',
         number: '05',
-        title: 'Promotional, Bundled & Discounted Orders',
+        title: 'How to Submit a Cancellation Request & Verification Process',
         content: [
-          'Orders placed using promotional discount codes or coupon vouchers may be cancelled before dispatch under standard rules.',
-          'The refund amount will strictly equal the net amount actually paid after applying the promotional discount.',
-          'Promotional discount codes may not be re-activated or re-issued if their validity period has expired.',
-          'Bundled sets or multi-item promotions cannot be partially cancelled; the entire bundle must be cancelled together.',
+          'To request an order cancellation before dispatch:',
+          'Option A (Fastest — WhatsApp Concierge): Message or call our concierge at +91 9235170198 with your Order ID and cancellation request.',
+          'Option B (Email Concierge): Send an email to support@lanan.in with the subject line: "Order Cancellation - [Your Order ID]". State your Order ID and reason for cancellation.',
+          'Option C (Online Support Form): Submit the Concierge Support Form at lanan.in/contact by selecting the "Order Cancellation (Pre-Dispatch)" category.',
+          'Review & Verification Process: Our support team immediately verifies the order\'s real-time fulfillment status in Shopify and courier dispatch logs. If the parcel has not yet been packed or assigned an AWB, cancellation is confirmed and an official cancellation confirmation is issued. Submitting a cancellation request does not constitute automatic cancellation until verified against warehouse dispatch status.',
+        ],
+      },
+      {
+        id: 'refund-handling',
+        number: '06',
+        title: 'Refund Handling for Cancelled Prepaid Orders',
+        content: [
+          'For successfully cancelled prepaid orders, refunds are processed as follows:',
+          'Initiation: The 100% full refund is triggered in our payment gateway (Razorpay / Shopify-hosted gateway) within 24 to 48 business hours of cancellation confirmation.',
+          'Credit Timeline: The refunded funds will reflect in your original payment source (credit/debit card, bank account, or UPI) within 5 to 7 business days, depending on your bank’s processing schedule.',
+          'No Deductions: No cancellation fee, restocking fee, or processing penalty is deducted for pre-dispatch cancellations.',
+        ],
+      },
+      {
+        id: 'cod-cancellation-rules',
+        number: '07',
+        title: 'Cash on Delivery (COD) Cancellation Rules',
+        content: [
+          'We understand that plans can change; however, unaccepted COD shipments cause substantial two-way freight losses and carbon footprint waste.',
+          'Customers are kindly requested to cancel COD orders prior to dispatch if plans change.',
+          'COD orders cancelled before dispatch incur zero cancellation penalty.',
+          'Accounts with repeated unaccepted or refused COD deliveries may have the Cash on Delivery payment option temporarily suspended.',
         ],
       },
       {
         id: 'cancellation-by-lanan',
-        number: '06',
+        number: '08',
         title: 'Cancellation Initiated by LANAN',
         content: [
           'LANAN reserves the right to cancel an order under rare operational circumstances:',
@@ -867,40 +905,27 @@ const POLICIES: Record<string, PolicyDocument> = {
         ],
       },
       {
-        id: 'cod-cancellation-rules',
-        number: '07',
-        title: 'Cash on Delivery (COD) Cancellation Rules',
-        content: [
-          'We understand that emergencies arise; however, unaccepted COD shipments cause substantial two-way freight losses and carbon footprint waste.',
-          'Customers are kindly requested to cancel COD orders prior to dispatch if plans change.',
-          'Accounts with repeated unaccepted or refused COD deliveries may have the Cash on Delivery payment option temporarily suspended.',
-        ],
-      },
-      {
-        id: 'refund-handling',
-        number: '08',
-        title: 'Refund Handling for Cancelled Orders',
-        content: [
-          'For successfully cancelled prepaid orders, refunds are processed as follows:',
-          'Initiation: The refund is triggered in our payment gateway within 24 to 48 business hours of cancellation confirmation.',
-          'Credit Timeline: The refunded funds will reflect in your original payment method (bank account, card, or UPI) within 5 to 7 business days, depending on your bank’s processing schedule.',
-          'No Deductions: No cancellation fee or processing penalty is deducted for pre-dispatch cancellations.',
-        ],
-      },
-      {
-        id: 'how-to-cancel-guide',
+        id: 'promotional-orders',
         number: '09',
-        title: 'How to Submit a Cancellation Request (Step-by-Step)',
+        title: 'Promotional, Bundled & Discounted Orders',
         content: [
-          'To request a cancellation before dispatch:',
-          'Option A (Fastest — WhatsApp / Phone): Message or call our concierge at +91 9235170198 with your Order ID and cancellation request.',
-          'Option B (Email): Send an email to support@lanan.in with the subject line: "Order Cancellation - [Your Order ID]". State your Order ID and reason for cancellation.',
-          'Our team will verify the dispatch status immediately and confirm cancellation if the parcel has not yet left the hub.',
+          'Orders placed using promotional discount codes or coupon vouchers may be cancelled before dispatch under standard rules.',
+          'The refund amount will strictly equal the net amount actually paid after applying the promotional discount.',
+          'Promotional discount codes may not be re-activated or re-issued if their validity period has expired.',
+          'Bundled sets or multi-item promotions cannot be partially cancelled; the entire bundle must be cancelled together.',
+        ],
+      },
+      {
+        id: 'consumer-safeguards-cancellation',
+        number: '10',
+        title: 'Statutory Consumer Rights Safeguards',
+        content: [
+          'Nothing in this Cancellation Policy excludes or limits any statutory rights that cannot legally be excluded under the Consumer Protection Act, 2019, the Consumer Protection (E-Commerce) Rules, 2020, or applicable Indian law.',
         ],
       },
       {
         id: 'support-links',
-        number: '10',
+        number: '11',
         title: 'Customer Concierge & Related Policies',
         content: [
           'For immediate assistance with any ongoing order:',
@@ -1145,6 +1170,75 @@ export default async function LegalPage({ params }: Props) {
                 <p className="text-xs font-body text-[#F7F0E7]/80 leading-relaxed">
                   {policy.flaggedNotice}
                 </p>
+              </div>
+            )}
+
+            {/* Quick Action Card for Return / Cancellation */}
+            {slug === 'return-refund-policy' && (
+              <div className="mb-8 p-6 rounded-2xl bg-[#090807] text-[#F7F0E7] border border-[#C9A45D]/30 shadow-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <span className="text-[10px] font-body text-[#C9A45D] uppercase tracking-widest font-semibold block mb-1">
+                      Need Assistance with a Damaged, Leaking or Incorrect Item?
+                    </span>
+                    <h3 className="font-heading text-xl text-[#F7F0E7] font-light">
+                      Initiate a Return or Replacement Claim
+                    </h3>
+                    <p className="text-xs font-body text-[#F7F0E7]/70 leading-relaxed mt-1">
+                      Must be requested within 24 hours of verified courier delivery with continuous unboxing video evidence.
+                    </p>
+                  </div>
+                  <div className="shrink-0 flex flex-wrap gap-2.5">
+                    <Link
+                      href="/contact?category=returns"
+                      className="btn-gold text-xs px-4 py-2 text-center"
+                    >
+                      Submit Support Form
+                    </Link>
+                    <a
+                      href={`https://wa.me/91${BRAND.phone}?text=Hi%20LANAN%2C%20I%20would%20like%20to%20submit%20a%20Return%20Request%20for%20Order%20ID%3A%20`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-full border border-[#C9A45D]/50 text-xs font-body text-[#C9A45D] hover:bg-[#C9A45D]/10 transition-colors text-center"
+                    >
+                      WhatsApp Video Proof
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {slug === 'cancellation-policy' && (
+              <div className="mb-8 p-6 rounded-2xl bg-[#090807] text-[#F7F0E7] border border-[#C9A45D]/30 shadow-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <span className="text-[10px] font-body text-[#C9A45D] uppercase tracking-widest font-semibold block mb-1">
+                      Need to Cancel Before Courier Dispatch?
+                    </span>
+                    <h3 className="font-heading text-xl text-[#F7F0E7] font-light">
+                      Submit an Order Cancellation Request
+                    </h3>
+                    <p className="text-xs font-body text-[#F7F0E7]/70 leading-relaxed mt-1">
+                      Cancellations are accepted within 24 hours of placement prior to AWB generation and carrier dispatch.
+                    </p>
+                  </div>
+                  <div className="shrink-0 flex flex-wrap gap-2.5">
+                    <Link
+                      href="/contact?category=cancellation"
+                      className="btn-gold text-xs px-4 py-2 text-center"
+                    >
+                      Submit Cancellation Form
+                    </Link>
+                    <a
+                      href={`https://wa.me/91${BRAND.phone}?text=Hi%20LANAN%2C%20I%20would%20like%20to%20cancel%20my%20Order%20ID%3A%20`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-full border border-[#C9A45D]/50 text-xs font-body text-[#C9A45D] hover:bg-[#C9A45D]/10 transition-colors text-center"
+                    >
+                      Fast WhatsApp Cancel
+                    </a>
+                  </div>
+                </div>
               </div>
             )}
 

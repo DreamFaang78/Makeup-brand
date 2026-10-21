@@ -3,11 +3,11 @@
 // LANAN — Contact & Concierge Page
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  Mail, Phone, MapPin, Clock, MessageSquare, Send, CheckCircle2,
-  Sparkles, HelpCircle, ArrowRight
+  Mail, Phone, MapPin, Clock, Send, CheckCircle2,
+  Sparkles
 } from 'lucide-react';
 import { BRAND } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -22,8 +22,12 @@ const FAQ_ITEMS = [
     a: 'Yes, Cash on Delivery is available across most serviceable pin codes throughout India. You can select Cash on Delivery at checkout.',
   },
   {
-    q: 'What is LANAN’s return and replacement policy?',
-    a: 'We take pride in our formulations. If you receive a damaged, defective, or incorrect product, notify us within 48 hours of delivery with unboxing photos, and we will initiate an immediate replacement or full refund.',
+    q: 'What is LANAN’s return and refund policy?',
+    a: 'We take immense pride in our formulations. If your parcel arrives damaged in transit, with defective pumps, leakage, or incorrect products, please submit a return request within 24 hours of verified courier delivery accompanied by continuous unboxing video evidence. Following verification, our concierge team will arrange a free replacement or initiate a full refund.',
+  },
+  {
+    q: 'Can I cancel my order before it is dispatched?',
+    a: 'Yes. You can cancel your order free of charge within 24 hours of placement, provided courier packaging and Air Waybill (AWB) generation have not yet occurred. Once dispatched and handed to logistics carriers, orders in transit cannot be cancelled.',
   },
   {
     q: 'Can I get personalized skincare consultation?',
@@ -44,10 +48,25 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get('category');
+      if (cat && ['general', 'cancellation', 'returns', 'order', 'consultation', 'press'].includes(cat)) {
+        setFormData((prev) => ({ ...prev, subject: cat }));
+      }
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
       toast.error('Please complete all required fields.');
+      return;
+    }
+
+    if ((formData.subject === 'returns' || formData.subject === 'cancellation') && !formData.orderNumber.trim()) {
+      toast.error('Please provide your Order ID for return or cancellation requests.');
       return;
     }
 
@@ -56,7 +75,7 @@ export default function ContactPage() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsSubmitting(false);
     setSubmitted(true);
-    toast.success('Your message has been received! Our concierge team will reply within 24 hours.');
+    toast.success('Your request has been logged! Our concierge team will review your order records and respond within 24 business hours.');
   };
 
   return (
@@ -191,7 +210,14 @@ export default function ContactPage() {
                   </div>
                   <h3 className="font-heading text-2xl text-obsidian font-normal">Thank You for Connecting</h3>
                   <p className="font-body text-taupe text-sm max-w-md mx-auto leading-relaxed">
-                    Your inquiry has been logged with our customer care desk. A skincare specialist will review your details and respond within 24 business hours.
+                    {formData.subject === 'returns'
+                      ? 'Your return or replacement claim has been logged with our customer care desk. Please ensure your continuous unboxing video recording is sent to support@lanan.in or WhatsApp +91 9235170198 with your Order ID for verification. A specialist will review and respond within 24 business hours.'
+                      : formData.subject === 'cancellation'
+                      ? 'Your cancellation request has been logged. Our fulfillment team is verifying dispatch and AWB records to confirm eligibility. You will receive an official update within 24 business hours.'
+                      : 'Your inquiry has been logged with our customer care desk. A skincare specialist will review your details and respond within 24 business hours.'}
+                  </p>
+                  <p className="text-xs text-taupe/80 italic">
+                    Note: Requests are subject to verification and are not automatically approved upon form submission.
                   </p>
                   <button
                     onClick={() => {
@@ -265,10 +291,11 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <label className="block text-xs font-medium font-body text-charcoal mb-1.5">
-                        Order ID (If applicable)
+                        Order ID {(formData.subject === 'returns' || formData.subject === 'cancellation') && <span className="text-gold">* (Required)</span>}
                       </label>
                       <input
                         type="text"
+                        required={formData.subject === 'returns' || formData.subject === 'cancellation'}
                         value={formData.orderNumber}
                         onChange={(e) => setFormData({ ...formData, orderNumber: e.target.value })}
                         placeholder="e.g. LAN261014..."
@@ -287,23 +314,60 @@ export default function ContactPage() {
                       className="w-full px-4 py-3 rounded-xl border border-charcoal/20 focus:border-gold focus:ring-1 focus:ring-gold outline-none text-sm font-body bg-sand-50/30 cursor-pointer"
                     >
                       <option value="general">General Skincare Inquiry</option>
+                      <option value="returns">Return, Replacement or Damaged Item Claim</option>
+                      <option value="cancellation">Order Cancellation (Pre-Dispatch)</option>
                       <option value="order">Order Tracking & Delivery Status</option>
-                      <option value="returns">Returns, Exchange or Damages</option>
                       <option value="consultation">Routine & Product Consultation</option>
                       <option value="press">Press, Collaborations & Partnerships</option>
                     </select>
                   </div>
 
+                  {formData.subject === 'returns' && (
+                    <div className="p-4 rounded-xl bg-gold/10 border border-gold/30 text-xs font-body text-charcoal space-y-2">
+                      <p className="font-semibold text-obsidian flex items-center gap-1.5">
+                        <CheckCircle2 size={14} className="text-gold" />
+                        24-Hour Return Window & Video Evidence Guidance:
+                      </p>
+                      <p className="text-taupe leading-relaxed">
+                        Under our approved policy, requests for transit damage, mechanical pump defects, leakage, or incorrect items must be initiated within <strong>24 hours</strong> of verified courier delivery.
+                      </p>
+                      <p className="text-taupe leading-relaxed">
+                        <strong>Mandatory Video Evidence:</strong> A single, continuous unboxing video recording starting from the unopened package showing the courier label is required. Please paste a private link (Google Drive / iCloud / OneDrive) in the message below, or send the video file directly to WhatsApp Concierge at <strong>+91 9235170198</strong> or email <strong>support@lanan.in</strong> with your Order ID.
+                      </p>
+                    </div>
+                  )}
+
+                  {formData.subject === 'cancellation' && (
+                    <div className="p-4 rounded-xl bg-gold/10 border border-gold/30 text-xs font-body text-charcoal space-y-2">
+                      <p className="font-semibold text-obsidian flex items-center gap-1.5">
+                        <CheckCircle2 size={14} className="text-gold" />
+                        24-Hour Pre-Dispatch Cancellation Guidance:
+                      </p>
+                      <p className="text-taupe leading-relaxed">
+                        Orders are eligible for cancellation within <strong>24 hours</strong> of placement, provided courier packaging and Air Waybill (AWB) generation have not yet occurred.
+                      </p>
+                      <p className="text-taupe leading-relaxed">
+                        For fastest pre-dispatch cancellation, you can also message or call our concierge directly at <strong>+91 9235170198</strong>.
+                      </p>
+                    </div>
+                  )}
+
                   <div>
                     <label className="block text-xs font-medium font-body text-charcoal mb-1.5">
-                      Your Message <span className="text-gold">*</span>
+                      Your Message / Issue Description <span className="text-gold">*</span>
                     </label>
                     <textarea
                       required
                       rows={5}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      placeholder="Please share your questions or feedback..."
+                      placeholder={
+                        formData.subject === 'returns'
+                          ? 'Please describe the issue (damage, defect, leak, or wrong item) and include any video link or mention if video was sent to WhatsApp/Email...'
+                          : formData.subject === 'cancellation'
+                          ? 'Please state the reason for order cancellation...'
+                          : 'Please share your questions or feedback...'
+                      }
                       className="w-full px-4 py-3 rounded-xl border border-charcoal/20 focus:border-gold focus:ring-1 focus:ring-gold outline-none text-sm font-body bg-sand-50/30 resize-none"
                     />
                   </div>
