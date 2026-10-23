@@ -64,7 +64,7 @@ export default function Navbar() {
           const mockUser = JSON.parse(mockUserStr);
           setUser(mockUser);
           // If the mock user is the admin, set segment to admin
-          if (mockUser.email === 'admin@lanan.in') {
+          if (mockUser.email === 'admin@lvbrilanan.in' || mockUser.email === 'admin@lanan.in') {
             setUserSegment('admin');
           } else {
             setUserSegment('new');
@@ -85,7 +85,7 @@ export default function Navbar() {
             .eq('id', session.user.id)
             .single();
           
-          if (data?.email === 'admin@lanan.in') {
+          if (data?.email === 'admin@lvbrilanan.in' || data?.email === 'admin@lanan.in') {
             setUserSegment('admin');
           } else {
             setUserSegment(data?.segment || null);

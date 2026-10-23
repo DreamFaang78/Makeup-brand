@@ -81,7 +81,7 @@ export default function AdminSidebar() {
           <div className="w-7 h-7 rounded-full bg-gradient-gold flex items-center justify-center text-obsidian text-xs font-bold">A</div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-body font-medium text-ivory/90 truncate">Admin</p>
-            <p className="text-[10px] text-ivory/40 truncate">admin@lanan.in</p>
+            <p className="text-[10px] text-ivory/40 truncate">admin@lvbrilanan.in</p>
           </div>
         </div>
         <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-ivory/40 hover:text-error-red hover:bg-error-red/10 transition-all text-xs font-body">

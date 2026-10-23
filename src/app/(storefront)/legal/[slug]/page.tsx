@@ -158,7 +158,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'Address Accuracy & Address Changes',
         content: [
           'Customers are solely responsible for ensuring that the shipping address, contact phone number, landmark, and 6-digit PIN code provided during checkout are complete and accurate.',
-          'Address Modifications: You may request an address correction only if your order has NOT yet been packed and dispatched. To request a modification, contact our concierge immediately via WhatsApp or phone at +91 9235170198 or email support@lanan.in.',
+          'Address Modifications: You may request an address correction only if your order has NOT yet been packed and dispatched. To request a modification, contact our concierge immediately via WhatsApp or phone at +91 9235170198 or email customer@lvbrilanan.in.',
           'Once a package is handed over to the courier partner and an AWB is issued, the destination address cannot be modified in transit.',
         ],
       },
@@ -190,7 +190,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'Incorrect, Damaged or Missing Shipments',
         content: [
           'All LANAN parcels are secured with custom tamper-evident security tape. If you notice that the outer cardboard box is crushed, punctured, damp, or the security seal is broken upon arrival, please record a video of the parcel before accepting or opening it.',
-          'Any transit damage, product leakage, or item discrepancy must be reported to support@lanan.in within 24 hours of delivery along with continuous unboxing video evidence.',
+          'Any transit damage, product leakage, or item discrepancy must be reported to support@lvbrilanan.in within 24 hours of delivery along with continuous unboxing video evidence.',
           'For complete replacement and refund steps, please consult our Return & Refund Policy.',
         ],
       },
@@ -200,7 +200,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'Contacting Customer Support About Delivery',
         content: [
           'For any questions regarding order dispatch, transit updates, or delivery assistance, our dedicated concierge team is at your service:',
-          'Email: support@lanan.in | hello@lanan.in',
+          'Email: support@lvbrilanan.in | General: help@lvbrilanan.in',
           'Phone / WhatsApp: +91 9235170198 (Monday to Saturday, 10:00 AM – 6:00 PM IST)',
           'Registered Business Address: Ma Tara Neelsarashwati (LANAN), Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India.',
         ],
@@ -287,7 +287,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'How Customers Request a Return (Step-by-Step)',
         content: [
           'To initiate an eligible return or replacement, follow this streamlined process:',
-          'Step 1: Contact our concierge desk within 24 hours of courier delivery via WhatsApp (+91 9235170198), email (support@lanan.in | hello@lanan.in), or by submitting the online Concierge Support Form at https://www.lvbrilanan.in/contact.',
+          'Step 1: Contact our concierge desk within 24 hours of courier delivery via WhatsApp (+91 9235170198), email (customer@lvbrilanan.in), or by submitting the online Concierge Support Form at https://www.lvbrilanan.in/contact.',
           'Step 2: Use the subject line: "Return Request - [Your Order ID]" (e.g. Return Request - LAN2610ABC).',
           'Step 3: State your Customer Name, Order ID, Delivery Date/Time, affected product, and whether you prefer a replacement or refund.',
           'Step 4: Provide the mandatory continuous unboxing video recording detailed in Section 06 below.',
@@ -303,7 +303,7 @@ const POLICIES: Record<string, PolicyDocument> = {
           '1. Mandatory Continuous Unboxing Video Recording: A clear, unbroken, unedited video recording starting before the courier outer cardboard package is opened or cut. The video recording must clearly show the package in its delivered condition, the printed courier shipping label, and the Air Waybill (AWB) consignment tracking number.',
           '2. Unbroken Unboxing Capture: The video recording must document the cutting of the tamper-evident security tape, opening of the box, and unpacking of the inner items in one continuous sequence without pauses, cuts, or off-camera handling.',
           '3. Clear Demonstration of Issue: A close-up view within the video recording capturing the specific damage, fluid leakage, defective pump mechanism (demonstrating the failure to dispense), or mismatched product label, as well as the batch number and expiry date printed on the container.',
-          '4. Submitting Video Evidence: Video recordings may be sent directly via WhatsApp to +91 9235170198, attached to your email to support@lanan.in, or shared via a private cloud drive link (Google Drive, OneDrive, or iCloud). Video files are kept strictly confidential and are never shared publicly.',
+          '4. Submitting Video Evidence: Video recordings may be sent directly via WhatsApp to +91 9235170198, attached to your email to customer@lvbrilanan.in, or shared via a private cloud drive link (Google Drive, OneDrive, or iCloud). Video files are kept strictly confidential and are never shared publicly.',
         ],
       },
       {
@@ -343,7 +343,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         content: [
           'Because Cash on Delivery (COD) payments are collected in physical cash or carrier-facilitated doorstep UPI by logistics personnel, funds cannot be returned in cash at your doorstep.',
           'COD Refund Flow: For approved COD returns, refunds are transferred directly into your verified Indian bank account via NEFT/IMPS or verified UPI ID.',
-          'Banking Information Required: Our support team will request the following details via official email from support@lanan.in:',
+          'Banking Information Required: Our support team will request the following details via official email from customer@lvbrilanan.in:',
           '- Account Holder Full Name (matching the order name)',
           '- Bank Name & Branch',
           '- Bank Account Number',
@@ -367,7 +367,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         content: [
           'LANAN is committed to fair trade, transparency, and consumer satisfaction under Indian law.',
           'Nothing in this Return & Refund Policy excludes, restricts, or modifies any statutory consumer guarantees, warranty obligations, or consumer rights that cannot legally be excluded under the Consumer Protection Act, 2019, the Consumer Protection (E-Commerce) Rules, 2020, or applicable Indian law.',
-          'If you believe your consumer rights have not been addressed in accordance with statutory requirements, you may contact our designated Grievance Officer at grievance@lanan.in.',
+          'If you believe your consumer rights have not been addressed in accordance with statutory requirements, you may contact our designated Grievance Officer at grievance@lvbrilanan.in.',
         ],
       },
       {
@@ -376,7 +376,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'Contact Information for Return & Refund Assistance',
         content: [
           'For any assistance regarding an ongoing return, replacement, or refund status:',
-          'Email: support@lanan.in | hello@lanan.in',
+          'Email: customer@lvbrilanan.in | Support: support@lvbrilanan.in',
           'Phone / WhatsApp: +91 9235170198 (Monday to Saturday, 10:00 AM – 6:00 PM IST)',
           'Registered Business Address: Ma Tara Neelsarashwati (LANAN), Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India.',
         ],
@@ -560,7 +560,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         content: [
           'We retain order, billing, and accounting records for the statutory retention periods mandated under Indian tax laws (such as the Goods and Services Tax Act and Companies Act, typically up to 8 years).',
           'Marketing subscriber data is retained until you unsubscribe or request data deletion.',
-          'You may request the deletion of non-statutory personal account data by sending an email to hello@lanan.in.',
+          'You may request the deletion of non-statutory personal account data by sending an email to help@lvbrilanan.in.',
         ],
       },
       {
@@ -594,7 +594,7 @@ const POLICIES: Record<string, PolicyDocument> = {
           'Designation: Grievance Redressal Officer',
           'Legal Entity: Ma Tara Neelsarashwati (Brand: LANAN)',
           'Registered Office: Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India',
-          'Email: hello@lanan.in | support@lanan.in',
+          'Email: help@lvbrilanan.in | Support: support@lvbrilanan.in',
           'Telephone: +91 9235170198 (Mon–Sat, 10:00 AM – 6:00 PM IST)',
           'Turnaround: All grievances are acknowledged within 48 business hours and resolved within 30 days as prescribed by law.',
         ],
@@ -728,7 +728,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'Customer Accounts & Account Security',
         content: [
           'When you create a LANAN account, you are responsible for maintaining the confidentiality of your login credentials and for restricting access to your devices.',
-          'You agree to accept responsibility for all activities that occur under your account. Notify our concierge immediately at hello@lanan.in if you suspect unauthorized access.',
+          'You agree to accept responsibility for all activities that occur under your account. Notify our concierge immediately at help@lvbrilanan.in or support@lvbrilanan.in if you suspect unauthorized access.',
         ],
       },
       {
@@ -796,7 +796,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         content: [
           'Legal Registered Entity: Ma Tara Neelsarashwati (Brand: LANAN)',
           'Registered Office Address: Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India',
-          'Official Support Email: support@lanan.in | Corporate Inquiries: hello@lanan.in',
+          'Official Support Email: support@lvbrilanan.in | Orders & Returns: customer@lvbrilanan.in | General Inquiries: help@lvbrilanan.in',
           'Phone / WhatsApp: +91 9235170198 (Mon–Sat, 10:00 AM – 6:00 PM IST)',
         ],
       },
@@ -864,7 +864,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         content: [
           'To request an order cancellation before dispatch:',
           'Option A (Fastest — WhatsApp Concierge): Message or call our concierge at +91 9235170198 with your Order ID and cancellation request.',
-          'Option B (Email Concierge): Send an email to support@lanan.in with the subject line: "Order Cancellation - [Your Order ID]". State your Order ID and reason for cancellation.',
+          'Option B (Email Concierge): Send an email to customer@lvbrilanan.in with the subject line: "Order Cancellation - [Your Order ID]". State your Order ID and reason for cancellation.',
           'Option C (Online Support Form): Submit the Concierge Support Form at https://www.lvbrilanan.in/contact by selecting the "Order Cancellation (Pre-Dispatch)" category.',
           'Review & Verification Process: Our support team immediately verifies the order\'s real-time fulfillment status in Shopify and courier dispatch logs. If the parcel has not yet been packed or assigned an AWB, cancellation is confirmed and an official cancellation confirmation is issued. Submitting a cancellation request does not constitute automatic cancellation until verified against warehouse dispatch status.',
         ],
@@ -929,7 +929,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'Customer Concierge & Related Policies',
         content: [
           'For immediate assistance with any ongoing order:',
-          'Email: support@lanan.in | hello@lanan.in',
+          'Email: customer@lvbrilanan.in | Support: support@lvbrilanan.in',
           'Phone / WhatsApp: +91 9235170198 (Mon–Sat, 10:00 AM – 6:00 PM IST)',
           'Registered Office: Ma Tara Neelsarashwati (LANAN), Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020, India.',
         ],
@@ -1403,7 +1403,11 @@ export default async function LegalPage({ params }: Props) {
                     <p className="flex items-center gap-2">
                       <Mail size={13} className="text-[#C9A45D] shrink-0" />
                       <a href={`mailto:${BRAND.supportEmail}`} className="hover:text-[#C9A45D] transition-colors">
-                        {BRAND.supportEmail} | {BRAND.email}
+                        {BRAND.supportEmail}
+                      </a>
+                      <span className="text-[#F7F0E7]/40">|</span>
+                      <a href={`mailto:${BRAND.helpEmail}`} className="hover:text-[#C9A45D] transition-colors">
+                        {BRAND.helpEmail}
                       </a>
                     </p>
                   </div>

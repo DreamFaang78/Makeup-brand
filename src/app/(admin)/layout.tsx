@@ -46,7 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             setIsAuthorized(true);
           } else if (customer) {
             // Always authorize the primary admin email
-            if (customer.email === 'admin@lanan.in') {
+            if (customer.email === 'admin@lvbrilanan.in' || customer.email === 'admin@lanan.in') {
               setIsAuthorized(true);
             } else if (customer.segment === 'new' || customer.segment === 'repeat') {
               // Redirect non-admin customers to their orders page

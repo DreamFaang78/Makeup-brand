@@ -197,7 +197,7 @@ lanan/
 ### 3.2 Admin Panel (Private)
 
 > Middleware redirects unauthenticated users to `/?auth=login`.
-> Admin layout additionally checks `customer.email === 'admin@lanan.in'` for role.
+> Admin layout additionally checks `customer.email === 'admin@lvbrilanan.in'` (or `admin@lanan.in`) for role.
 
 | URL | Page File |
 |---|---|
@@ -722,7 +722,7 @@ Middleware checks on every request to /admin/* and /account/*:
 
 Admin role check (client-side in (admin)/layout.tsx):
   supabase.from('customers').select('segment, email').eq('id', userId)
-  email === 'admin@lanan.in'  → full admin
+  email === 'admin@lvbrilanan.in' (or 'admin@lanan.in') → full admin
   segment === 'new'|'repeat'  → redirect to /account/orders
   segment === 'vip'           → admin access (TODO: tighten)
 
@@ -809,13 +809,13 @@ CLOUDINARY_API_KEY=                  # SERVER ONLY — for image uploads
 CLOUDINARY_API_SECRET=               # SERVER ONLY
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=   # safe for browser (for upload widget)
 RESEND_API_KEY=                      # SERVER ONLY — transactional email
-RESEND_FROM_EMAIL=noreply@lanan.in
+RESEND_FROM_EMAIL=concierge@lvbrilanan.in
 
 # APP CONFIG (all safe for browser)
-NEXT_PUBLIC_APP_URL=https://lanan.in
+NEXT_PUBLIC_APP_URL=https://www.lvbrilanan.in
 NEXT_PUBLIC_BRAND_NAME=LANAN
-NEXT_PUBLIC_SUPPORT_PHONE=7630888521
-NEXT_PUBLIC_SUPPORT_EMAIL=hello@lanan.in
+NEXT_PUBLIC_SUPPORT_PHONE=+91 9235170198
+NEXT_PUBLIC_SUPPORT_EMAIL=support@lvbrilanan.in
 NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD=599
 NEXT_PUBLIC_COD_ENABLED=false
 
@@ -928,7 +928,7 @@ standardShipping: 79          // flat shipping fee
 gstRate: 18                   // 18% GST applied to all products
 
 // Admin email (hardcoded role check in (admin)/layout.tsx):
-'admin@lanan.in'              // this email gets full admin access
+'admin@lvbrilanan.in' / 'admin@lanan.in' // authorized for admin access
 
 // Order number format: LAN + YY + MM + 5 random chars
 // Example: LAN2505ABCDE

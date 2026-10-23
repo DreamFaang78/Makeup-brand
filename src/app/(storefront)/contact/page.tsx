@@ -108,7 +108,7 @@ export default function ContactPage() {
       toast.success('Your request has been logged! Our concierge team will review your order records and respond within 24 business hours.');
     } catch (err: any) {
       console.error('[Contact Submit Error]:', err);
-      toast.error('Unable to send inquiry. Please reach out to support@lanan.in directly.');
+      toast.error(`Unable to send inquiry. Please reach out to ${BRAND.supportEmail} directly.`);
       setIsSubmitting(false);
     }
   };
@@ -173,16 +173,22 @@ export default function ContactPage() {
                   <div>
                     <p className="text-xs text-gold/70 uppercase tracking-widest font-semibold mb-1">Email Concierge</p>
                     <a
-                      href={`mailto:${BRAND.email}`}
+                      href={`mailto:${BRAND.helpEmail}`}
                       className="text-ivory hover:text-gold transition-colors block text-base font-medium"
                     >
-                      {BRAND.email}
+                      {BRAND.helpEmail}
                     </a>
                     <a
                       href={`mailto:${BRAND.supportEmail}`}
                       className="text-xs text-ivory/60 hover:text-gold transition-colors block mt-0.5"
                     >
                       Support: {BRAND.supportEmail}
+                    </a>
+                    <a
+                      href={`mailto:${BRAND.customerEmail}`}
+                      className="text-xs text-ivory/60 hover:text-gold transition-colors block mt-0.5"
+                    >
+                      Orders & Returns: {BRAND.customerEmail}
                     </a>
                   </div>
                 </div>
@@ -246,7 +252,7 @@ export default function ContactPage() {
                   <h3 className="font-heading text-2xl text-obsidian font-normal">Thank You for Connecting</h3>
                   <p className="font-body text-taupe text-sm max-w-md mx-auto leading-relaxed">
                     {formData.subject === 'returns'
-                      ? 'Your return or replacement claim has been logged with our customer care desk. Please ensure your continuous unboxing video recording is sent to support@lanan.in or WhatsApp +91 9235170198 with your Order ID for verification. A specialist will review and respond within 24 business hours.'
+                      ? `Your return or replacement claim has been logged with our customer care desk. Please ensure your continuous unboxing video recording is sent to ${BRAND.customerEmail} or WhatsApp +91 9235170198 with your Order ID for verification. A specialist will review and respond within 24 business hours.`
                       : formData.subject === 'cancellation'
                       ? 'Your cancellation request has been logged. Our fulfillment team is verifying dispatch and AWB records to confirm eligibility. You will receive an official update within 24 business hours.'
                       : 'Your inquiry has been logged with our customer care desk. A skincare specialist will review your details and respond within 24 business hours.'}
@@ -388,7 +394,7 @@ export default function ContactPage() {
                         Under our approved policy, requests for transit damage, mechanical pump defects, leakage, or incorrect items must be initiated within <strong>24 hours</strong> of verified courier delivery.
                       </p>
                       <p className="text-taupe leading-relaxed">
-                        <strong>Mandatory Video Evidence:</strong> A single, continuous unboxing video recording starting from the unopened package showing the courier label is required. Please paste a private link (Google Drive / iCloud / OneDrive) in the message below, or send the video file directly to WhatsApp Concierge at <strong>+91 9235170198</strong> or email <strong>support@lanan.in</strong> with your Order ID.
+                        <strong>Mandatory Video Evidence:</strong> A single, continuous unboxing video recording starting from the unopened package showing the courier label is required. Please paste a private link (Google Drive / iCloud / OneDrive) in the message below, or send the video file directly to WhatsApp Concierge at <strong>+91 9235170198</strong> or email <strong>{BRAND.customerEmail}</strong> with your Order ID.
                       </p>
                     </div>
                   )}

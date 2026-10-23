@@ -76,7 +76,15 @@ export async function POST(req: Request) {
       );
     }
 
-    // In a production environment with email credentials, send email via Resend or log to database
+    // 7. Route inquiry to proper departmental recipient
+    const recipientEmail =
+      chosenCategory === 'returns' || chosenCategory === 'cancellation' || chosenCategory === 'order'
+        ? 'customer@lvbrilanan.in'
+        : chosenCategory === 'general'
+        ? 'help@lvbrilanan.in'
+        : 'support@lvbrilanan.in';
+
+    // Dispatched log for monitoring and auditing
     console.log('[Contact Inquiry Submitted]:', {
       timestamp: new Date().toISOString(),
       name: name.trim(),
@@ -85,7 +93,25 @@ export async function POST(req: Request) {
       category: chosenCategory,
       orderNumber: orderNumber ? orderNumber.trim() : null,
       messagePreview: message.trim().slice(0, 100),
+      routedTo: recipientEmail,
     });
+
+    // If Resend is configured, dispatch automated notification
+    if (process.env.RESEND_API_KEY) {
+      try {
+        const { Resend } = await import('resend');
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from: process.env.RESEND_FROM_EMAIL || 'concierge@lvbrilanan.in',
+          to: recipientEmail,
+          replyTo: email.trim(),
+          subject: `[LANAN ${chosenCategory.toUpperCase()}] Inquiry from ${name.trim()}${orderNumber ? ` (${orderNumber.trim()})` : ''}`,
+          text: `Name: ${name.trim()}\nEmail: ${email.trim()}\nPhone: ${phone.trim()}\nCategory: ${chosenCategory}\nOrder ID: ${orderNumber ? orderNumber.trim() : 'N/A'}\n\nMessage:\n${message.trim()}`,
+        });
+      } catch (emailErr) {
+        console.warn('[Contact Email Dispatch Warning]:', emailErr);
+      }
+    }
 
     return NextResponse.json(
       {
@@ -99,7 +125,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: 'An unexpected error occurred while submitting your request. Please try again or reach out to support@lanan.in directly.',
+        error: 'An unexpected error occurred while submitting your request. Please try again or reach out to support@lvbrilanan.in directly.',
       },
       { status: 500 }
     );

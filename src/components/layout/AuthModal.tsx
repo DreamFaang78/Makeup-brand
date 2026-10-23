@@ -301,10 +301,10 @@ export default function AuthModal() {
     setLoading(true);
     try {
       const cleanEmail = email.trim().toLowerCase();
-      if (cleanEmail === 'admin@lanan.in' && password === 'lanan@25032006') {
+      if ((cleanEmail === 'admin@lvbrilanan.in' || cleanEmail === 'admin@lanan.in') && password === 'lanan@25032006') {
         const mockUser = {
           id: 'mock-user-admin-email',
-          email: 'admin@lanan.in',
+          email: cleanEmail,
           user_metadata: {
             full_name: 'Lanan Admin'
           }
@@ -319,7 +319,7 @@ export default function AuthModal() {
             body: JSON.stringify({
               id: '01920392-1234-7000-c000-000000000001',
               phone: null,
-              email: 'admin@lanan.in',
+              email: cleanEmail,
               full_name: 'Lanan Admin',
             }),
           });

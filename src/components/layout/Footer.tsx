@@ -166,8 +166,8 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2.5 text-ivory/60">
                 <Mail size={14} className="flex-shrink-0 text-gold/60" />
-                <a href={`mailto:${BRAND.email}`} className="text-xs font-body hover:text-gold transition-colors">
-                  {BRAND.email}
+                <a href={`mailto:${BRAND.supportEmail}`} className="text-xs font-body hover:text-gold transition-colors">
+                  {BRAND.supportEmail}
                 </a>
               </div>
             </div>
