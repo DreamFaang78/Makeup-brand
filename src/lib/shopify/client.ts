@@ -46,6 +46,7 @@ export function getShopifyConfig() {
     domain &&
     storefrontAccessToken &&
     !domain.includes('your-shop-name') &&
+    !storefrontAccessToken.includes('your_') &&
     domain !== '' &&
     storefrontAccessToken !== ''
   );

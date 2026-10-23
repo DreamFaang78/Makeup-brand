@@ -17,7 +17,7 @@ export const PROMOTION_CONFIG = {
   discountPercent: 16, // 16% off storewide on all eligible products
   discountMultiplier: 0.84, // 1 - 0.16 = 0.84
   badgeText: 'SAVE 16%',
-  discountCode: 'LANAN16', // Default Shopify checkout promo code
+  discountCode: null as string | null, // Explicit customer-entered coupon codes only
 } as const;
 
 export interface PriceCalculation {
@@ -39,31 +39,82 @@ export interface PriceOptions {
 }
 
 /**
- * Calculates the promotional discount on a given price safely and without stacking.
+ * Approved authoritative original and discounted prices reference.
+ * Formula: Final Price = Math.round(Original Price * 0.84)
+ * Savings = Original Price - Final Price
+ */
+export const AUTHORITATIVE_PRICES = {
+  'lanan-face-wash-100-ml': {
+    name: 'LANAN Face Wash — 100 ml',
+    originalPrice: 599,
+    finalPrice: 503,
+    savings: 96,
+    discountPercent: 16,
+  },
+  'lanan-face-moisturizer-50-g': {
+    name: 'LANAN Face Moisturizer — 50 g',
+    originalPrice: 499,
+    finalPrice: 419,
+    savings: 80,
+    discountPercent: 16,
+  },
+  'lanan-sunscreen-spf-50-pa-50-g': {
+    name: 'LANAN Sunscreen SPF 50 PA++++ — 50 g',
+    originalPrice: 899,
+    finalPrice: 755,
+    savings: 144,
+    discountPercent: 16,
+  },
+  'lanan-glutathione-face-toner-100-ml': {
+    name: 'LANAN Glutathione Face Toner — 100 ml',
+    originalPrice: 499,
+    finalPrice: 419,
+    savings: 80,
+    discountPercent: 16,
+  },
+  'lanan-glutathione-face-serum-30-ml': {
+    name: 'LANAN Glutathione Face Serum — 30 ml',
+    originalPrice: 899,
+    finalPrice: 755,
+    savings: 144,
+    discountPercent: 16,
+  },
+} as const;
+
+/**
+ * Calculates final price after 16% discount from an original price.
+ * Final Price = Math.round(Original Price × 0.84)
+ */
+export function calculateDiscountedPrice(originalPrice: number, discountPercent: number = 16): number {
+  return Math.round(originalPrice * (1 - discountPercent / 100));
+}
+
+/**
+ * Calculates product pricing safely and without duplicate discounting.
  *
  * Rules:
  * 1. Base price is the original undiscounted price (e.g. ₹899, ₹599, ₹499).
- * 2. discountedPrice = Math.round(originalPrice * 0.84)
- * 3. savings = originalPrice - discountedPrice
- * 4. Percentage savings calculated from actual original price.
- * 5. Prevents double-discounting if a price is already reduced.
+ * 2. If a valid sale price is provided (where salePrice < basePrice):
+ *    discountedPrice = salePrice (the authoritative selling price from Shopify / catalog).
+ *    Do NOT apply a second 16% discount to an already reduced price.
+ * 3. If no sale price is provided (or salePrice >= basePrice):
+ *    The single price is the authoritative selling price.
+ *    Do NOT invent an artificial original price or apply another 16% reduction.
+ * 4. savings = originalPrice - discountedPrice
+ * 5. Percentage savings calculated from actual original price.
  * 6. Safely handles missing, invalid, or zero prices.
  */
 export function calculateProductPrice(
   input: number | string | null | undefined | PriceOptions,
   rawSalePrice?: number | string | null | undefined,
-  overrideDiscountPercent: number = PROMOTION_CONFIG.discountPercent
+  _overrideDiscountPercent: number = PROMOTION_CONFIG.discountPercent
 ): PriceCalculation {
   let rawBasePrice: number | string | null | undefined;
   let effectiveSalePrice: number | string | null | undefined = rawSalePrice;
-  let effectiveDiscount = overrideDiscountPercent;
 
   if (typeof input === 'object' && input !== null) {
     rawBasePrice = input.basePrice;
     effectiveSalePrice = input.salePrice;
-    if (typeof input.discountPercent === 'number') {
-      effectiveDiscount = input.discountPercent;
-    }
   } else {
     rawBasePrice = input;
   }
@@ -85,37 +136,25 @@ export function calculateProductPrice(
     };
   }
 
-  // Calculate target promotional price (default 16%)
-  const multiplier = 1 - effectiveDiscount / 100;
-  const targetDiscounted = Math.round(base * multiplier);
+  // A valid sale price is strictly positive and strictly lower than the base price
+  const hasValidSale = existingSale !== null && existingSale > 0 && existingSale < base;
 
-  let discountedPrice = base;
-
-  if (PROMOTION_CONFIG.enabled) {
-    // If an existing sale price is already provided:
-    // Ensure we do NOT double-discount an already reduced price!
-    if (existingSale !== null && existingSale > 0 && existingSale < base) {
-      // If existingSale is already equal to or very close to targetDiscounted, use targetDiscounted
-      discountedPrice = targetDiscounted;
-    } else {
-      discountedPrice = targetDiscounted;
-    }
-  } else if (existingSale !== null && existingSale > 0 && existingSale < base) {
-    discountedPrice = existingSale;
-  }
-
-  const hasDiscount = discountedPrice < base;
-  const savings = hasDiscount ? base - discountedPrice : 0;
-  const actualPercent = hasDiscount ? Math.round(((base - discountedPrice) / base) * 100) : 0;
-  const badgeText = hasDiscount ? `SAVE ${actualPercent}%` : '';
+  const originalPrice = base;
+  const discountedPrice = hasValidSale ? existingSale : base;
+  const hasDiscount = hasValidSale;
+  const savings = hasDiscount ? originalPrice - discountedPrice : 0;
+  const discountPercent = hasDiscount && originalPrice > 0
+    ? Math.round(((originalPrice - discountedPrice) / originalPrice) * 100)
+    : 0;
+  const badgeText = hasDiscount && discountPercent > 0 ? `SAVE ${discountPercent}%` : '';
 
   return {
-    originalPrice: base,
+    originalPrice,
     discountedPrice,
     savings,
-    discountPercent: actualPercent,
+    discountPercent,
     hasDiscount,
-    formattedOriginal: formatPrice(base),
+    formattedOriginal: formatPrice(originalPrice),
     formattedDiscounted: formatPrice(discountedPrice),
     formattedSavings: formatPrice(savings),
     badgeText,

@@ -41,8 +41,14 @@ export async function GET() {
     // 2. Try Supabase
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const isSupabaseConfigured = Boolean(
+      url &&
+      anonKey &&
+      !url.includes('your-project') &&
+      url.startsWith('http')
+    );
 
-    if (url && anonKey) {
+    if (isSupabaseConfigured && url && anonKey) {
       const supabase = createClient(url, anonKey);
 
       let rawProducts: any[] = [];
@@ -98,8 +104,8 @@ export async function GET() {
               product_id: p.id,
               name: 'Standard',
               sku: p.sku || `SKU-${String(p.id).slice(0, 8)}`,
-              price: salePrice || basePrice,
-              sale_price: null,
+              price: basePrice,
+              sale_price: salePrice,
               inventory: Number(p.stock ?? 50),
               is_active: p.is_active !== false,
               sort_order: 0,
