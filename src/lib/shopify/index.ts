@@ -20,7 +20,6 @@ import {
   normalizeShopifyProduct,
 } from './types';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
-import { PROMOTION_CONFIG } from '@/lib/pricing';
 import type { ProductCardData } from '@/types/product';
 
 export * from './types';
@@ -219,8 +218,8 @@ export function buildShopifyCartPermalink(
   lines: Array<{ merchandiseId: string; quantity: number }>,
   discountCode?: string | null
 ): string | null {
-  const { domain, isConfigured } = getShopifyConfig();
-  if (!isConfigured || !domain) return null;
+  const { domain } = getShopifyConfig();
+  if (!domain || domain.includes('your-shop-name')) return null;
 
   const validItems: string[] = [];
 
@@ -234,7 +233,7 @@ export function buildShopifyCartPermalink(
   if (validItems.length === 0) return null;
 
   let url = `https://${domain}/cart/${validItems.join(',')}`;
-  const effectiveDiscount = (discountCode && discountCode.trim()) || PROMOTION_CONFIG.discountCode;
+  const effectiveDiscount = discountCode && discountCode.trim();
   if (effectiveDiscount) {
     url += `?discount=${encodeURIComponent(effectiveDiscount)}`;
   }
@@ -261,7 +260,7 @@ export async function createShopifyCart(
       quantity: Math.max(1, Number(l.quantity) || 1),
     }));
 
-    const appliedDiscount = (discountCode && discountCode.trim()) || PROMOTION_CONFIG.discountCode;
+    const appliedDiscount = discountCode && discountCode.trim();
 
     if (formattedLines.length > 0) {
       const res = await shopifyFetch<{

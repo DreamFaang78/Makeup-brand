@@ -153,7 +153,7 @@ export default function AIPopup() {
     const primaryVariant = product.variants[0];
     const pricing = calculateProductPrice({
       basePrice: primaryVariant?.price ?? product.base_price,
-      salePrice: primaryVariant?.price ?? product.sale_price,
+      salePrice: primaryVariant?.sale_price ?? product.sale_price,
     });
     addItem({
       product_id: product.id,

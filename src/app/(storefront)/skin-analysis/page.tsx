@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
-import { formatPrice } from '@/lib/utils';
+import { calculateProductPrice } from '@/lib/utils';
 import { PriceTag } from '@/components/products/PriceTag';
 import { toast } from 'sonner';
 import type { ProductCardData } from '@/types/product';
@@ -241,14 +241,18 @@ export default function SkinAnalysisPage() {
   // ── Add to cart ────────────────────────────────────────────────────────────
   const handleAddToCart = (product: ProductCardData) => {
     const v = product.variants[0];
+    const pricing = calculateProductPrice(
+      product.base_price || v?.price,
+      product.sale_price ?? v?.sale_price
+    );
     addItem({
       product_id: product.id,
       variant_id: v?.id || null,
       product_name: product.name,
       product_slug: product.slug,
       variant_name: v?.name || null,
-      unit_price: v?.price ?? product.sale_price ?? product.base_price,
-      base_price: v?.price ?? product.base_price,
+      unit_price: pricing.discountedPrice,
+      base_price: pricing.originalPrice,
       quantity: 1,
       image_url: product.images[0]?.url || '',
     });
