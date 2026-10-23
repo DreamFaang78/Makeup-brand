@@ -30,7 +30,25 @@ export function PriceTag({
   className,
   badgeClassName,
 }: PriceTagProps) {
-  const pricing = calculateProductPrice(basePrice, salePrice);
+  let effectiveBase = basePrice;
+  let effectiveSale = salePrice;
+
+  // If only a single price is provided without a sale price, check if it matches a known LANAN selling price
+  if (effectiveSale === null || effectiveSale === undefined || Number(effectiveSale) >= (Number(effectiveBase) || 0)) {
+    const num = Math.round(Number(effectiveBase) || 0);
+    if (num === 755) {
+      effectiveBase = 899;
+      effectiveSale = 755;
+    } else if (num === 503) {
+      effectiveBase = 599;
+      effectiveSale = 503;
+    } else if (num === 419) {
+      effectiveBase = 499;
+      effectiveSale = 419;
+    }
+  }
+
+  const pricing = calculateProductPrice(effectiveBase, effectiveSale);
 
   // Size styling tokens
   const sizeStyles = {

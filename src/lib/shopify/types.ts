@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { ProductCardData, ProductVariant } from '@/types/product';
-import { calculateProductPrice } from '@/lib/pricing';
+import { calculateProductPrice, getAuthoritativePriceByHandle } from '@/lib/pricing';
 
 export interface ShopifyMoney {
   amount: string;
@@ -147,10 +147,20 @@ export function normalizeShopifyProduct(sp: ShopifyProduct): ProductCardData {
     });
   }
 
+  const authRef = getAuthoritativePriceByHandle(sp.handle) || getAuthoritativePriceByHandle(sp.title);
+
   const variants: ProductVariant[] = (sp.variants?.edges || []).map((vEdge, idx) => {
     const v = vEdge.node;
     const priceNum = Math.round(parseFloat(v.price.amount) || 0);
-    const compareNum = v.compareAtPrice ? Math.round(parseFloat(v.compareAtPrice.amount) || 0) : null;
+    const rawCompareNum = v.compareAtPrice ? Math.round(parseFloat(v.compareAtPrice.amount) || 0) : null;
+
+    // Use Shopify compareAtPrice if valid and greater than priceNum.
+    // If Shopify compareAtPrice is missing, null, or not set, fall back to authoritative compare-at price.
+    let compareNum = rawCompareNum;
+    if ((compareNum === null || compareNum <= priceNum) && authRef) {
+      compareNum = authRef.originalPrice;
+    }
+
     const hasShopifyDiscount = compareNum !== null && compareNum > priceNum;
 
     // Apply LANAN pricing policy (16% discount, anti-stacking)
@@ -175,9 +185,14 @@ export function normalizeShopifyProduct(sp: ShopifyProduct): ProductCardData {
 
   const firstVariant = variants[0];
   const minPrice = Math.round(parseFloat(sp.priceRange.minVariantPrice.amount) || 0);
-  const minCompare = sp.compareAtPriceRange?.minVariantPrice?.amount
+  const rawMinCompare = sp.compareAtPriceRange?.minVariantPrice?.amount
     ? Math.round(parseFloat(sp.compareAtPriceRange.minVariantPrice.amount) || 0)
     : null;
+
+  let minCompare = rawMinCompare;
+  if ((minCompare === null || minCompare <= minPrice) && authRef) {
+    minCompare = authRef.originalPrice;
+  }
 
   const hasCompareAt = minCompare !== null && minCompare > minPrice;
   const rawBase = hasCompareAt ? minCompare : (firstVariant ? firstVariant.price : minPrice);

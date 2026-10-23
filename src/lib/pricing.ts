@@ -82,6 +82,28 @@ export const AUTHORITATIVE_PRICES = {
 } as const;
 
 /**
+ * Resolves authoritative pricing reference for a given product identifier (slug, handle, title, or variant ID)
+ */
+export function getAuthoritativePriceByHandle(identifier?: string | null) {
+  if (!identifier) return null;
+  const clean = identifier.toLowerCase().trim();
+
+  // Direct key lookup
+  if (AUTHORITATIVE_PRICES[clean as keyof typeof AUTHORITATIVE_PRICES]) {
+    return AUTHORITATIVE_PRICES[clean as keyof typeof AUTHORITATIVE_PRICES];
+  }
+
+  // Handle aliases and variations
+  if (clean.includes('wash') || clean.includes('cleanse')) return AUTHORITATIVE_PRICES['lanan-face-wash-100-ml'];
+  if (clean.includes('moistur')) return AUTHORITATIVE_PRICES['lanan-face-moisturizer-50-g'];
+  if (clean.includes('sunscreen') || clean.includes('spf')) return AUTHORITATIVE_PRICES['lanan-sunscreen-spf-50-pa-50-g'];
+  if (clean.includes('toner')) return AUTHORITATIVE_PRICES['lanan-glutathione-face-toner-100-ml'];
+  if (clean.includes('serum')) return AUTHORITATIVE_PRICES['lanan-glutathione-face-serum-30-ml'];
+
+  return null;
+}
+
+/**
  * Calculates final price after 16% discount from an original price.
  * Final Price = Math.round(Original Price × 0.84)
  */
@@ -165,14 +187,26 @@ export function calculateProductPrice(
  * Helper to compute pricing for an arbitrary product card or variant object.
  */
 export function getProductPricing(product: {
+  slug?: string | null;
+  name?: string | null;
   base_price?: number | null;
   sale_price?: number | null;
   price?: number | null;
   variants?: Array<{ price?: number | null; sale_price?: number | null; is_active?: boolean }>;
 }): PriceCalculation {
   const activeVariant = product.variants?.find((v) => v.is_active) ?? product.variants?.[0];
-  const base = product.base_price ?? activeVariant?.price ?? product.price ?? 0;
-  const sale = product.sale_price ?? activeVariant?.sale_price ?? null;
+  let base = product.base_price ?? activeVariant?.price ?? product.price ?? 0;
+  let sale = product.sale_price ?? activeVariant?.sale_price ?? null;
+
+  const authRef = getAuthoritativePriceByHandle(product.slug || product.name);
+  if ((sale === null || sale === undefined) && authRef) {
+    if (base === authRef.finalPrice || base === 0) {
+      base = authRef.originalPrice;
+      sale = authRef.finalPrice;
+    } else if (base === authRef.originalPrice) {
+      sale = authRef.finalPrice;
+    }
+  }
 
   return calculateProductPrice(base, sale);
 }

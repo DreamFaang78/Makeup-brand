@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { DEMO_PRODUCTS } from '@/lib/data/products';
-import { formatPrice, calculateProductPrice, cn } from '@/lib/utils';
+import { formatPrice, calculateProductPrice, getAuthoritativePriceByHandle, cn } from '@/lib/utils';
 import ProductCard from '@/components/products/ProductCard';
 import PriceTag from '@/components/products/PriceTag';
 import { toast } from 'sonner';
@@ -266,7 +266,21 @@ export default function ProductDetailPage() {
 
   const rawBase = selectedVariant?.price ?? product.base_price;
   const rawSale = selectedVariant?.sale_price ?? product.sale_price;
-  const pricing = calculateProductPrice(rawBase, rawSale);
+
+  const authRef = getAuthoritativePriceByHandle(product.slug || slug || product.name);
+  let effectiveBase = rawBase;
+  let effectiveSale = rawSale;
+
+  if ((effectiveSale === null || effectiveSale === undefined) && authRef) {
+    if (effectiveBase === authRef.finalPrice || effectiveBase === 0) {
+      effectiveBase = authRef.originalPrice;
+      effectiveSale = authRef.finalPrice;
+    } else if (effectiveBase === authRef.originalPrice) {
+      effectiveSale = authRef.finalPrice;
+    }
+  }
+
+  const pricing = calculateProductPrice(effectiveBase, effectiveSale);
   const displayPrice = pricing.discountedPrice;
   const originalPrice = pricing.originalPrice;
   const hasSale = pricing.hasDiscount;

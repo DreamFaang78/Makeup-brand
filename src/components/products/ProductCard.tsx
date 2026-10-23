@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, Star, Eye } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
-import { cn, calculateProductPrice } from '@/lib/utils';
+import { cn, calculateProductPrice, getAuthoritativePriceByHandle } from '@/lib/utils';
 import PriceTag from '@/components/products/PriceTag';
 import type { ProductCardData } from '@/types/product';
 import { toast } from 'sonner';
@@ -32,10 +32,23 @@ export default function ProductCard({ product, index = 0 }: Props) {
   const image = product.images?.[0];
   const activeVariant = product.variants?.find((v) => v.is_active) ?? product.variants?.[0];
 
-  const pricing = calculateProductPrice(
-    product.base_price || activeVariant?.price,
-    product.sale_price ?? activeVariant?.sale_price
-  );
+  const rawBase = product.base_price || activeVariant?.price;
+  const rawSale = product.sale_price ?? activeVariant?.sale_price;
+
+  const authRef = getAuthoritativePriceByHandle(product.slug || product.name);
+  let effectiveBase = rawBase;
+  let effectiveSale = rawSale;
+
+  if ((effectiveSale === null || effectiveSale === undefined) && authRef) {
+    if (effectiveBase === authRef.finalPrice || effectiveBase === 0) {
+      effectiveBase = authRef.originalPrice;
+      effectiveSale = authRef.finalPrice;
+    } else if (effectiveBase === authRef.originalPrice) {
+      effectiveSale = authRef.finalPrice;
+    }
+  }
+
+  const pricing = calculateProductPrice(effectiveBase, effectiveSale);
   const originalPrice = pricing.originalPrice;
   const displayPrice = pricing.discountedPrice;
   const isOutOfStock = activeVariant ? activeVariant.inventory <= 0 : false;
