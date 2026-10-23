@@ -394,8 +394,8 @@ export default function CheckoutPage() {
       return;
     }
     const cleanedPhone = phoneInput.replace(/\D/g, '');
-    if (cleanedPhone.length > 0 && cleanedPhone.length !== 10) {
-      toast.error('Please enter a valid 10-digit mobile number, or leave it blank');
+    if (!cleanedPhone || cleanedPhone.length !== 10) {
+      toast.error('Please enter a valid 10-digit mobile number for delivery coordination');
       return;
     }
     if (emailInput.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.trim())) {
@@ -661,7 +661,7 @@ export default function CheckoutPage() {
 
                     <div>
                       <label className="text-xs font-body font-medium text-obsidian block mb-1.5">
-                        Mobile Number <span className="text-taupe font-normal">(optional)</span>
+                        Mobile Number <span className="text-error-red">*</span>
                       </label>
                       <div className="flex gap-2">
                         <div className="flex items-center px-3 rounded-xl border border-beige bg-ivory text-xs font-body font-medium text-taupe flex-shrink-0">
@@ -669,6 +669,7 @@ export default function CheckoutPage() {
                         </div>
                         <input
                           type="tel"
+                          required
                           placeholder="10-digit mobile number"
                           maxLength={10}
                           value={phoneInput}

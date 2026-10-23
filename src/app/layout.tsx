@@ -33,7 +33,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://lanan.in'),
+  metadataBase: new URL(BRAND.website),
   title: {
     default: 'LANAN — Luxury Skincare for Modern Indian Skin',
     template: '%s | LANAN',
@@ -41,12 +41,12 @@ export const metadata: Metadata = {
   description:
     'Discover LANAN — premium skincare rituals crafted for Indian skin. Shop serums, moisturisers, cleansers, and more. Free shipping above ₹599.',
   keywords: ['skincare', 'Indian skincare', 'luxury skincare', 'LANAN', 'serum', 'moisturiser', 'glow serum'],
-  authors: [{ name: 'LANAN', url: 'https://lanan.in' }],
+  authors: [{ name: 'LANAN', url: BRAND.website }],
   creator: 'LANAN',
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: 'https://lanan.in',
+    url: BRAND.website,
     siteName: 'LANAN',
     title: 'LANAN — Luxury Skincare for Modern Indian Skin',
     description: 'Premium skincare rituals crafted for Indian skin.',
@@ -77,12 +77,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               '@context': 'https://schema.org',
               '@type': 'Organization',
               name: 'LANAN',
-              legalName: 'Ma Tara Neelsarashwati',
-              url: 'https://lanan.in',
-              logo: 'https://lanan.in/logo.png',
+              legalName: BRAND.fullName,
+              url: BRAND.website,
+              logo: `${BRAND.website}/logo.png`,
               contactPoint: {
                 '@type': 'ContactPoint',
-                telephone: '+91-9235170198',
+                telephone: BRAND.phoneFormatted,
                 contactType: 'customer service',
                 areaServed: 'IN',
                 availableLanguage: ['English', 'Hindi'],

@@ -81,7 +81,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '01',
         title: 'Shipping Policy Overview',
         content: [
-          'This Shipping & Delivery Policy governs the dispatch and transit of all products ordered through the LANAN website (lanan.in / lvbrilanan.in) and its associated headless Shopify storefront.',
+          'This Shipping & Delivery Policy governs the dispatch and transit of all products ordered through the official LANAN website (https://www.lvbrilanan.in) and its associated headless Shopify storefront.',
           'All shipments are packed at our primary fulfillment center under stringent hygiene and tamper-evident security procedures. LANAN operates under the registered legal entity Ma Tara Neelsarashwati.',
         ],
       },
@@ -228,7 +228,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '01',
         title: 'Return & Refund Overview',
         content: [
-          'This Return & Refund Policy applies to all purchases made directly on the official LANAN website (lanan.in / lvbrilanan.in).',
+          'This Return & Refund Policy applies to all purchases made directly on the official LANAN website (https://www.lvbrilanan.in).',
           'We take pride in the efficacy, safety, and luxury of our formulations. If you encounter any genuine issue with your order — including transit damage, container leakage, defective pump mechanisms, or incorrect items — we provide swift replacements or full refunds under the conditions detailed below.',
         ],
       },
@@ -287,7 +287,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'How Customers Request a Return (Step-by-Step)',
         content: [
           'To initiate an eligible return or replacement, follow this streamlined process:',
-          'Step 1: Contact our concierge desk within 24 hours of courier delivery via WhatsApp (+91 9235170198), email (support@lanan.in | hello@lanan.in), or by submitting the online Concierge Support Form at lanan.in/contact.',
+          'Step 1: Contact our concierge desk within 24 hours of courier delivery via WhatsApp (+91 9235170198), email (support@lanan.in | hello@lanan.in), or by submitting the online Concierge Support Form at https://www.lvbrilanan.in/contact.',
           'Step 2: Use the subject line: "Return Request - [Your Order ID]" (e.g. Return Request - LAN2610ABC).',
           'Step 3: State your Customer Name, Order ID, Delivery Date/Time, affected product, and whether you prefer a replacement or refund.',
           'Step 4: Provide the mandatory continuous unboxing video recording detailed in Section 06 below.',
@@ -395,7 +395,7 @@ const POLICIES: Record<string, PolicyDocument> = {
     summary:
       'LANAN protects your personal information under the Information Technology Act 2000, SPDI Rules 2011, and the Digital Personal Data Protection Act 2023. We never sell your personal data.',
     intro:
-      'Ma Tara Neelsarashwati (operating as LANAN) respects your privacy. This comprehensive Privacy Policy describes how we collect, process, store, and safeguard your personal information when you visit lanan.in, interact with our headless Shopify storefront, or communicate with our concierge.',
+      'Ma Tara Neelsarashwati (operating as LANAN) respects your privacy. This comprehensive Privacy Policy describes how we collect, process, store, and safeguard your personal information when you visit https://www.lvbrilanan.in, interact with our headless Shopify storefront, or communicate with our concierge.',
     flaggedNotice:
       'Legal & Compliance Notice: Drafted in accordance with Indian IT Act 2000, SPDI Rules 2011, and Digital Personal Data Protection (DPDP) Act 2023. Grievance Redressal Officer is officially designated under Indian law.',
     sections: [
@@ -405,7 +405,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         title: 'Introduction & Statutory Scope',
         content: [
           'This Privacy Policy is published in compliance with Section 43A of the Information Technology Act, 2000; the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 (SPDI Rules); and the Digital Personal Data Protection Act, 2023 (DPDP Act).',
-          'This policy governs all personal data collected through lanan.in, lvbrilanan.in, our mobile-responsive web applications, and customer support channels.',
+          'This policy governs all personal data collected through https://www.lvbrilanan.in, our mobile-responsive web applications, and customer support channels.',
         ],
       },
       {
@@ -622,7 +622,7 @@ const POLICIES: Record<string, PolicyDocument> = {
     summary:
       'These Terms & Conditions govern your access to the LANAN website and purchase of skincare products. Formulations are for personal cosmetic use. Governing law is Indian law with jurisdiction in Kanpur, UP.',
     intro:
-      'Welcome to LANAN (lanan.in / lvbrilanan.in). These Terms & Conditions constitute a legally binding agreement between you and Ma Tara Neelsarashwati, operating under the brand name LANAN. By browsing our website, registering an account, or placing an order, you agree to comply with and be bound by these terms.',
+      'Welcome to LANAN (https://www.lvbrilanan.in). These Terms & Conditions constitute a legally binding agreement between you and Ma Tara Neelsarashwati, operating under the brand name LANAN. By browsing our website, registering an account, or placing an order, you agree to comply with and be bound by these terms.',
     flaggedNotice:
       'Legal Review Notice: Standard terms drafted under Indian Contract Act 1872 and Consumer Protection (E-Commerce) Rules 2020. Specific corporate arbitration or jurisdiction clauses should be reviewed by company legal counsel upon corporate expansion.',
     sections: [
@@ -631,7 +631,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '01',
         title: 'Introduction & Acceptance of Terms',
         content: [
-          'By accessing, browsing, or utilizing the services provided on lanan.in, you acknowledge that you have read, understood, and agreed to be bound by these Terms & Conditions, together with our Privacy Policy, Shipping Policy, Return & Refund Policy, and Cancellation Policy.',
+          'By accessing, browsing, or utilizing the services provided on https://www.lvbrilanan.in, you acknowledge that you have read, understood, and agreed to be bound by these Terms & Conditions, together with our Privacy Policy, Shipping Policy, Return & Refund Policy, and Cancellation Policy.',
           'If you do not agree to all provisions contained herein, you must refrain from using this website or placing orders.',
         ],
       },
@@ -748,7 +748,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '13',
         title: 'Intellectual Property & Brand Assets',
         content: [
-          'All content on lanan.in — including brand names, logos, formulas, packaging designs, product descriptions, photography, graphics, and source code — is the exclusive intellectual property of Ma Tara Neelsarashwati (LANAN) and is protected by Indian copyright, trademark, and design laws.',
+          'All content on https://www.lvbrilanan.in — including brand names, logos, formulas, packaging designs, product descriptions, photography, graphics, and source code — is the exclusive intellectual property of Ma Tara Neelsarashwati (LANAN) and is protected by Indian copyright, trademark, and design laws.',
           'No part of this website may be reproduced, duplicated, republished, or exploited for commercial purposes without our express prior written consent.',
         ],
       },
@@ -823,7 +823,7 @@ const POLICIES: Record<string, PolicyDocument> = {
         number: '01',
         title: 'Cancellation Policy Overview',
         content: [
-          'This Cancellation Policy governs the conditions under which an order placed on lanan.in / lvbrilanan.in may be cancelled by either the customer or LANAN.',
+          'This Cancellation Policy governs the conditions under which an order placed on https://www.lvbrilanan.in may be cancelled by either the customer or LANAN.',
           'We strive to dispatch orders rapidly; therefore, the window for pre-dispatch cancellation is time-sensitive. Please review the cutoffs and procedures below.',
         ],
       },
@@ -865,7 +865,7 @@ const POLICIES: Record<string, PolicyDocument> = {
           'To request an order cancellation before dispatch:',
           'Option A (Fastest — WhatsApp Concierge): Message or call our concierge at +91 9235170198 with your Order ID and cancellation request.',
           'Option B (Email Concierge): Send an email to support@lanan.in with the subject line: "Order Cancellation - [Your Order ID]". State your Order ID and reason for cancellation.',
-          'Option C (Online Support Form): Submit the Concierge Support Form at lanan.in/contact by selecting the "Order Cancellation (Pre-Dispatch)" category.',
+          'Option C (Online Support Form): Submit the Concierge Support Form at https://www.lvbrilanan.in/contact by selecting the "Order Cancellation (Pre-Dispatch)" category.',
           'Review & Verification Process: Our support team immediately verifies the order\'s real-time fulfillment status in Shopify and courier dispatch logs. If the parcel has not yet been packed or assigned an AWB, cancellation is confirmed and an official cancellation confirmation is issued. Submitting a cancellation request does not constitute automatic cancellation until verified against warehouse dispatch status.',
         ],
       },
@@ -965,12 +965,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${policy.title} | LANAN Skincare`,
     description: `${policy.summary} Official policy of Ma Tara Neelsarashwati (Brand: LANAN). Updated ${policy.lastUpdated}.`,
     alternates: {
-      canonical: `https://lanan.in/legal/${policy.slug}`,
+      canonical: `${BRAND.website}/legal/${policy.slug}`,
     },
     openGraph: {
       title: `${policy.title} | LANAN`,
       description: policy.summary,
-      url: `https://lanan.in/legal/${policy.slug}`,
+      url: `${BRAND.website}/legal/${policy.slug}`,
       siteName: 'LANAN',
       type: 'website',
     },

@@ -249,7 +249,7 @@ npx vercel --prod
 
 Add all environment variables from `.env.example` to your Vercel project settings.
 
-**Razorpay Webhook URL**: `https://lanan.in/api/razorpay/webhook`
+**Razorpay Webhook URL**: `https://www.lvbrilanan.in/api/razorpay/webhook`
 
 ---
 

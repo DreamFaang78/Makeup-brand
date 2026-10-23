@@ -6,10 +6,14 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Leaf, Heart, Shield, Sparkles } from 'lucide-react';
+import { BRAND } from '@/lib/utils';
 
 export const metadata: Metadata = {
   title: 'About LANAN — Premium Indian Skincare',
   description: 'LANAN is a premium skincare brand by Ma Tara Neelsarashwati, crafted for modern Indian skin. Discover our story, values, and commitment to clean beauty.',
+  alternates: {
+    canonical: `${BRAND.website}/about`,
+  },
 };
 
 export default function AboutPage() {
@@ -106,14 +110,13 @@ export default function AboutPage() {
         <div className="container-lanan">
           <div className="max-w-2xl mx-auto text-center">
             <p className="section-label mb-3">Legal Entity</p>
-            <h2 className="font-heading text-xl text-obsidian mb-4">Ma Tara Neelsarashwati</h2>
+            <h2 className="font-heading text-xl text-obsidian mb-4">{BRAND.fullName}</h2>
             <p className="font-body text-sm text-taupe leading-relaxed mb-3">
-              LANAN is the brand name operated by Ma Tara Neelsarashwati, a registered proprietary firm.
+              LANAN is the brand name operated by {BRAND.fullName}, a registered proprietary firm.
             </p>
             <p className="font-body text-xs text-taupe">
-              Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki<br />
-              Kanpur, Uttar Pradesh - 208020, India<br />
-              Phone: +91 9235170198 | Email: hello@lanan.in | support@lanan.in
+              {BRAND.address}<br />
+              Phone: {BRAND.phoneFormatted} | Email: {BRAND.email} | {BRAND.supportEmail}
             </p>
           </div>
         </div>

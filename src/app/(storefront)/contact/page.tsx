@@ -9,7 +9,7 @@ import {
   Mail, Phone, MapPin, Clock, Send, CheckCircle2,
   Sparkles
 } from 'lucide-react';
-import { BRAND } from '@/lib/utils';
+import { BRAND, isValidIndianMobile } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const FAQ_ITEMS = [
@@ -44,6 +44,7 @@ export default function ContactPage() {
     subject: 'general',
     message: '',
   });
+  const [phoneError, setPhoneError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -60,8 +61,22 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setPhoneError('');
+
     if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
       toast.error('Please complete all required fields.');
+      return;
+    }
+
+    if (!formData.phone.trim()) {
+      setPhoneError('Phone number is required. Please provide a valid Indian mobile number.');
+      toast.error('Phone number is mandatory. Please enter your mobile number.');
+      return;
+    }
+
+    if (!isValidIndianMobile(formData.phone)) {
+      setPhoneError('Please enter a valid 10-digit Indian mobile number (e.g. +91 92351 70198 or 9876543210).');
+      toast.error('Invalid mobile format. Please enter a valid 10-digit Indian mobile number.');
       return;
     }
 
@@ -71,11 +86,31 @@ export default function ContactPage() {
     }
 
     setIsSubmitting(true);
-    // Simulate inquiry dispatch / integration
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
-    setSubmitted(true);
-    toast.success('Your request has been logged! Our concierge team will review your order records and respond within 24 business hours.');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        if (data.field === 'phone') {
+          setPhoneError(data.error);
+        }
+        toast.error(data.error || 'Failed to submit inquiry.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      setIsSubmitting(false);
+      setSubmitted(true);
+      toast.success('Your request has been logged! Our concierge team will review your order records and respond within 24 business hours.');
+    } catch (err: any) {
+      console.error('[Contact Submit Error]:', err);
+      toast.error('Unable to send inquiry. Please reach out to support@lanan.in directly.');
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -159,7 +194,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-xs text-gold/70 uppercase tracking-widest font-semibold mb-1">Concierge Hours</p>
-                    <p className="text-ivory/90">Monday – Saturday: 10:00 AM – 7:00 PM IST</p>
+                    <p className="text-ivory/90">{BRAND.supportHours}</p>
                     <p className="text-xs text-ivory/50 mt-0.5">Closed on Sundays & National Holidays</p>
                   </div>
                 </div>
@@ -278,16 +313,37 @@ export default function ContactPage() {
 
                   <div className="grid sm:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-xs font-medium font-body text-charcoal mb-1.5">
-                        Phone Number (Optional)
+                      <label htmlFor="contact-phone" className="block text-xs font-medium font-body text-charcoal mb-1.5">
+                        Phone Number <span className="text-gold">*</span>
                       </label>
                       <input
+                        id="contact-phone"
                         type="tel"
+                        required
                         value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        placeholder="e.g. 9876543210"
-                        className="w-full px-4 py-3 rounded-xl border border-charcoal/20 focus:border-gold focus:ring-1 focus:ring-gold outline-none text-sm font-body bg-sand-50/30"
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setFormData({ ...formData, phone: val });
+                          if (phoneError && isValidIndianMobile(val)) {
+                            setPhoneError('');
+                          }
+                        }}
+                        placeholder="e.g. +91 92351 70198 or 9876543210"
+                        className={`w-full px-4 py-3 rounded-xl border ${
+                          phoneError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-charcoal/20 focus:border-gold focus:ring-gold'
+                        } focus:ring-1 outline-none text-sm font-body bg-sand-50/30 font-sans tabular-nums`}
+                        aria-invalid={!!phoneError}
+                        aria-describedby={phoneError ? 'contact-phone-error' : undefined}
                       />
+                      {phoneError ? (
+                        <p id="contact-phone-error" className="text-xs text-red-600 font-body mt-1">
+                          {phoneError}
+                        </p>
+                      ) : (
+                        <p className="text-[10px] text-taupe font-body mt-1">
+                          10-digit Indian mobile number for order verification & WhatsApp support.
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-xs font-medium font-body text-charcoal mb-1.5">

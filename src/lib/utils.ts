@@ -86,9 +86,17 @@ export const INDIAN_STATES = [
 export const BRAND = {
   name: 'LANAN',
   fullName: 'Ma Tara Neelsarashwati',
+  website: 'https://www.lvbrilanan.in',
+  canonicalUrl: 'https://www.lvbrilanan.in',
+  domain: 'www.lvbrilanan.in',
   phone: '9235170198',
+  phoneFormatted: '+91 9235170198',
+  phoneTel: '+919235170198',
   email: 'hello@lanan.in',
   supportEmail: 'support@lanan.in',
+  grievanceEmail: 'grievance@lanan.in',
+  supportHours: 'Monday – Saturday: 10:00 AM – 6:00 PM IST',
+  supportHoursExtended: 'Monday – Saturday: 10:00 AM – 6:00 PM IST (Closed on Sundays & National Holidays)',
   address: 'Plot No 36A, Arazi No 1800BA, Sundar Nagar, Panki, Kanpur, Uttar Pradesh - 208020',
   addressLines: [
     'Plot No 36A, Arazi No 1800BA',
@@ -103,9 +111,22 @@ export const BRAND = {
     x: 'https://x.com/AvishekYad79945',
     youtube: 'https://youtube.com/@lanan.787?si=6--x6D6PGoikQNXK',
     linkedin: 'https://www.linkedin.com/in/avishek-yadav-8067373b4/',
-    marketingEmail: 'mailto:mataraneel@lvbrilanan.com',
+    marketingEmail: 'mailto:hello@lanan.in',
   },
   freeShippingThreshold: 599,
   standardShipping: 79,
   gstRate: 18,
 };
+
+/** Validates 10-digit Indian mobile number with optional +91, 91, or 0 prefix */
+export function isValidIndianMobile(phone: string): boolean {
+  if (!phone) return false;
+  const cleaned = phone.replace(/[\s\-\(\)]/g, '');
+  return /^(?:\+91|91|0)?[6-9]\d{9}$/.test(cleaned);
+}
+
+/** Normalizes phone number to standard 10-digit Indian mobile string */
+export function normalizeIndianMobile(phone: string): string {
+  const digitsOnly = phone.replace(/\D/g, '');
+  return digitsOnly.slice(-10);
+}
